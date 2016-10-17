@@ -1,10 +1,10 @@
 .qsys_edit
 db
 incremental_db
-gp_socfpga
+gp_socfpga_system
 
 output_files/*
 !output_files/gp_socfpga.sof
 
 *.qws
-
+**/*.bak

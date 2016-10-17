@@ -27,7 +27,7 @@
 // Cambridge display board
 
 // Uncomment this if you have an HPS (ARM CPU) in your design
-//`define ENABLE_HPS
+`define ENABLE_HPS
 
 module gp_socfpga(
 
@@ -210,16 +210,104 @@ module gp_socfpga(
 
 );
 
-
-logic [27:0] count;
-
-always_ff @(posedge CLOCK_50) begin
-    count <= count + 1;
-end
-
 always_comb begin
-    LEDR <= count[27:18];
+    LCD_BACKLIGHT = 1'b1;
+    LCD_ON = 1'b1;
 end
+
+gp_socfpga_system u0 (
+    .clk_clk                         (CLOCK_50),
+    .reset_reset_n                   (KEY[0]),
+    
+    // Ethernet
+    .hps_io_hps_io_emac1_inst_TX_CLK (HPS_ENET_GTX_CLK),
+    .hps_io_hps_io_emac1_inst_TXD0   (HPS_ENET_TX_DATA[0]),
+    .hps_io_hps_io_emac1_inst_TXD1   (HPS_ENET_TX_DATA[1]),
+    .hps_io_hps_io_emac1_inst_TXD2   (HPS_ENET_TX_DATA[2]),
+    .hps_io_hps_io_emac1_inst_TXD3   (HPS_ENET_TX_DATA[3]),
+    .hps_io_hps_io_emac1_inst_RXD0   (HPS_ENET_RX_DATA[0]),
+    .hps_io_hps_io_emac1_inst_MDIO   (HPS_ENET_MDIO),
+    .hps_io_hps_io_emac1_inst_MDC    (HPS_ENET_MDC),
+    .hps_io_hps_io_emac1_inst_RX_CTL (HPS_ENET_RX_DV),
+    .hps_io_hps_io_emac1_inst_TX_CTL (HPS_ENET_TX_EN),
+    .hps_io_hps_io_emac1_inst_RX_CLK (HPS_ENET_RX_CLK),
+    .hps_io_hps_io_emac1_inst_RXD1   (HPS_ENET_RX_DATA[1]),
+    .hps_io_hps_io_emac1_inst_RXD2   (HPS_ENET_RX_DATA[2]),
+    .hps_io_hps_io_emac1_inst_RXD3   (HPS_ENET_RX_DATA[3]),
+      
+    // Flash
+    .hps_io_hps_io_qspi_inst_IO0     (HPS_FLASH_DATA[0]),
+    .hps_io_hps_io_qspi_inst_IO1     (HPS_FLASH_DATA[1]),
+    .hps_io_hps_io_qspi_inst_IO2     (HPS_FLASH_DATA[2]),
+    .hps_io_hps_io_qspi_inst_IO3     (HPS_FLASH_DATA[3]),
+    .hps_io_hps_io_qspi_inst_SS0     (HPS_FLASH_NCSO),
+    .hps_io_hps_io_qspi_inst_CLK     (HPS_FLASH_DCLK),
+    
+    // SD Card
+    .hps_io_hps_io_sdio_inst_CMD     (HPS_SD_CMD),
+    .hps_io_hps_io_sdio_inst_D0      (HPS_SD_DATA[0]),
+    .hps_io_hps_io_sdio_inst_D1      (HPS_SD_DATA[1]),
+    .hps_io_hps_io_sdio_inst_CLK     (HPS_SD_CLK),
+    .hps_io_hps_io_sdio_inst_D2      (HPS_SD_DATA[2]),
+    .hps_io_hps_io_sdio_inst_D3      (HPS_SD_DATA[3]),
+    
+    // USB
+    .hps_io_hps_io_usb1_inst_D0      (HPS_USB_DATA[0]),
+    .hps_io_hps_io_usb1_inst_D1      (HPS_USB_DATA[1]),
+    .hps_io_hps_io_usb1_inst_D2      (HPS_USB_DATA[2]),
+    .hps_io_hps_io_usb1_inst_D3      (HPS_USB_DATA[3]),
+    .hps_io_hps_io_usb1_inst_D4      (HPS_USB_DATA[4]),
+    .hps_io_hps_io_usb1_inst_D5      (HPS_USB_DATA[5]),
+    .hps_io_hps_io_usb1_inst_D6      (HPS_USB_DATA[6]),
+    .hps_io_hps_io_usb1_inst_D7      (HPS_USB_DATA[7]),
+    .hps_io_hps_io_usb1_inst_CLK     (HPS_USB_CLKOUT),
+    .hps_io_hps_io_usb1_inst_STP     (HPS_USB_STP),
+    .hps_io_hps_io_usb1_inst_DIR     (HPS_USB_DIR),
+    .hps_io_hps_io_usb1_inst_NXT     (HPS_USB_NXT),
+    
+    // SPIM
+    .hps_io_hps_io_spim1_inst_CLK    (HPS_SPIM_CLK),
+    .hps_io_hps_io_spim1_inst_MOSI   (HPS_SPIM_MOSI),
+    .hps_io_hps_io_spim1_inst_MISO   (HPS_SPIM_MISO),
+    .hps_io_hps_io_spim1_inst_SS0    (HPS_SPIM_SS),
+    
+    // UART
+    .hps_io_hps_io_uart0_inst_RX     (HPS_UART_RX),
+    .hps_io_hps_io_uart0_inst_TX     (HPS_UART_TX),
+    
+    // I2C
+    .hps_io_hps_io_i2c0_inst_SDA     (HPS_I2C1_SDAT),
+    .hps_io_hps_io_i2c0_inst_SCL     (HPS_I2C1_SCLK),
+    .hps_io_hps_io_i2c1_inst_SDA     (HPS_I2C2_SDAT),
+    .hps_io_hps_io_i2c1_inst_SCL     (HPS_I2C2_SCLK),
+    
+    // GPIO
+    .hps_io_hps_io_gpio_inst_GPIO09  (HPS_CONV_USB_N),
+    .hps_io_hps_io_gpio_inst_GPIO35  (HPS_ENET_INT_N),
+    .hps_io_hps_io_gpio_inst_GPIO40  (HPS_LTC_GPIO),
+    .hps_io_hps_io_gpio_inst_GPIO48  (HPS_I2C_CONTROL),
+    .hps_io_hps_io_gpio_inst_GPIO53  (HPS_LED),
+    .hps_io_hps_io_gpio_inst_GPIO54  (HPS_KEY),
+    .hps_io_hps_io_gpio_inst_GPIO61  (HPS_GSENSOR_INT),
+
+    // DDR3 Memory
+    .memory_mem_a                    (HPS_DDR3_ADDR),
+    .memory_mem_ba                   (HPS_DDR3_BA),
+    .memory_mem_ck                   (HPS_DDR3_CK_P),
+    .memory_mem_ck_n                 (HPS_DDR3_CK_N),
+    .memory_mem_cke                  (HPS_DDR3_CKE),
+    .memory_mem_cs_n                 (HPS_DDR3_CS_N),
+    .memory_mem_ras_n                (HPS_DDR3_RAS_N),
+    .memory_mem_cas_n                (HPS_DDR3_CAS_N),
+    .memory_mem_we_n                 (HPS_DDR3_WE_N),
+    .memory_mem_reset_n              (HPS_DDR3_RESET_N),
+    .memory_mem_dq                   (HPS_DDR3_DQ),
+    .memory_mem_dqs                  (HPS_DDR3_DQS_P),
+    .memory_mem_dqs_n                (HPS_DDR3_DQS_N),
+    .memory_mem_odt                  (HPS_DDR3_ODT),
+    .memory_mem_dm                   (HPS_DDR3_DM),
+    .memory_oct_rzqin                (HPS_DDR3_RZQ)
+);
 
 
 

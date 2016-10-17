@@ -17,8 +17,8 @@ set_false_path -from [get_keepers {*mkPixelStream:*:vp_sync|SyncHandshake:sync|d
 set_false_path -to [get_pins -nocase -compatibility_mode {*|alt_rst_sync_uq1|altera_reset_synchronizer_int_chain*|clrn}]
 set_false_path -from [get_keepers {*|altera_reset_controller:rst_controller|r_sync_rst}] -to [get_keepers {*|mkPixelStream:*|SyncRegister:vp_sync|dD_OUT*}]
 
-set_false_path -from [get_keepers {soc_system:u0|mkPixelStream:pixelstream_0|hdmi_vsd}] -to [get_keepers {soc_system:u0|soc_system_pio_vsync:pio_vsync|readdata[0]}]
-set_false_path -from [get_keepers {soc_system:u0|mkPixelStream:pixelstream_0|hdmi_vsd}] -to [get_keepers {soc_system:u0|soc_system_pio_vsync:pio_vsync|d1_data_in}]
+set_false_path -from [get_keepers {gp_socfpga:u0|mkPixelStream:pixelstream_0|hdmi_vsd}] -to [get_keepers {gp_socfpga:u0|gp_socfpga_pio_vsync:pio_vsync|readdata[0]}]
+set_false_path -from [get_keepers {gp_socfpga:u0|mkPixelStream:pixelstream_0|hdmi_vsd}] -to [get_keepers {gp_socfpga:u0|gp_socfpga_pio_vsync:pio_vsync|d1_data_in}]
 
 
 # Automatically constrain PLL and other generated clocks
