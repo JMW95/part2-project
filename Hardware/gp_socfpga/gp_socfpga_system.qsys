@@ -9,6 +9,14 @@
    categories="System" />
  <parameter name="bonusData"><![CDATA[bonusData 
 {
+   element PixelStream_0
+   {
+      datum _sortIndex
+      {
+         value = "4";
+         type = "int";
+      }
+   }
    element clk_0
    {
       datum _sortIndex
@@ -65,7 +73,13 @@
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
  <interface name="hps_io" internal="hps_0.hps_io" type="conduit" dir="end" />
  <interface name="memory" internal="hps_0.memory" type="conduit" dir="end" />
+ <interface
+   name="pixelstream_0_conduit_end_0"
+   internal="PixelStream_0.conduit_end_0"
+   type="conduit"
+   dir="end" />
  <interface name="reset" internal="clk_0.clk_in_reset" type="reset" dir="end" />
+ <module name="PixelStream_0" kind="PixelStream" version="1.0" enabled="1" />
  <module name="clk_0" kind="clock_source" version="16.0" enabled="1">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
@@ -846,6 +860,15 @@
   <parameter name="baseAddress" value="0x0000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="PixelStream_0.master_burstreads"
+   end="framebuffer.s2">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
  <connection kind="clock" version="16.0" start="clk_0.clk" end="pll_0.refclk" />
  <connection
    kind="clock"
@@ -861,12 +884,27 @@
    kind="clock"
    version="16.0"
    start="pll_0.outclk0"
+   end="PixelStream_0.clockreset" />
+ <connection
+   kind="clock"
+   version="16.0"
+   start="pll_0.outclk0"
    end="hps_0.h2f_axi_clock" />
  <connection
    kind="clock"
    version="16.0"
    start="pll_0.outclk0"
    end="hps_0.h2f_lw_axi_clock" />
+ <connection
+   kind="clock"
+   version="16.0"
+   start="pll_0.outclk1"
+   end="PixelStream_0.video" />
+ <connection
+   kind="reset"
+   version="16.0"
+   start="clk_0.clk_reset"
+   end="PixelStream_0.clockreset_reset" />
  <connection kind="reset" version="16.0" start="clk_0.clk_reset" end="pll_0.reset" />
  <connection
    kind="reset"

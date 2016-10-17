@@ -219,6 +219,15 @@ gp_socfpga_system u0 (
     .clk_clk                         (CLOCK_50),
     .reset_reset_n                   (KEY[0]),
     
+    // PixelStream
+    .pixelstream_0_conduit_end_0_lcd_red   (LCD_R),
+    .pixelstream_0_conduit_end_0_lcd_green (LCD_G),
+    .pixelstream_0_conduit_end_0_lcd_blue  (LCD_B),
+    .pixelstream_0_conduit_end_0_lcd_hsync (LCD_HSYNC),
+    .pixelstream_0_conduit_end_0_lcd_vsync (LCD_VSYNC),
+    .pixelstream_0_conduit_end_0_lcd_de    (LCD_DEN),
+    .pixelstream_0_conduit_end_0_lcd_dclk  (LCD_DCLK),
+    
     // Ethernet
     .hps_io_hps_io_emac1_inst_TX_CLK (HPS_ENET_GTX_CLK),
     .hps_io_hps_io_emac1_inst_TXD0   (HPS_ENET_TX_DATA[0]),
