@@ -210,10 +210,16 @@ module gp_socfpga(
 
 );
 
+
 always_comb begin
     LCD_BACKLIGHT = 1'b1;
     LCD_ON = 1'b1;
 end
+
+wire vsync;
+
+assign LCD_VSYNC = vsync;
+
 
 gp_socfpga_system u0 (
     .clk_clk                         (CLOCK_50),
@@ -224,9 +230,12 @@ gp_socfpga_system u0 (
     .pixelstream_0_conduit_end_0_lcd_green (LCD_G),
     .pixelstream_0_conduit_end_0_lcd_blue  (LCD_B),
     .pixelstream_0_conduit_end_0_lcd_hsync (LCD_HSYNC),
-    .pixelstream_0_conduit_end_0_lcd_vsync (LCD_VSYNC),
+    .pixelstream_0_conduit_end_0_lcd_vsync (vsync),
     .pixelstream_0_conduit_end_0_lcd_de    (LCD_DEN),
     .pixelstream_0_conduit_end_0_lcd_dclk  (LCD_DCLK),
+    
+    // VSYNC
+    .pio_vsync_external_connection_export  (vsync),
     
     // Ethernet
     .hps_io_hps_io_emac1_inst_TX_CLK (HPS_ENET_GTX_CLK),
