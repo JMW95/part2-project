@@ -3,5 +3,8 @@ db
 incremental_db
 gp_socfpga
 
+output_files/*
+!output_files/gp_socfpga.sof
+
 *.qws
 
