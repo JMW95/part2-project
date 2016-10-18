@@ -45,10 +45,7 @@ void vid_clear(int colour){
 
 // draw a horizontal line
 void vid_fill_line(int left, int right, int top, int colour){
-    int i;
-    for(i=left; i<right; i++){
-        vid_set_pixel(i, top, colour);
-    }
+    vid_fill_rect(left, top, right, top+1, colour);
 }
 
 // fill a certain rectangle
