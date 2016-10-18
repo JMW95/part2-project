@@ -127,3 +127,12 @@ void vid_fill_rect(int left, int top, int right, int bottom, int colour){
             framebuffer[i++] = colour;
     }
 }
+
+// Copy some pixel data to the screen
+void vid_copy(unsigned int offset, char src[], char count){
+    volatile char *framebuffer = (volatile char *) (bufferaddr);
+    int i=0;
+    for(i=0; i<count; i++){
+        framebuffer[offset + i] = src[i];
+    }
+}

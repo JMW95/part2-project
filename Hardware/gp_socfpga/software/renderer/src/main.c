@@ -10,6 +10,10 @@
 #define TYPE_LINE   (3)
 #define TYPE_RECT   (4)
 #define TYPE_TRI    (5)
+#define TYPE_COPY   (6)
+#define TYPE_COPY_START (7)
+
+static unsigned int copy_counter = 0;
 
 struct workorder {
     char type;
@@ -19,7 +23,7 @@ struct workorder {
 
 // Number of work orders which can be queued.
 // 1024 bytes / sizeof(struct workorder), rounded down to nearest power of 2
-#define WORK_QUEUE_SIZE     (64)
+#define WORK_QUEUE_SIZE     (128)
 
 struct workqueue {
     short doneptr;
@@ -74,6 +78,14 @@ int main(void){
                 break;
             case TYPE_TRI:
                 // TODO: draw the triangle
+                break;
+            case TYPE_COPY:
+                // Copy bytes to the framebuffer
+                vid_copy(copy_counter, (char *)order.data, order.size);
+                copy_counter += order.size;
+                break;
+            case TYPE_COPY_START:
+                copy_counter = 0;
                 break;
         }
         

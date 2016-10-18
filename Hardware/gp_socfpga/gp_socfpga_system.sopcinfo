@@ -5,11 +5,11 @@
  version="1.0"
  fabric="QSYS">
  <!-- Format version 16.0 211 (Future versions may contain additional information.) -->
- <!-- 2016.10.18.12:44:12 -->
+ <!-- 2016.10.19.00:43:06 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1476791050</value>
+  <value>1476834185</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -1550,7 +1550,7 @@ parameters are a RESULT of the module parameters. -->
     <slaveName>s1</slaveName>
     <name>work_queue.s1</name>
     <baseAddress>2097152</baseAddress>
-    <span>1024</span>
+    <span>1284</span>
    </memoryBlock>
   </interface>
   <interface name="instr" kind="avalon_master" version="16.0">
@@ -21850,27 +21850,11 @@ parameters are a RESULT of the module parameters. -->
    </port>
    <memoryBlock>
     <isBridge>false</isBridge>
-    <moduleName>fbuff1</moduleName>
-    <slaveName>s1</slaveName>
-    <name>fbuff1.s1</name>
-    <baseAddress>0</baseAddress>
-    <span>65280</span>
-   </memoryBlock>
-   <memoryBlock>
-    <isBridge>false</isBridge>
-    <moduleName>fbuff2</moduleName>
-    <slaveName>s1</slaveName>
-    <name>fbuff2.s1</name>
-    <baseAddress>65536</baseAddress>
-    <span>65280</span>
-   </memoryBlock>
-   <memoryBlock>
-    <isBridge>false</isBridge>
     <moduleName>work_queue</moduleName>
     <slaveName>s2</slaveName>
     <name>work_queue.s2</name>
     <baseAddress>2097152</baseAddress>
-    <span>1024</span>
+    <span>1284</span>
    </memoryBlock>
   </interface>
   <interface name="h2f_lw_axi_clock" kind="clock_sink" version="16.0">
@@ -48299,27 +48283,11 @@ parameters are a RESULT of the module parameters. -->
    </port>
    <memoryBlock>
     <isBridge>false</isBridge>
-    <moduleName>fbuff1</moduleName>
-    <slaveName>s1</slaveName>
-    <name>fbuff1.s1</name>
-    <baseAddress>0</baseAddress>
-    <span>65280</span>
-   </memoryBlock>
-   <memoryBlock>
-    <isBridge>false</isBridge>
-    <moduleName>fbuff2</moduleName>
-    <slaveName>s1</slaveName>
-    <name>fbuff2.s1</name>
-    <baseAddress>65536</baseAddress>
-    <span>65280</span>
-   </memoryBlock>
-   <memoryBlock>
-    <isBridge>false</isBridge>
     <moduleName>work_queue</moduleName>
     <slaveName>s2</slaveName>
     <name>work_queue.s2</name>
     <baseAddress>2097152</baseAddress>
-    <span>1024</span>
+    <span>1284</span>
    </memoryBlock>
   </interface>
   <interface name="h2f_lw_axi_clock" kind="clock_sink" version="16.0">
@@ -49822,27 +49790,11 @@ parameters are a RESULT of the module parameters. -->
    </memoryBlock>
    <memoryBlock>
     <isBridge>false</isBridge>
-    <moduleName>fbuff1</moduleName>
-    <slaveName>s1</slaveName>
-    <name>fbuff1.s1</name>
-    <baseAddress>3221225472</baseAddress>
-    <span>65280</span>
-   </memoryBlock>
-   <memoryBlock>
-    <isBridge>false</isBridge>
-    <moduleName>fbuff2</moduleName>
-    <slaveName>s1</slaveName>
-    <name>fbuff2.s1</name>
-    <baseAddress>3221291008</baseAddress>
-    <span>65280</span>
-   </memoryBlock>
-   <memoryBlock>
-    <isBridge>false</isBridge>
     <moduleName>work_queue</moduleName>
     <slaveName>s2</slaveName>
     <name>work_queue.s2</name>
     <baseAddress>3223322624</baseAddress>
-    <span>1024</span>
+    <span>1284</span>
    </memoryBlock>
    <memoryBlock>
     <isBridge>true</isBridge>
@@ -50693,27 +50645,11 @@ parameters are a RESULT of the module parameters. -->
    </memoryBlock>
    <memoryBlock>
     <isBridge>false</isBridge>
-    <moduleName>fbuff1</moduleName>
-    <slaveName>s1</slaveName>
-    <name>fbuff1.s1</name>
-    <baseAddress>3221225472</baseAddress>
-    <span>65280</span>
-   </memoryBlock>
-   <memoryBlock>
-    <isBridge>false</isBridge>
-    <moduleName>fbuff2</moduleName>
-    <slaveName>s1</slaveName>
-    <name>fbuff2.s1</name>
-    <baseAddress>3221291008</baseAddress>
-    <span>65280</span>
-   </memoryBlock>
-   <memoryBlock>
-    <isBridge>false</isBridge>
     <moduleName>work_queue</moduleName>
     <slaveName>s2</slaveName>
     <name>work_queue.s2</name>
     <baseAddress>3223322624</baseAddress>
-    <span>1024</span>
+    <span>1284</span>
    </memoryBlock>
    <memoryBlock>
     <isBridge>true</isBridge>
@@ -84516,7 +84452,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.SIZE_VALUE</name>
-   <value>1024</value>
+   <value>1284</value>
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.WRITABLE</name>
@@ -84632,7 +84568,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="memorySize">
    <type>long</type>
-   <value>1024</value>
+   <value>1284</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -84763,7 +84699,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="derived_set_addr_width">
    <type>int</type>
-   <value>8</value>
+   <value>9</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -84771,7 +84707,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="derived_set_addr_width2">
    <type>int</type>
-   <value>8</value>
+   <value>9</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -84908,7 +84844,7 @@ parameters are a RESULT of the module parameters. -->
    </parameter>
    <parameter name="addressSpan">
     <type>java.math.BigInteger</type>
-    <value>1024</value>
+    <value>1284</value>
     <derived>true</derived>
     <enabled>true</enabled>
     <visible>false</visible>
@@ -84996,7 +84932,7 @@ parameters are a RESULT of the module parameters. -->
    </parameter>
    <parameter name="explicitAddressSpan">
     <type>java.math.BigInteger</type>
-    <value>1024</value>
+    <value>1284</value>
     <derived>false</derived>
     <enabled>true</enabled>
     <visible>true</visible>
@@ -85207,7 +85143,7 @@ parameters are a RESULT of the module parameters. -->
    <port>
     <name>address</name>
     <direction>Input</direction>
-    <width>8</width>
+    <width>9</width>
     <role>address</role>
    </port>
    <port>
@@ -85336,7 +85272,7 @@ parameters are a RESULT of the module parameters. -->
    </parameter>
    <parameter name="addressSpan">
     <type>java.math.BigInteger</type>
-    <value>1024</value>
+    <value>1284</value>
     <derived>true</derived>
     <enabled>true</enabled>
     <visible>false</visible>
@@ -85424,7 +85360,7 @@ parameters are a RESULT of the module parameters. -->
    </parameter>
    <parameter name="explicitAddressSpan">
     <type>java.math.BigInteger</type>
-    <value>1024</value>
+    <value>1284</value>
     <derived>false</derived>
     <enabled>true</enabled>
     <visible>true</visible>
@@ -85635,7 +85571,7 @@ parameters are a RESULT of the module parameters. -->
    <port>
     <name>address2</name>
     <direction>Input</direction>
-    <width>8</width>
+    <width>9</width>
     <role>address</role>
    </port>
    <port>
@@ -93859,108 +93795,6 @@ parameters are a RESULT of the module parameters. -->
   <endConnectionPoint>interrupt_sender</endConnectionPoint>
  </connection>
  <connection
-   name="hps_0_bridges.h2f/fbuff1.s1"
-   kind="avalon"
-   version="16.0"
-   start="hps_0_bridges.h2f"
-   end="fbuff1.s1">
-  <parameter name="arbitrationPriority">
-   <type>int</type>
-   <value>1</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="baseAddress">
-   <type>java.math.BigInteger</type>
-   <value>0x0000</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="defaultConnection">
-   <type>boolean</type>
-   <value>false</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="deviceFamily">
-   <type>java.lang.String</type>
-   <value>UNKNOWN</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="generateLegacySim">
-   <type>boolean</type>
-   <value>false</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <startModule>hps_0_bridges</startModule>
-  <startConnectionPoint>h2f</startConnectionPoint>
-  <endModule>fbuff1</endModule>
-  <endConnectionPoint>s1</endConnectionPoint>
- </connection>
- <connection
-   name="hps_0_bridges.h2f/fbuff2.s1"
-   kind="avalon"
-   version="16.0"
-   start="hps_0_bridges.h2f"
-   end="fbuff2.s1">
-  <parameter name="arbitrationPriority">
-   <type>int</type>
-   <value>1</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="baseAddress">
-   <type>java.math.BigInteger</type>
-   <value>0x00010000</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="defaultConnection">
-   <type>boolean</type>
-   <value>false</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="deviceFamily">
-   <type>java.lang.String</type>
-   <value>UNKNOWN</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="generateLegacySim">
-   <type>boolean</type>
-   <value>false</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <startModule>hps_0_bridges</startModule>
-  <startConnectionPoint>h2f</startConnectionPoint>
-  <endModule>fbuff2</endModule>
-  <endConnectionPoint>s1</endConnectionPoint>
- </connection>
- <connection
    name="hps_0_bridges.h2f/work_queue.s2"
    kind="avalon"
    version="16.0"
@@ -95847,7 +95681,7 @@ parameters are a RESULT of the module parameters. -->
   <version>16.0</version>
  </plugin>
  <plugin>
-  <instanceCount>104</instanceCount>
+  <instanceCount>102</instanceCount>
   <name>avalon</name>
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IConnection</subtype>

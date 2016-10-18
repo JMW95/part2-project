@@ -16,4 +16,6 @@ void vid_clear(int colour);
 
 void vid_setbuffer(unsigned int addr);
 
+void vid_copy(unsigned int offset, char src[], char count);
+
 #endif
