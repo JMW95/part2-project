@@ -45,7 +45,24 @@ void vid_clear(int colour){
 
 // draw a horizontal line
 void vid_fill_line(int left, int right, int top, int colour){
-    vid_fill_rect(left, top, right, top+1, colour);
+    volatile char *framebuffer = (volatile char *) (bufferaddr);
+    int width = right - left;
+    colour |= (colour << 4);
+    int i = (DISPLAY_WIDTH*top + left) / 2; // first bufferpos to fill
+    if (width > 1 && ((right & 1) != 0)){
+        // fill the 'odd half' of the end pixel
+        framebuffer[i+(width/2)] = (framebuffer[i+(width/2)] & 0xf0) | (colour & 0x0f);
+    }
+    
+    if ((left & 1) != 0) {
+        // fill the 'odd half' of the start pixel
+        framebuffer[i] = (framebuffer[i] & 0x0f) | (colour & 0xf0);
+        i++;
+    }
+    
+    int endpos = (DISPLAY_WIDTH*top + right)/2;
+    while (i < endpos)
+        framebuffer[i++] = colour;
 }
 
 // fill a certain rectangle
