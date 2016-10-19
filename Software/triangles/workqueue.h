@@ -7,6 +7,8 @@
 #define TYPE_LINE   (3)
 #define TYPE_RECT   (4)
 #define TYPE_TRI    (5)
+#define TYPE_COPY   (6)
+#define TYPE_COPY_START (7)
 
 struct workorder {
     char type;
@@ -16,7 +18,7 @@ struct workorder {
 
 // Number of work orders which can be queued.
 // 1024 / sizeof(struct workorder), rounded down to nearest power of 2
-#define WORK_QUEUE_SIZE     (64)
+#define WORK_QUEUE_SIZE     (128)
 
 struct workqueue {
     short doneptr;
@@ -30,5 +32,7 @@ void workqueue_sof(unsigned int addr);
 void workqueue_eof(void);
 void workqueue_line(int x1, int x2, int y, int col);
 void workqueue_rect(int x1, int y1, int x2, int y2, int col);
+void workqueue_copy(char *data, char size);
+void workqueue_copy_start(void);
 
 #endif /* WORKQUEUE_H */

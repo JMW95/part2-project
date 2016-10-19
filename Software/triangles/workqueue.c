@@ -69,3 +69,19 @@ void workqueue_rect(int x1, int y1, int x2, int y2, int col){
     
     workqueue_add(&s);
 }
+
+void workqueue_copy(char *data, char size){
+    s.type = TYPE_COPY;
+    s.size = size;
+    
+    memcpy(s.data, data, size);
+    
+    workqueue_add(&s);
+}
+
+void workqueue_copy_start(){
+    s.type = TYPE_COPY_START;
+    s.size = 0;
+    
+    workqueue_add(&s);
+}

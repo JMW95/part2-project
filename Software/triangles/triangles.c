@@ -94,23 +94,20 @@ int main(){
         
         clock_gettime(CLOCK_MONOTONIC, &time1);
         
-#ifdef HARDWARE_RENDER        
         if(vid_getbuffer() == 0x0){
             workqueue_sof(0x110000); // START OF FRAME
         }else{
             workqueue_sof(0x100000);
         }
-#else
+#ifndef HARDWARE_RENDER
         clear();
 #endif
 
         for(i=0; i<NUMTRIANGLES; i++){
            draw(&tris[i], cols[i]);
         }
-               
-#ifdef HARDWARE_RENDER
+        
         workqueue_eof(); // END OF FRAME
-#endif
         
         clock_gettime(CLOCK_MONOTONIC, &time2);
         

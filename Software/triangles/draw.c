@@ -184,8 +184,15 @@ void clear(){
     memset((void *)ftmp, 0, DISPLAY_WIDTH*DISPLAY_HEIGHT/2);
 }
 
-void show(unsigned int addr){
-    memcpy((void *)addr, (void *)ftmp, DISPLAY_WIDTH*DISPLAY_HEIGHT/2);
+void show(){
+    int i = 0;
+    int nbytes = DISPLAY_WIDTH*DISPLAY_HEIGHT/2;
+    workqueue_copy_start();
+    while(nbytes > 0){
+        workqueue_copy(ftmp+i, nbytes < 8 ? nbytes : 8);
+        nbytes -= 8;
+        i += 8;
+    }
 }
 
 unsigned int vid_getbuffer(){
@@ -193,15 +200,12 @@ unsigned int vid_getbuffer(){
 }
 
 void flip(){
-    if(pixelstream[8] == 0x0){
 #ifndef HARDWARE_RENDER
-        show((unsigned int)fbuff + 0x10000);
+    show();
 #endif
+    if(pixelstream[8] == 0x0){
         pixelstream[8] = 0x40000;
     }else{
-#ifndef HARDWARE_RENDER
-        show((unsigned int)fbuff);
-#endif
         pixelstream[8] = 0x0;
     }
 }
