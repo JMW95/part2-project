@@ -66,27 +66,42 @@ void drawHorizontalLine(int x1, int x2, int top, int colour){
 #ifdef HARDWARE_RENDER
     workqueue_line(left, right, top, colour);
 #else
-    int width = right - left;
+    int width = (right - left)+1;
     colour |= (colour << 4);
+    
+    volatile char *framebuffer = (char *)ftmp;
     
     int i = (DISPLAY_WIDTH*top + left) / 2; // first bufferpos to fill
     
-    if (width > 1 && ((right & 1) != 0)){
-        // fill the 'odd half' of the end pixel
-        ftmp[i+(width/2)] = (ftmp[i+(width/2)] & 0xf0) | (colour & 0x0f);
+    if ((right & 1) == 0){ // if end even, it's the first 'half' of a pixel
+        framebuffer[i+(width/2)] = (framebuffer[i+(width/2)] & 0xf0) | (colour & 0x0f);
     }
     
-    if ((left & 1) != 0) {
-        // fill the 'odd half' of the start pixel
-        ftmp[i] = (ftmp[i] & 0x0f) | (colour & 0xf0);
+    if ((left & 1) != 0) { // if start odd, its the second 'half' of a pixel
+        framebuffer[i] = (framebuffer[i] & 0x0f) | (colour & 0xf0);
         i++;
     }
         
-    int endpos = (DISPLAY_WIDTH*top + right)/2;
+    int endpos = (DISPLAY_WIDTH*top + left + width)/2;
     int len = endpos - i;
+    
     if(len < 12){ // if less than 3 words, copy bytes
-        while (i < endpos)
-            ftmp[i++] = colour;
+        int rem = endpos - i;
+        rem = 11 - rem;
+        framebuffer += i;
+        switch(rem){
+            case 0: framebuffer[10] = colour;
+            case 1: framebuffer[9] = colour;
+            case 2: framebuffer[8] = colour;
+            case 3: framebuffer[7] = colour;
+            case 4: framebuffer[6] = colour;
+            case 5: framebuffer[5] = colour;
+            case 6: framebuffer[4] = colour;
+            case 7: framebuffer[3] = colour;
+            case 8: framebuffer[2] = colour;
+            case 9: framebuffer[1] = colour;
+            case 10: framebuffer[0] = colour;
+        }
         
         return;
     }
@@ -96,30 +111,47 @@ void drawHorizontalLine(int x1, int x2, int top, int colour){
     
     unsigned int t;
     
-    volatile char *dst = ftmp + i;
+    volatile char *dst = framebuffer + i;
     // Align dst by filling in bytes
     if ((t = (int)dst & 3) != 0){
-        t = 4 - t; // number of bytes to fill
-        len -= t;
-        do {
-            *dst++ = colour;
-        } while (--t != 0);
+        len = (len + t) - 4;
+        switch(t){
+            case 1: dst[2] = colour;
+            case 2: dst[1] = colour;
+            case 3: dst[0] = colour;
+        }
+        dst += (4-t);
+        
     }
     
     // Fill as many full words as possible
     t = len / 4;
-    do {
-        *(unsigned int *)dst = c32;
-        dst += 4;
-    } while (--t != 0);
+    
+    int tmp = (t+3) / 4; // t is at least 1
+    
+    // Use a Duff's Device to optimise this fill loop
+    unsigned int *dst32 = (unsigned int *)dst;
+    dst32 -= (4 - (t & 3)) & 3; // align to 128-bit boundary.
+    switch(t & 3){
+        case 0: do{ dst32[0] = c32;
+        case 3: dst32[1] = c32;
+        case 2: dst32[2] = c32;
+        case 1: dst32[3] = c32;
+            dst32 += 4;
+        }while(--tmp > 0);
+    }
+    dst = (char *)dst32;
     
     // Fill in any trailing bytes
     t = len & 3;
     if (t != 0){
-        do {
-            *dst++ = colour;
-        } while (--t != 0);
+        switch(3-t){
+            case 0: dst[2] = colour;
+            case 1: dst[1] = colour;
+            case 2: dst[0] = colour;
+        }
     }
+    
 #endif
 }
 
