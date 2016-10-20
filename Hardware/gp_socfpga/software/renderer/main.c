@@ -46,8 +46,8 @@ int main(void){
         // read the work order and do it
         
         volatile struct workorder order = queue->orders[i];
-        volatile short *data = (short *)(&order.data);
-        short x1,x2,y1,y2,col;
+        volatile unsigned short *data = (unsigned short *)(&order.data);
+        unsigned short x1,x2,y1,y2,col;
         unsigned int addr;
         switch(order.type){
             case TYPE_SOF:
