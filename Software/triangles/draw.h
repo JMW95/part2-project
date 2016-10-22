@@ -26,9 +26,6 @@
 #define DISPLAY_WIDTH 480
 #define DISPLAY_HEIGHT 272
 
-#ifndef HARDWARE_RENDER
-volatile short *fbuff;
-#endif
 volatile int *pixelstream;
 volatile short *palette;
 

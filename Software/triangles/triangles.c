@@ -48,10 +48,7 @@ int main(){
     printf("TRIANGLE DEMO - SOFTWARE ONLY\n");
     printf("-----------------------------\n");
 #endif
-    
-#ifndef HARDWARE_RENDER
-	fbuff = hw_base + (( unsigned long)(ALT_FPGASLVS_OFST + FRAMEBUFFER_BASE) & (unsigned long) (HW_REGS_MASK) );
-#endif
+
     pixelstream = lw_base + (( unsigned long)(ALT_LWFPGASLVS_OFST + PIXELSTREAM_BASE) & (unsigned long) (LW_REGS_MASK) );
     palette = lw_base + (( unsigned long)(ALT_LWFPGASLVS_OFST + PALETTE_BASE) & (unsigned long) (LW_REGS_MASK) );
     
@@ -67,7 +64,8 @@ int main(){
     palette[6] = palette[14] = PIXEL_MAGENTA;
     palette[7] = palette[15] = PIXEL_YELLOW;
     
-    workqueue_init(hw_base + (( unsigned long)(ALT_FPGASLVS_OFST + SHARED_BASE) & (unsigned long) (HW_REGS_MASK) ));
+    workqueue_init(0, hw_base + (( unsigned long)(ALT_FPGASLVS_OFST + WQ_0_BASE) & (unsigned long) (HW_REGS_MASK) ));
+    workqueue_init(1, hw_base + (( unsigned long)(ALT_FPGASLVS_OFST + WQ_1_BASE) & (unsigned long) (HW_REGS_MASK) ));
     
     long t1,t2;
     struct timespec time1, time2;
@@ -95,9 +93,11 @@ int main(){
         clock_gettime(CLOCK_MONOTONIC, &time1);
         
         if(vid_getbuffer() == 0x0){
-            workqueue_sof(0x110000); // START OF FRAME
+            workqueue_sof(0, 0x110000); // START OF FRAME
+            workqueue_sof(1, 0x110000);
         }else{
-            workqueue_sof(0x100000);
+            workqueue_sof(0, 0x100000);
+            workqueue_sof(1, 0x100000);
         }
 #ifndef HARDWARE_RENDER
         clear();
@@ -107,7 +107,8 @@ int main(){
            draw(&tris[i], cols[i]);
         }
         
-        workqueue_eof(); // END OF FRAME
+        workqueue_eof(0); // END OF FRAME
+        workqueue_eof(1);
         
         clock_gettime(CLOCK_MONOTONIC, &time2);
         

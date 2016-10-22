@@ -64,7 +64,8 @@ void drawHorizontalLine(int x1, int x2, int top, int colour){
     int right = max(x1, x2);
     
 #ifdef HARDWARE_RENDER
-    workqueue_line(left, right, top, colour);
+    int queuenum = (top >= 136) ? 1 : 0;
+    workqueue_line(queuenum, left, right, top - (queuenum * 136), colour);
 #else
     int width = (right - left)+1;
     colour |= (colour << 4);
@@ -217,13 +218,16 @@ void clear(){
 }
 
 void show(){
-    int i = 0;
-    int nbytes = DISPLAY_WIDTH*DISPLAY_HEIGHT/2;
-    workqueue_copy_start();
-    while(nbytes > 0){
-        workqueue_copy(ftmp+i, nbytes < 8 ? nbytes : 8);
-        nbytes -= 8;
-        i += 8;
+    int wq = 0;
+    for(wq = 0; wq < 2; wq++){
+        int nbytes = (DISPLAY_WIDTH*DISPLAY_HEIGHT/2) / 2; // copy half the bytes to each wq
+        int i = wq * nbytes; // starting points
+        workqueue_copy_start(wq);
+        while(nbytes > 0){
+            workqueue_copy(wq, ftmp+i, nbytes < 8 ? nbytes : 8);
+            nbytes -= 8;
+            i += 8;
+        }
     }
 }
 
@@ -236,7 +240,7 @@ void flip(){
     show();
 #endif
     if(pixelstream[8] == 0x0){
-        pixelstream[8] = 0x40000;
+        pixelstream[8] = 0x400000;
     }else{
         pixelstream[8] = 0x0;
     }

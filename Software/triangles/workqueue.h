@@ -26,13 +26,13 @@ struct workqueue {
     struct workorder orders[WORK_QUEUE_SIZE];
 };
 
-void workqueue_init(void *base);
+void workqueue_init(int queuenum, void *base);
 
-void workqueue_sof(unsigned int addr);
-void workqueue_eof(void);
-void workqueue_line(int x1, int x2, int y, int col);
-void workqueue_rect(int x1, int y1, int x2, int y2, int col);
-void workqueue_copy(char *data, char size);
-void workqueue_copy_start(void);
+void workqueue_sof(int queuenum, unsigned int addr);
+void workqueue_eof(int queuenum);
+void workqueue_line(int queuenum, int x1, int x2, int y, int col);
+void workqueue_rect(int queuenum, int x1, int y1, int x2, int y2, int col);
+void workqueue_copy(int queuenum, char *data, char size);
+void workqueue_copy_start(int queuenum);
 
 #endif /* WORKQUEUE_H */
