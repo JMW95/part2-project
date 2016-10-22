@@ -38,7 +38,7 @@ void vid_clear(int colour){
     colour = colour | (colour << 8);
     colour = colour | (colour << 16); // 32 bits
     int i = 0;
-    int end = (DISPLAY_WIDTH * DISPLAY_HEIGHT)/8;
+    int end = ((DISPLAY_WIDTH * DISPLAY_HEIGHT)/8) / 2; // only rendering half the screen now.
     while ( i < end )
         framebuffer[i++] = colour;
 }

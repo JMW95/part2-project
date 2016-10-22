@@ -57,6 +57,12 @@ logic [15:0] palette[16] = '{
 };
 
 logic [3:0] pix1, pix2;
+logic [23:0] striped_address;
+
+always_comb begin
+    striped_address[23:20] = avs_slave_address[23:20];
+    striped_address[19:0] = avs_slave_address[19:0] >= 20'h7f80 ? (avs_slave_address[19:0] + 20'h8080) : avs_slave_address[19:0];
+end
 
 always_ff @(posedge clk) begin
     if(reset) begin
@@ -75,7 +81,7 @@ always_ff @(posedge clk) begin
         avs_slave_waitrequest <= avm_master_waitrequest;
         
         avm_master_read <= avs_slave_read;
-        avm_master_address <= avs_slave_address;
+        avm_master_address <= striped_address;
         avs_slave_readdatavalid <= avm_master_readdatavalid;
         
         if (avm_master_readdatavalid) begin
