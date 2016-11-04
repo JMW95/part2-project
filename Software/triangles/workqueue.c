@@ -22,9 +22,9 @@ static void workqueue_add(int queuenum, struct workorder *o){
     volatile unsigned int *fifowr = (unsigned int *)(bases[queuenum]);
     fifowr[0] = (o->type << 8) | o->size;
     unsigned int *data = (unsigned int *)(&o->data);
-    fifowr[0] = data[0];
-    if(o->size > 4){
-        fifowr[0] = data[1];
+    int i;
+    for(i=0; i<o->size/4; i++){
+        fifowr[0] = data[i];
     }
 }
 
