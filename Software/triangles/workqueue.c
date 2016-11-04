@@ -13,9 +13,9 @@ void workqueue_init(int queuenum, void *baseaddr, void *csraddr){
 }
 
 static void workqueue_add(int queuenum, struct workorder *o){
-    while(csrs[queuenum]->fill_level > 100){
+    //while(csrs[queuenum]->fill_level > 100){
         // wait here while almost full
-    }
+    //}
     
     //printf("Fill level: %d\n", csrs[queuenum]->fill_level);
     
