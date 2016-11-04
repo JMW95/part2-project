@@ -79,6 +79,7 @@ module clarvi_avalon #(
         .main_write_enable (avm_main_write),
         .main_write_data   (avm_main_writedata),
         .main_wait         (avm_main_waitrequest),
+        .main_read_valid   (avm_main_readdatavalid),
         .instr_address     (avm_instr_address),
         .instr_read_enable (avm_instr_read),
         .instr_read_data   (avm_instr_readdata),

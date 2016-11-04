@@ -88,6 +88,7 @@ module clarvi #(
     output logic        main_write_enable,
     output logic [31:0] main_write_data,
     input  logic        main_wait,
+    input  logic        main_read_valid,
 
     // instruction memory port (read-only)
     output logic [INSTR_ADDR_WIDTH-1:0] instr_address,
@@ -283,6 +284,7 @@ module clarvi #(
 
     instr_t ma_wb_instr;
     logic[31:0] ma_result, ma_load_value, ma_wb_value;
+    logic [31:0] ma_tmp;
 
     always_comb begin
         // align the loaded value
@@ -292,9 +294,12 @@ module clarvi #(
     end
 
     always_ff @(posedge clock) begin
+        if(ex_ma_instr.memory_read && main_read_valid) begin
+            ma_tmp <= ma_result; // Register this value in case we have to stall
+        end
         if (!stall_for_memory) begin
             ma_wb_instr <= ex_ma_instr;
-            ma_wb_value <= ma_result;
+            ma_wb_value <= (!ex_ma_instr.memory_read || main_read_valid) ? ma_result : ma_tmp;
         end
     end
 
