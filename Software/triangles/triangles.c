@@ -64,8 +64,12 @@ int main(){
     palette[6] = palette[14] = PIXEL_MAGENTA;
     palette[7] = palette[15] = PIXEL_YELLOW;
     
-    workqueue_init(0, hw_base + (( unsigned long)(ALT_FPGASLVS_OFST + WQ_0_BASE) & (unsigned long) (HW_REGS_MASK) ));
-    workqueue_init(1, hw_base + (( unsigned long)(ALT_FPGASLVS_OFST + WQ_1_BASE) & (unsigned long) (HW_REGS_MASK) ));
+    workqueue_init(0,
+        hw_base + (( unsigned long)(ALT_FPGASLVS_OFST + WQ_0_BASE) & (unsigned long) (HW_REGS_MASK) ),
+        lw_base + (( unsigned long)(ALT_LWFPGASLVS_OFST + WQ_0_CSR) & (unsigned long) (LW_REGS_MASK) ));
+    workqueue_init(1,
+        hw_base + (( unsigned long)(ALT_FPGASLVS_OFST + WQ_1_BASE) & (unsigned long) (HW_REGS_MASK) ),
+        lw_base + (( unsigned long)(ALT_LWFPGASLVS_OFST + WQ_1_CSR) & (unsigned long) (LW_REGS_MASK) ));
     
     long t1,t2;
     struct timespec time1, time2;

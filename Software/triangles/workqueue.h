@@ -16,17 +16,16 @@ struct workorder {
     char data[8];
 };
 
-// Number of work orders which can be queued.
-// 1024 / sizeof(struct workorder), rounded down to nearest power of 2
-#define WORK_QUEUE_SIZE     (128)
-
-struct workqueue {
-    short doneptr;
-    short readyptr;
-    struct workorder orders[WORK_QUEUE_SIZE];
+struct altera_mm_fifo_csr {
+    unsigned int fill_level;
+    unsigned int i_status;
+    unsigned int event;
+    unsigned int int_enable;
+    unsigned int almostfull;
+    unsigned int almostempty;
 };
 
-void workqueue_init(int queuenum, void *base);
+void workqueue_init(int queuenum, void *base, void *csr);
 
 void workqueue_sof(int queuenum, unsigned int addr);
 void workqueue_eof(int queuenum);

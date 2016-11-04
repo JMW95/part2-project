@@ -4,25 +4,28 @@
 #include <stdio.h>
 #include <string.h>
 
-static void *bases[8];
+static volatile void *bases[8];
+static volatile struct altera_mm_fifo_csr *csrs[8];
 
-void workqueue_init(int queuenum, void *baseaddr){
+void workqueue_init(int queuenum, void *baseaddr, void *csraddr){
     bases[queuenum] = baseaddr;
+    csrs[queuenum] = csraddr;
 }
 
 static void workqueue_add(int queuenum, struct workorder *o){
-    volatile struct workqueue *q = (struct workqueue *)bases[queuenum];
-    
-    int ready = q->readyptr;
-    int olddoneptr = ((ready+1)&(WORK_QUEUE_SIZE-1));
-    while( olddoneptr == q->doneptr){
-        // wait here while full
+    while(csrs[queuenum]->fill_level > 100){
+        // wait here while almost full
     }
     
-    volatile struct workorder *dest = &q->orders[ready];
-    memcpy((void *)dest, (void *)o, 4 + o->size);
+    //printf("Fill level: %d\n", csrs[queuenum]->fill_level);
     
-    q->readyptr = (ready+1) & (WORK_QUEUE_SIZE-1); // advance readyptr
+    volatile unsigned int *fifowr = (unsigned int *)(bases[queuenum]);
+    fifowr[0] = (o->type << 8) | o->size;
+    unsigned int *data = (unsigned int *)(&o->data);
+    fifowr[0] = data[0];
+    if(o->size > 4){
+        fifowr[0] = data[1];
+    }
 }
 
 static struct workorder s;
