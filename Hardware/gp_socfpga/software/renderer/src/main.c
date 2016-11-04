@@ -15,44 +15,43 @@
 
 static unsigned int copy_counter = 0;
 
-struct workorder {
-    char type;
-    char size;
-    char data[8];
+struct altera_mm_fifo_csr {
+    unsigned int fill_level;
+    unsigned int i_status;
+    unsigned int event;
+    unsigned int int_enable;
+    unsigned int almostfull;
+    unsigned int almostempty;
 };
 
-// Number of work orders which can be queued.
-// 1024 bytes / sizeof(struct workorder), rounded down to nearest power of 2
-#define WORK_QUEUE_SIZE     (128)
+volatile unsigned int *fifo = (unsigned int *)(SHARED_BASE);
+volatile struct altera_mm_fifo_csr *fifo_csr = (struct altera_mm_fifo_csr *)(SHARED_BASE+0x100);
 
-struct workqueue {
-    short doneptr;
-    short readyptr;
-    struct workorder orders[WORK_QUEUE_SIZE];
-};
+unsigned char *read_fifo(char numbytes){
+    static unsigned char buf[256];
+    unsigned int *ptr = (unsigned int *)(buf);
+    int numreads = (numbytes+3)/4;
+    while(numreads--){
+        *ptr++ = fifo[0];
+    }
+    return buf;
+}
 
-/*
- * ARM writes the readyptr to mark the end of valid work orders.
- * We write the doneptr to mark the next piece of work we have to do.
- */
 int main(void){
-    volatile struct workqueue *queue = (struct workqueue *)(SHARED_BASE);
     while(1){
-    // read from queue, perform work orders
-    while(queue->readyptr == queue->doneptr); // wait here while empty
-    
-    for(int i=queue->doneptr; i!=queue->readyptr; i = (i+1) & (WORK_QUEUE_SIZE - 1) ){
-        
         // read the work order and do it
         
-        volatile struct workorder order = queue->orders[i];
-        volatile unsigned short *data = (unsigned short *)(&order.data);
+        unsigned int val = fifo[0];
+        unsigned short type = (val >> 8) & 0xff;
+        unsigned short len = (val & 0xff);
+        unsigned short *data = (unsigned short *)read_fifo(len);
+        
         unsigned short x1,x2,y1,y2,col;
         unsigned int addr;
-        switch(order.type){
+        switch(type){
             case TYPE_SOF:
                 // read address of which buffer to use
-                addr = *(unsigned int *)(&order.data); // TODO use buffer number instead?
+                addr = *(unsigned int *)(data); // TODO use buffer number instead?
                 vid_setbuffer(addr);
                 vid_clear(0); //TODO hardware fast-clear?
                 break;
@@ -81,16 +80,12 @@ int main(void){
                 break;
             case TYPE_COPY:
                 // Copy bytes to the framebuffer
-                vid_copy(copy_counter, (char *)order.data, order.size);
-                copy_counter += order.size;
+                vid_copy(copy_counter, (char *)data, len);
+                copy_counter += len;
                 break;
             case TYPE_COPY_START:
                 copy_counter = 0;
                 break;
         }
-        
-        // advance the doneptr
-        queue->doneptr = (queue->doneptr + 1) & (WORK_QUEUE_SIZE - 1);
     }
-}
 }
