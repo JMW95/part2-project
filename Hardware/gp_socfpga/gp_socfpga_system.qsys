@@ -37,6 +37,11 @@
          value = "6";
          type = "int";
       }
+      datum sopceditor_expanded
+      {
+         value = "1";
+         type = "boolean";
+      }
    }
    element core_0.fbuff2
    {
@@ -46,7 +51,15 @@
          type = "String";
       }
    }
-   element core_0.work_queue
+   element core_0.work_queue_csr
+   {
+      datum baseAddress
+      {
+         value = "4096";
+         type = "String";
+      }
+   }
+   element core_0.work_queue_wr
    {
       datum baseAddress
       {
@@ -60,6 +73,11 @@
       {
          value = "7";
          type = "int";
+      }
+      datum sopceditor_expanded
+      {
+         value = "1";
+         type = "boolean";
       }
    }
    element core_1.fbuff1
@@ -78,11 +96,19 @@
          type = "String";
       }
    }
-   element core_1.work_queue
+   element core_1.work_queue_csr
    {
       datum baseAddress
       {
-         value = "2101248";
+         value = "8192";
+         type = "String";
+      }
+   }
+   element core_1.work_queue_wr
+   {
+      datum baseAddress
+      {
+         value = "2162688";
          type = "String";
       }
    }
@@ -203,47 +229,14 @@
   <parameter name="resetSynchronousEdges" value="NONE" />
  </module>
  <module name="core_0" kind="render_core" version="1.0" enabled="1">
-  <parameter name="AUTO_CLARVI_0_CLOCK_CLOCK_DOMAIN" value="-1" />
-  <parameter name="AUTO_CLARVI_0_CLOCK_CLOCK_RATE" value="-1" />
-  <parameter name="AUTO_CLARVI_0_CLOCK_RESET_DOMAIN" value="-1" />
-  <parameter name="AUTO_CLARVI_0_INSTR_ADDRESS_MAP" value="" />
-  <parameter name="AUTO_CLARVI_0_INSTR_ADDRESS_WIDTH" value="AddressWidth = -1" />
-  <parameter name="AUTO_CLARVI_0_INTERRUPT_RECEIVER_0_INTERRUPTS_USED" value="-1" />
-  <parameter name="AUTO_CLARVI_0_MAIN_ADDRESS_MAP" value="" />
-  <parameter name="AUTO_CLARVI_0_MAIN_ADDRESS_WIDTH" value="AddressWidth = -1" />
-  <parameter name="AUTO_CLARVI_SCRATCH_CLK1_CLOCK_DOMAIN" value="-1" />
-  <parameter name="AUTO_CLARVI_SCRATCH_CLK1_CLOCK_RATE" value="-1" />
-  <parameter name="AUTO_CLARVI_SCRATCH_CLK1_RESET_DOMAIN" value="-1" />
-  <parameter name="AUTO_CLARVI_SCRATCH_CLK2_CLOCK_DOMAIN" value="-1" />
-  <parameter name="AUTO_CLARVI_SCRATCH_CLK2_CLOCK_RATE" value="-1" />
-  <parameter name="AUTO_CLARVI_SCRATCH_CLK2_RESET_DOMAIN" value="-1" />
   <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="3" />
   <parameter name="AUTO_CLK_CLOCK_RATE" value="75000000" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="3" />
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
   <parameter name="AUTO_DEVICE_SPEEDGRADE" value="6" />
-  <parameter name="AUTO_FBUFF1_CLK1_CLOCK_DOMAIN" value="-1" />
-  <parameter name="AUTO_FBUFF1_CLK1_CLOCK_RATE" value="-1" />
-  <parameter name="AUTO_FBUFF1_CLK1_RESET_DOMAIN" value="-1" />
-  <parameter name="AUTO_FBUFF1_CLK2_CLOCK_DOMAIN" value="-1" />
-  <parameter name="AUTO_FBUFF1_CLK2_CLOCK_RATE" value="-1" />
-  <parameter name="AUTO_FBUFF1_CLK2_RESET_DOMAIN" value="-1" />
-  <parameter name="AUTO_FBUFF2_CLK1_CLOCK_DOMAIN" value="-1" />
-  <parameter name="AUTO_FBUFF2_CLK1_CLOCK_RATE" value="-1" />
-  <parameter name="AUTO_FBUFF2_CLK1_RESET_DOMAIN" value="-1" />
-  <parameter name="AUTO_FBUFF2_CLK2_CLOCK_DOMAIN" value="-1" />
-  <parameter name="AUTO_FBUFF2_CLK2_CLOCK_RATE" value="-1" />
-  <parameter name="AUTO_FBUFF2_CLK2_RESET_DOMAIN" value="-1" />
   <parameter name="AUTO_GENERATION_ID" value="0" />
-  <parameter name="AUTO_UNIQUE_ID" value="$${FILENAME}_core_0" />
-  <parameter name="AUTO_WORK_QUEUE_CLK1_CLOCK_DOMAIN" value="-1" />
-  <parameter name="AUTO_WORK_QUEUE_CLK1_CLOCK_RATE" value="-1" />
-  <parameter name="AUTO_WORK_QUEUE_CLK1_RESET_DOMAIN" value="-1" />
-  <parameter name="AUTO_WORK_QUEUE_CLK2_CLOCK_DOMAIN" value="-1" />
-  <parameter name="AUTO_WORK_QUEUE_CLK2_CLOCK_RATE" value="-1" />
-  <parameter name="AUTO_WORK_QUEUE_CLK2_RESET_DOMAIN" value="-1" />
-  <parameter name="core_id" value="0" />
+  <parameter name="AUTO_UNIQUE_ID">gp_socfpga_system_core_0</parameter>
   <parameter name="core_id" value="0" />
  </module>
  <module name="core_1" kind="render_core" version="1.0" enabled="1">
@@ -254,7 +247,7 @@
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
   <parameter name="AUTO_DEVICE_SPEEDGRADE" value="6" />
   <parameter name="AUTO_GENERATION_ID" value="0" />
-  <parameter name="AUTO_UNIQUE_ID" value="$${FILENAME}_core_1" />
+  <parameter name="AUTO_UNIQUE_ID">gp_socfpga_system_core_1</parameter>
   <parameter name="core_id" value="1" />
  </module>
  <module name="hps_0" kind="altera_hps" version="16.0" enabled="1">
@@ -1010,7 +1003,7 @@
    kind="avalon"
    version="16.0"
    start="hps_0.h2f_axi_master"
-   end="core_0.work_queue">
+   end="core_0.work_queue_wr">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x00200000" />
   <parameter name="defaultConnection" value="false" />
@@ -1019,9 +1012,9 @@
    kind="avalon"
    version="16.0"
    start="hps_0.h2f_axi_master"
-   end="core_1.work_queue">
+   end="core_1.work_queue_wr">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00201000" />
+  <parameter name="baseAddress" value="0x00210000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1049,6 +1042,24 @@
    end="PixelStream_0.slave_parameters">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x0000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="hps_0.h2f_lw_axi_master"
+   end="core_0.work_queue_csr">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x1000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="hps_0.h2f_lw_axi_master"
+   end="core_1.work_queue_csr">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x2000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1131,6 +1142,20 @@
    start="hps_0.f2h_irq0"
    end="pio_vsync.irq">
   <parameter name="irqNumber" value="0" />
+ </connection>
+ <connection
+   kind="interrupt"
+   version="16.0"
+   start="hps_0.f2h_irq0"
+   end="core_0.work_queue_irq">
+  <parameter name="irqNumber" value="1" />
+ </connection>
+ <connection
+   kind="interrupt"
+   version="16.0"
+   start="hps_0.f2h_irq0"
+   end="core_1.work_queue_irq">
+  <parameter name="irqNumber" value="2" />
  </connection>
  <connection
    kind="reset"
