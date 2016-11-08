@@ -49,6 +49,8 @@ static unsigned int *buffers[NUMQUEUES];
 void *lwbase;
 void *hwbase;
 
+static unsigned int freeride[NUMQUEUES];
+
 static unsigned int queue_free_space(int qn){
     int space;
     space = (rd[qn] - wr[qn]) - 1;
@@ -74,7 +76,11 @@ irq_handler_t irq_handler(int irq, void *dev_id, struct pt_regs *regs){
         rd[wqnum] = (rd[wqnum] + 1) % BUFFERSIZE;
     }
     
-    if(len > 0) printk(KERN_ALERT "IRQ %d l%d (s%d, s%d) (w%d, r%d, w%d, r%d)\n", wqnum, len, queue_free_space(0), queue_free_space(1), wr[0], rd[0], wr[1], rd[1]);
+    if(len > 0){
+        //printk(KERN_ALERT "IRQ %d l%d (s%d, s%d) (w%d, r%d, w%d, r%d)\n", wqnum, len, queue_free_space(0), queue_free_space(1), wr[0], rd[0], wr[1], rd[1]);
+    }else{
+        freeride[wqnum] = 1;
+    }
     
     wake_up_all(&wait_queues[wqnum]); // Unblock any waiting processes
     
@@ -105,20 +111,20 @@ static ssize_t write(struct file *file, const char __user *user, size_t size,lof
         
         //printk(KERN_ALERT "PRE  s %d, w %d, r %d, f %d\n", len, wr[wqnum], rd[wqnum], csrs[wqnum][0]);
         
-        if(queue_free_space(wqnum) < len){
-            printk(KERN_ALERT "BL #%d, %d, %d (%d) (%d, %d)\n", wqnum, queue_free_space(wqnum), len, csrs[wqnum][0], wr[wqnum], rd[wqnum]);
-            //res = wait_event_interruptible_timeout(wait_queues[wqnum], queue_free_space(wqnum) >= len, HZ/10); // Block until there's room in the buffer
-            res = wait_event_interruptible(wait_queues[wqnum], queue_free_space(wqnum) >= len); // Block until there's room in the buffer
-            
-            printk(KERN_ALERT "wake #%d, %d (%d) (%d, %d)\n", wqnum, queue_free_space(wqnum), csrs[wqnum][0], wr[wqnum], rd[wqnum]);
-        }
-        
-        if(queue_free_space(wqnum) == (BUFFERSIZE-1) && csrs[wqnum][0] < 3){ // Queue is almost empty, so fill it
+        if(freeride[wqnum] || (queue_free_space(wqnum) == (BUFFERSIZE-1) && csrs[wqnum][0] < 3)){ // Queue is almost empty, so fill it
+            freeride[wqnum] = 0;
             copylen = len;
             if(len > 127) copylen = 127;
             for(i=0; i<copylen; i++){
-                //printk(KERN_ALERT " w %x\n", data[i]);
                 bases[wqnum][0] = data[i];
+            }
+        }else{
+            if(queue_free_space(wqnum) < len){
+                //printk(KERN_ALERT "BL #%d, %d, %d (%d) (%d, %d)\n", wqnum, queue_free_space(wqnum), len, csrs[wqnum][0], wr[wqnum], rd[wqnum]);
+                //res = wait_event_interruptible_timeout(wait_queues[wqnum], queue_free_space(wqnum) >= len, HZ/10); // Block until there's room in the buffer
+                res = wait_event_interruptible(wait_queues[wqnum], queue_free_space(wqnum) >= len); // Block until there's room in the buffer
+                
+                //printk(KERN_ALERT "wake #%d, %d (%d) (%d, %d)\n", wqnum, queue_free_space(wqnum), csrs[wqnum][0], wr[wqnum], rd[wqnum]);
             }
         }
         

@@ -98,11 +98,11 @@ int main(){
         clock_gettime(CLOCK_MONOTONIC, &time1);
         
         if(vid_getbuffer() == 0x0){
-            workqueue_sof(0, 0x110000); // START OF FRAME
-            workqueue_sof(1, 0x110000);
+            workqueue_sof(0, 1); // START OF FRAME
+            workqueue_sof(1, 1);
         }else{
-            workqueue_sof(0, 0x100000);
-            workqueue_sof(1, 0x100000);
+            workqueue_sof(0, 0);
+            workqueue_sof(1, 0);
         }
 #ifndef HARDWARE_RENDER
         clear();
