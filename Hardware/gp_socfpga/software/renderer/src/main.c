@@ -52,7 +52,7 @@ int main(void){
             case TYPE_SOF:
                 // read address of which buffer to use
                 addr = *(unsigned int *)(data); // TODO use buffer number instead?
-                vid_setbuffer(addr);
+                vid_setbuffer(addr == 0 ? 0x100000 : 0x110000);
                 vid_clear(0); //TODO hardware fast-clear?
                 break;
             case TYPE_EOF:
