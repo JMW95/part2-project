@@ -2,30 +2,42 @@
 #include "draw.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 static volatile void *bases[8];
 static volatile struct altera_mm_fifo_csr *csrs[8];
 
+static FILE *fp = NULL;
+
 void workqueue_init(int queuenum, void *baseaddr, void *csraddr){
     bases[queuenum] = baseaddr;
     csrs[queuenum] = csraddr;
+    
+    if (fp == NULL){
+        fp = fopen("/dev/gpu_workqueue", "r+");
+        if (fp == NULL){
+            errx(1, "Failed to open /dev/gpu_workqueue, is the kernel module inserted?\n");
+        }
+    }
 }
 
 static void workqueue_add(int queuenum, struct workorder *o){
-    //while(csrs[queuenum]->fill_level > 100){
-        // wait here while almost full
+    static char dat[32];
+    
+    *(unsigned int *)(dat) = (queuenum << 24) | (o->size << 16) | (o->type);
+    memcpy(dat+4, o->data, o->size);
+    
+    fwrite(dat, 1, 32, fp);
+    //fflush(fp);
+    
+    //volatile unsigned int *fifowr = (unsigned int *)(bases[queuenum]);
+    //fifowr[0] = (o->type << 8) | o->size;
+    //unsigned int *data = (unsigned int *)(&o->data);
+    //int i;
+    //for(i=0; i<o->size/4; i++){
+    //    fifowr[0] = data[i];
     //}
-    
-    //printf("Fill level: %d\n", csrs[queuenum]->fill_level);
-    
-    volatile unsigned int *fifowr = (unsigned int *)(bases[queuenum]);
-    fifowr[0] = (o->type << 8) | o->size;
-    unsigned int *data = (unsigned int *)(&o->data);
-    int i;
-    for(i=0; i<o->size/4; i++){
-        fifowr[0] = data[i];
-    }
 }
 
 static struct workorder s;

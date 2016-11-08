@@ -13,7 +13,7 @@
 struct workorder {
     char type;
     char size;
-    char data[8];
+    char data[16];
 };
 
 struct altera_mm_fifo_csr {

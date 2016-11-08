@@ -91,7 +91,8 @@ int main(){
         int i;
         for(i=0; i<NUMTRIANGLES; i++){
             tris[i] = generateTri();
-            cols[i] = (rand() % 7)+1;
+            //cols[i] = (rand() % 7)+1;
+            cols[i] = (i % 7)+1;
         }
         
         clock_gettime(CLOCK_MONOTONIC, &time1);
@@ -111,8 +112,8 @@ int main(){
            draw(&tris[i], cols[i]);
         }
         
-        workqueue_eof(0); // END OF FRAME
-        workqueue_eof(1);
+        //workqueue_eof(0); // END OF FRAME
+        //workqueue_eof(1);
         
         clock_gettime(CLOCK_MONOTONIC, &time2);
         
