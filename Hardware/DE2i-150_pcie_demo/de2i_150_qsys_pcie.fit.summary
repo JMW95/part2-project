@@ -1,0 +1,20 @@
+Fitter Status : Successful - Tue Jul 30 10:03:08 2013
+Quartus II 64-Bit Version : 13.0.1 Build 232 06/12/2013 SP 1 SJ Full Version
+Revision Name : de2i_150_qsys_pcie
+Top-level Entity Name : de2i_150_qsys_pcie
+Family : Cyclone IV GX
+Device : EP4CGX150DF31C7
+Timing Models : Final
+Total logic elements : 9,624 / 149,760 ( 6 % )
+    Total combinational functions : 8,474 / 149,760 ( 6 % )
+    Dedicated logic registers : 5,298 / 149,760 ( 4 % )
+Total registers : 5298
+Total pins : 467 / 508 ( 92 % )
+Total virtual pins : 1
+Total memory bits : 1,247,224 / 6,635,520 ( 19 % )
+Embedded Multiplier 9-bit elements : 0 / 720 ( 0 % )
+Total GXB Receiver Channel PCS : 1 / 8 ( 13 % )
+Total GXB Receiver Channel PMA : 1 / 8 ( 13 % )
+Total GXB Transmitter Channel PCS : 1 / 8 ( 13 % )
+Total GXB Transmitter Channel PMA : 1 / 8 ( 13 % )
+Total PLLs : 1 / 8 ( 13 % )
