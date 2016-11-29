@@ -42,7 +42,7 @@ set_global_assignment -name DEVICE 5CSEMA5F31C6
 set_global_assignment -name TOP_LEVEL_ENTITY gp_socfpga
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 16.0.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "13:23:47  OCTOBER 17, 2016"
-set_global_assignment -name LAST_QUARTUS_VERSION 16.0.0
+set_global_assignment -name LAST_QUARTUS_VERSION "16.1.0 Standard Edition"
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
@@ -906,4 +906,38 @@ set_global_assignment -name USE_DLL_FREQUENCY_FOR_DQS_DELAY_CHAIN ON
 set_global_assignment -name UNIPHY_SEQUENCER_DQS_CONFIG_ENABLE ON
 set_global_assignment -name OPTIMIZE_MULTI_CORNER_TIMING ON
 set_global_assignment -name ECO_REGENERATE_REPORT ON
+set_global_assignment -name PARTITION_NETLIST_TYPE POST_FIT -section_id "gp_socfpga_system_core_0:core_0"
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id "gp_socfpga_system_core_0:core_0"
+set_global_assignment -name PARTITION_COLOR 13379034 -section_id "gp_socfpga_system_core_0:core_0"
+set_global_assignment -name PARTITION_NETLIST_TYPE POST_FIT -section_id "gp_socfpga_system_core_1:core_1"
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id "gp_socfpga_system_core_1:core_1"
+set_global_assignment -name PARTITION_COLOR 6329045 -section_id "gp_socfpga_system_core_1:core_1"
+set_global_assignment -name LL_ENABLED ON -section_id "gp_socfpga_system_core_0:core_0"
+set_global_assignment -name LL_RESERVED OFF -section_id "gp_socfpga_system_core_0:core_0"
+set_global_assignment -name LL_CORE_ONLY OFF -section_id "gp_socfpga_system_core_0:core_0"
+set_global_assignment -name LL_SECURITY_ROUTING_INTERFACE OFF -section_id "gp_socfpga_system_core_0:core_0"
+set_global_assignment -name LL_IGNORE_IO_BANK_SECURITY_CONSTRAINT OFF -section_id "gp_socfpga_system_core_0:core_0"
+set_global_assignment -name LL_PR_REGION OFF -section_id "gp_socfpga_system_core_0:core_0"
+set_global_assignment -name LL_ROUTING_REGION_EXPANSION_SIZE 2147483647 -section_id "gp_socfpga_system_core_0:core_0"
+set_instance_assignment -name LL_MEMBER_OF "gp_socfpga_system_core_0:core_0" -to "gp_socfpga_system:u0|gp_socfpga_system_core_0:core_0" -section_id "gp_socfpga_system_core_0:core_0"
+set_global_assignment -name LL_ENABLED ON -section_id "gp_socfpga_system_core_1:core_1"
+set_global_assignment -name LL_RESERVED OFF -section_id "gp_socfpga_system_core_1:core_1"
+set_global_assignment -name LL_CORE_ONLY OFF -section_id "gp_socfpga_system_core_1:core_1"
+set_global_assignment -name LL_SECURITY_ROUTING_INTERFACE OFF -section_id "gp_socfpga_system_core_1:core_1"
+set_global_assignment -name LL_IGNORE_IO_BANK_SECURITY_CONSTRAINT OFF -section_id "gp_socfpga_system_core_1:core_1"
+set_global_assignment -name LL_PR_REGION OFF -section_id "gp_socfpga_system_core_1:core_1"
+set_global_assignment -name LL_ROUTING_REGION_EXPANSION_SIZE 2147483647 -section_id "gp_socfpga_system_core_1:core_1"
+set_instance_assignment -name LL_MEMBER_OF "gp_socfpga_system_core_1:core_1" -to "gp_socfpga_system:u0|gp_socfpga_system_core_1:core_1" -section_id "gp_socfpga_system_core_1:core_1"
+set_global_assignment -name LL_HEIGHT 37 -section_id "gp_socfpga_system_core_0:core_0"
+set_global_assignment -name LL_WIDTH 35 -section_id "gp_socfpga_system_core_0:core_0"
+set_global_assignment -name LL_ORIGIN X15_Y18 -section_id "gp_socfpga_system_core_0:core_0"
+set_global_assignment -name LL_STATE LOCKED -section_id "gp_socfpga_system_core_0:core_0"
+set_global_assignment -name LL_AUTO_SIZE OFF -section_id "gp_socfpga_system_core_0:core_0"
+set_global_assignment -name LL_HEIGHT 26 -section_id "gp_socfpga_system_core_1:core_1"
+set_global_assignment -name LL_WIDTH 44 -section_id "gp_socfpga_system_core_1:core_1"
+set_global_assignment -name LL_ORIGIN X5_Y21 -section_id "gp_socfpga_system_core_1:core_1"
+set_global_assignment -name LL_STATE LOCKED -section_id "gp_socfpga_system_core_1:core_1"
+set_global_assignment -name LL_AUTO_SIZE OFF -section_id "gp_socfpga_system_core_1:core_1"
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+set_instance_assignment -name PARTITION_HIERARCHY core0_60d51 -to "gp_socfpga_system:u0|gp_socfpga_system_core_0:core_0" -section_id "gp_socfpga_system_core_0:core_0"
+set_instance_assignment -name PARTITION_HIERARCHY core1_071d1 -to "gp_socfpga_system:u0|gp_socfpga_system_core_1:core_1" -section_id "gp_socfpga_system_core_1:core_1"

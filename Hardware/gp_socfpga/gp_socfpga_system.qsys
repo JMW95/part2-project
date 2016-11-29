@@ -222,7 +222,7 @@
    dir="end" />
  <interface name="reset" internal="clk_0.clk_in_reset" type="reset" dir="end" />
  <module name="PixelStream_0" kind="PixelStream" version="1.0" enabled="1" />
- <module name="clk_0" kind="clock_source" version="16.0" enabled="1">
+ <module name="clk_0" kind="clock_source" version="16.1" enabled="1">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
   <parameter name="inputClockFrequency" value="0" />
@@ -236,7 +236,7 @@
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
   <parameter name="AUTO_DEVICE_SPEEDGRADE" value="6" />
   <parameter name="AUTO_GENERATION_ID" value="0" />
-  <parameter name="AUTO_UNIQUE_ID">gp_socfpga_system_core_0</parameter>
+  <parameter name="AUTO_UNIQUE_ID" value="$${FILENAME}_core_0" />
   <parameter name="core_id" value="0" />
  </module>
  <module name="core_1" kind="render_core" version="1.0" enabled="1">
@@ -247,10 +247,10 @@
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
   <parameter name="AUTO_DEVICE_SPEEDGRADE" value="6" />
   <parameter name="AUTO_GENERATION_ID" value="0" />
-  <parameter name="AUTO_UNIQUE_ID">gp_socfpga_system_core_1</parameter>
+  <parameter name="AUTO_UNIQUE_ID" value="$${FILENAME}_core_1" />
   <parameter name="core_id" value="1" />
  </module>
- <module name="hps_0" kind="altera_hps" version="16.0" enabled="1">
+ <module name="hps_0" kind="altera_hps" version="16.1" enabled="1">
   <parameter name="ABSTRACT_REAL_COMPARE_TEST" value="false" />
   <parameter name="ABS_RAM_MEM_INIT_FILENAME" value="meminit" />
   <parameter name="ACV_PHY_CLK_ADD_FR_PHASE" value="0.0" />
@@ -383,7 +383,6 @@
   <parameter name="FPGA_PERIPHERAL_INPUT_CLOCK_FREQ_I2C1_SCL_IN" value="100" />
   <parameter name="FPGA_PERIPHERAL_INPUT_CLOCK_FREQ_I2C2_SCL_IN" value="100" />
   <parameter name="FPGA_PERIPHERAL_INPUT_CLOCK_FREQ_I2C3_SCL_IN" value="100" />
-  <parameter name="FPGA_PERIPHERAL_INPUT_CLOCK_FREQ_SDIO_CLK_IN" value="100" />
   <parameter name="FPGA_PERIPHERAL_INPUT_CLOCK_FREQ_SPIS0_SCLK_IN" value="100" />
   <parameter name="FPGA_PERIPHERAL_INPUT_CLOCK_FREQ_SPIS1_SCLK_IN" value="100" />
   <parameter name="FPGA_PERIPHERAL_INPUT_CLOCK_FREQ_USB0_CLK_IN" value="100" />
@@ -782,7 +781,7 @@
   <parameter name="use_default_mpu_clk" value="true" />
  </module>
  <module name="palette_0" kind="palette" version="1.0" enabled="1" />
- <module name="pio_vsync" kind="altera_avalon_pio" version="16.0" enabled="1">
+ <module name="pio_vsync" kind="altera_avalon_pio" version="16.1" enabled="1">
   <parameter name="bitClearingEdgeCapReg" value="false" />
   <parameter name="bitModifyingOutReg" value="false" />
   <parameter name="captureEdge" value="true" />
@@ -796,7 +795,7 @@
   <parameter name="simDrivenValue" value="0" />
   <parameter name="width" value="1" />
  </module>
- <module name="pll_0" kind="altera_pll" version="16.0" enabled="1">
+ <module name="pll_0" kind="altera_pll" version="16.1" enabled="1">
   <parameter name="debug_print_output" value="false" />
   <parameter name="debug_use_rbc_taf_method" value="false" />
   <parameter name="device" value="5CSEMA5F31C6" />
@@ -859,7 +858,7 @@
   <parameter name="gui_cascade_outclk_index" value="0" />
   <parameter name="gui_channel_spacing" value="0.0" />
   <parameter name="gui_clk_bad" value="false" />
-  <parameter name="gui_device_speed_grade" value="1" />
+  <parameter name="gui_device_speed_grade" value="2" />
   <parameter name="gui_divide_factor_c0" value="1" />
   <parameter name="gui_divide_factor_c1" value="1" />
   <parameter name="gui_divide_factor_c10" value="1" />
@@ -1001,7 +1000,7 @@
  </module>
  <connection
    kind="avalon"
-   version="16.0"
+   version="16.1"
    start="hps_0.h2f_axi_master"
    end="core_0.work_queue_wr">
   <parameter name="arbitrationPriority" value="1" />
@@ -1010,7 +1009,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="16.0"
+   version="16.1"
    start="hps_0.h2f_axi_master"
    end="core_1.work_queue_wr">
   <parameter name="arbitrationPriority" value="1" />
@@ -1019,7 +1018,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="16.0"
+   version="16.1"
    start="hps_0.h2f_lw_axi_master"
    end="palette_0.palette">
   <parameter name="arbitrationPriority" value="1" />
@@ -1028,7 +1027,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="16.0"
+   version="16.1"
    start="hps_0.h2f_lw_axi_master"
    end="pio_vsync.s1">
   <parameter name="arbitrationPriority" value="1" />
@@ -1037,7 +1036,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="16.0"
+   version="16.1"
    start="hps_0.h2f_lw_axi_master"
    end="PixelStream_0.slave_parameters">
   <parameter name="arbitrationPriority" value="1" />
@@ -1046,7 +1045,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="16.0"
+   version="16.1"
    start="hps_0.h2f_lw_axi_master"
    end="core_0.work_queue_csr">
   <parameter name="arbitrationPriority" value="1" />
@@ -1055,7 +1054,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="16.0"
+   version="16.1"
    start="hps_0.h2f_lw_axi_master"
    end="core_1.work_queue_csr">
   <parameter name="arbitrationPriority" value="1" />
@@ -1064,7 +1063,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="16.0"
+   version="16.1"
    start="palette_0.master"
    end="core_0.fbuff1">
   <parameter name="arbitrationPriority" value="1" />
@@ -1073,7 +1072,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="16.0"
+   version="16.1"
    start="palette_0.master"
    end="core_1.fbuff1">
   <parameter name="arbitrationPriority" value="1" />
@@ -1082,7 +1081,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="16.0"
+   version="16.1"
    start="palette_0.master"
    end="core_0.fbuff2">
   <parameter name="arbitrationPriority" value="1" />
@@ -1091,7 +1090,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="16.0"
+   version="16.1"
    start="palette_0.master"
    end="core_1.fbuff2">
   <parameter name="arbitrationPriority" value="1" />
@@ -1100,87 +1099,87 @@
  </connection>
  <connection
    kind="avalon"
-   version="16.0"
+   version="16.1"
    start="PixelStream_0.master_burstreads"
    end="palette_0.slave">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x0000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
- <connection kind="clock" version="16.0" start="clk_0.clk" end="pll_0.refclk" />
- <connection kind="clock" version="16.0" start="pll_0.outclk0" end="pio_vsync.clk" />
- <connection kind="clock" version="16.0" start="pll_0.outclk0" end="core_0.clk" />
- <connection kind="clock" version="16.0" start="pll_0.outclk0" end="core_1.clk" />
+ <connection kind="clock" version="16.1" start="clk_0.clk" end="pll_0.refclk" />
+ <connection kind="clock" version="16.1" start="pll_0.outclk0" end="pio_vsync.clk" />
+ <connection kind="clock" version="16.1" start="pll_0.outclk0" end="core_0.clk" />
+ <connection kind="clock" version="16.1" start="pll_0.outclk0" end="core_1.clk" />
  <connection
    kind="clock"
-   version="16.0"
+   version="16.1"
    start="pll_0.outclk0"
    end="palette_0.clock" />
  <connection
    kind="clock"
-   version="16.0"
+   version="16.1"
    start="pll_0.outclk0"
    end="PixelStream_0.clockreset" />
  <connection
    kind="clock"
-   version="16.0"
+   version="16.1"
    start="pll_0.outclk0"
    end="hps_0.h2f_axi_clock" />
  <connection
    kind="clock"
-   version="16.0"
+   version="16.1"
    start="pll_0.outclk0"
    end="hps_0.h2f_lw_axi_clock" />
  <connection
    kind="clock"
-   version="16.0"
+   version="16.1"
    start="pll_0.outclk1"
    end="PixelStream_0.video" />
  <connection
    kind="interrupt"
-   version="16.0"
+   version="16.1"
    start="hps_0.f2h_irq0"
    end="pio_vsync.irq">
   <parameter name="irqNumber" value="0" />
  </connection>
  <connection
    kind="interrupt"
-   version="16.0"
+   version="16.1"
    start="hps_0.f2h_irq0"
    end="core_0.work_queue_irq">
   <parameter name="irqNumber" value="1" />
  </connection>
  <connection
    kind="interrupt"
-   version="16.0"
+   version="16.1"
    start="hps_0.f2h_irq0"
    end="core_1.work_queue_irq">
   <parameter name="irqNumber" value="2" />
  </connection>
  <connection
    kind="reset"
-   version="16.0"
+   version="16.1"
    start="clk_0.clk_reset"
    end="PixelStream_0.clockreset_reset" />
- <connection kind="reset" version="16.0" start="clk_0.clk_reset" end="pll_0.reset" />
+ <connection kind="reset" version="16.1" start="clk_0.clk_reset" end="pll_0.reset" />
  <connection
    kind="reset"
-   version="16.0"
+   version="16.1"
    start="clk_0.clk_reset"
    end="pio_vsync.reset" />
  <connection
    kind="reset"
-   version="16.0"
+   version="16.1"
    start="clk_0.clk_reset"
    end="palette_0.reset" />
  <connection
    kind="reset"
-   version="16.0"
+   version="16.1"
    start="clk_0.clk_reset"
    end="core_0.reset" />
  <connection
    kind="reset"
-   version="16.0"
+   version="16.1"
    start="clk_0.clk_reset"
    end="core_1.reset" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />

@@ -1,6 +1,6 @@
 <sld_project_info>
   <project>
-    <hash md5_digest_80b="cd226d5bcaee9092fba2"/>
+    <hash md5_digest_80b="16d0fdeb2a82dfcc9e8e"/>
   </project>
   <file_info>
     <file device="EP4CGX150DF31C7" path="de2i_150_qsys_pcie.sof" usercode="0xFFFFFFFF"/>
@@ -86,6 +86,12 @@
     <sld_info hpath="de2i_150_qsys:u0" name="u0">
       <assignment_values>
         <assignment_value text="QSYS_NAME de2i_150_qsys HAS_SOPCINFO 1 GENERATION_ID 1358392693"/>
+      </assignment_values>
+      <parameters/>
+    </sld_info>
+    <sld_info hpath="sld_hub:auto_hub|alt_sld_fab:\instrumentation_fabric_with_node_gen:instrumentation_fabric" library="alt_sld_fab" name="instrumentation_fabric">
+      <assignment_values>
+        <assignment_value text="QSYS_NAME alt_sld_fab HAS_SOPCINFO 1"/>
       </assignment_values>
       <parameters/>
     </sld_info>

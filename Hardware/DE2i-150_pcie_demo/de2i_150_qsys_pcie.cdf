@@ -1,13 +1,13 @@
-/* Quartus II 64-Bit Version 12.1 Build 177 11/07/2012 SJ Full Version */
+/* Quartus Prime Version 16.1.0 Build 196 10/24/2016 SJ Standard Edition */
 JedecChain;
 	FileRevision(JESD32A);
 	DefaultMfr(6E);
 
 	P ActionCode(Cfg)
-		Device PartName(EPCS64) Path("D:/svn2/CW2_Q12.1/QSYS_NEW_DRIVER_DEV/DE2i_150_QSYS_PCIE/") File("output_file.pof") MfrSpec(OpMask(1) Child_OpMask(1 1));
+		Device PartName(EP4CGX150DF31) Path("I:/GitHub/part2-project/Hardware/DE2i-150_pcie_demo/") File("de2i_150_qsys_pcie.sof") MfrSpec(OpMask(1));
 
 ChainEnd;
 
 AlteraBegin;
-	ChainType(asc);
+	ChainType(JTAG);
 AlteraEnd;
