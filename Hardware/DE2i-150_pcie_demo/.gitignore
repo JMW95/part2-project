@@ -2,6 +2,7 @@
 db
 incremental_db
 de2i_150_qsys
+render_core
 
 output_files/*
 !output_files/gp_socfpga.sof
