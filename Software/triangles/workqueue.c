@@ -85,6 +85,22 @@ void workqueue_rect(int queuenum, int x1, int y1, int x2, int y2, int col){
     workqueue_add(queuenum, &s);
 }
 
+void workqueue_tri(int queuenum, int x1, int y1, int x2, int y2, int x3, int y3, int col){
+    s.type = TYPE_TRI;
+    s.size = 14;
+
+   short *data = (short *)(&s.data);
+   data[0] = x1;
+   data[1] = y1;
+   data[2] = x2;
+   data[3] = y2;
+   data[4] = x3;
+   data[5] = y3;
+   data[6] = col;
+
+   workqueue_add(queuenum, &s);
+}
+
 void workqueue_copy(int queuenum, char *data, char size){
     s.type = TYPE_COPY;
     s.size = size;

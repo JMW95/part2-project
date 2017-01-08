@@ -198,6 +198,10 @@ void draw(struct triangle *tri, int col){
     struct triangle tmp = sort(tri);
     int i;
     //for(i=0; i<3; i++) printf("point%d: (%d, %d)\n", i, tmp.points[i].x, tmp.points[i].y);
+#ifdef HARDWARE_RENDER
+    workqueue_tri(0, tmp.points[0].x, tmp.points[0].y, tmp.points[1].x, tmp.points[1].y, tmp.points[2].x, tmp.points[2].y, col);
+    workqueue_tri(1, tmp.points[0].x, tmp.points[0].y-136, tmp.points[1].x, tmp.points[1].y-136, tmp.points[2].x, tmp.points[2].y-136, col);    
+#else
     // flat bottom
     if (tmp.points[1].y == tmp.points[2].y){
         drawFlatBottomTriangle(&tmp.points[0], &tmp.points[1], &tmp.points[2], col);
@@ -211,6 +215,7 @@ void draw(struct triangle *tri, int col){
         drawFlatBottomTriangle(&tmp.points[0], &tmp.points[1], &v4, col);
         drawFlatTopTriangle(&tmp.points[1], &v4, &tmp.points[2], col);
     }
+#endif
 }
 
 void clear(){

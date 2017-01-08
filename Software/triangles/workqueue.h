@@ -31,6 +31,7 @@ void workqueue_sof(int queuenum, unsigned int addr);
 void workqueue_eof(int queuenum);
 void workqueue_line(int queuenum, int x1, int x2, int y, int col);
 void workqueue_rect(int queuenum, int x1, int y1, int x2, int y2, int col);
+void workqueue_tri(int queuenum, int x1, int y1, int x2, int y2, int x3, int y3, int col);
 void workqueue_copy(int queuenum, char *data, char size);
 void workqueue_copy_start(int queuenum);
 
