@@ -46,12 +46,12 @@ int main(void){
         unsigned short len = (val & 0xff);
         unsigned short *data = (unsigned short *)read_fifo(len);
         
-        unsigned short x1,x2,y1,y2,col;
+        short x1,x2,x3,y1,y2,y3,col;
         unsigned int addr;
         switch(type){
             case TYPE_SOF:
                 // read address of which buffer to use
-                addr = *(unsigned int *)(data); // TODO use buffer number instead?
+                addr = *(unsigned int *)(data);
                 vid_setbuffer(addr == 0 ? 0x100000 : 0x110000);
                 vid_clear(0); //TODO hardware fast-clear?
                 break;
@@ -76,7 +76,15 @@ int main(void){
                 vid_fill_rect(x1, y1, x2, y2, col);
                 break;
             case TYPE_TRI:
-                // TODO: draw the triangle
+                // fill the triangle
+                x1 = data[0];
+                y1 = data[1];
+                x2 = data[2];
+                y2 = data[3];
+                x3 = data[4];
+                y3 = data[5];
+                col = data[6];
+                vid_fill_triangle(x1, y1, x2, y2, x3, y3, col);
                 break;
             case TYPE_COPY:
                 // Copy bytes to the framebuffer
