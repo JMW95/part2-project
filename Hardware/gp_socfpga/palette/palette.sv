@@ -28,11 +28,11 @@ function logic [15:0] PIXEL24(int r, int g, int b);
     return PIXEL16((r>>3), (g>>2), (b>>3));
 endfunction
 
-`define PIXEL_WHITE	PIXEL24(8'hFF, 8'hFF, 8'hFF)
-`define PIXEL_BLACK	PIXEL24(8'h00, 8'h00, 8'h00)
-`define PIXEL_RED	PIXEL24(8'hFF, 8'h00, 8'h00)
-`define PIXEL_GREEN	PIXEL24(8'h00, 8'hFF, 8'h00)
-`define PIXEL_BLUE	PIXEL24(8'h00, 8'h00, 8'hFF)
+`define PIXEL_WHITE     PIXEL24(8'hFF, 8'hFF, 8'hFF)
+`define PIXEL_BLACK     PIXEL24(8'h00, 8'h00, 8'h00)
+`define PIXEL_RED       PIXEL24(8'hFF, 8'h00, 8'h00)
+`define PIXEL_GREEN     PIXEL24(8'h00, 8'hFF, 8'h00)
+`define PIXEL_BLUE      PIXEL24(8'h00, 8'h00, 8'hFF)
 `define PIXEL_YELLOW    PIXEL24(8'hFF, 8'hFF, 8'h00)
 `define PIXEL_CYAN      PIXEL24(8'h00, 8'hFF, 8'hFF)
 `define PIXEL_MAGENTA   PIXEL24(8'hFF, 8'h00, 8'hFF)
@@ -60,8 +60,16 @@ logic [3:0] pix1, pix2;
 logic [23:0] striped_address;
 
 always_comb begin
-    striped_address[23:20] = avs_slave_address[23:20];
-    striped_address[19:0] = avs_slave_address[19:0] >= 20'h7f80 ? (avs_slave_address[19:0] + 20'h8080) : avs_slave_address[19:0];
+    striped_address[23:16] = avs_slave_address[23:16];
+    if(avs_slave_address[15:0] >= 16'h3fc0) begin
+        striped_address[15:0] = avs_slave_address[15:0] + 16'h40;
+    end else if(avs_slave_address[15:0] >= 16'h7f80) begin
+        striped_address[15:0] = avs_slave_address[15:0] + 16'h80;
+    end else if(avs_slave_address[15:0] >= 16'hbf40) begin
+        striped_address[15:0] = avs_slave_address[15:0] + 16'hC0;
+    end else begin
+        striped_address[15:0] = avs_slave_address[15:0];
+    end
 end
 
 always_ff @(posedge clk) begin
