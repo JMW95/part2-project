@@ -61,12 +61,12 @@ logic [23:0] striped_address;
 
 always_comb begin
     striped_address[23:16] = avs_slave_address[23:16];
-    if(avs_slave_address[15:0] >= 16'h3fc0) begin
-        striped_address[15:0] = avs_slave_address[15:0] + 16'h40;
+    if(avs_slave_address[15:0] >= 16'hbf40) begin
+        striped_address[15:0] = avs_slave_address[15:0] + 16'hC0;
     end else if(avs_slave_address[15:0] >= 16'h7f80) begin
         striped_address[15:0] = avs_slave_address[15:0] + 16'h80;
-    end else if(avs_slave_address[15:0] >= 16'hbf40) begin
-        striped_address[15:0] = avs_slave_address[15:0] + 16'hC0;
+    end else if(avs_slave_address[15:0] >= 16'h3fc0) begin
+        striped_address[15:0] = avs_slave_address[15:0] + 16'h40;
     end else begin
         striped_address[15:0] = avs_slave_address[15:0];
     end
