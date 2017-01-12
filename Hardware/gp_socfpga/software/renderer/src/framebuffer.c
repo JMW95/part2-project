@@ -40,7 +40,7 @@ void vid_clear(int colour){
     colour = colour | (colour << 8);
     colour = colour | (colour << 16); // 32 bits
     int i = 0;
-    int end = ((DISPLAY_WIDTH * DISPLAY_HEIGHT)/8) / 2; // only rendering half the screen now.
+    int end = (DISPLAY_WIDTH * DISPLAY_HEIGHT)/8;
     while ( i < end )
         framebuffer[i++] = colour;
 }
@@ -48,7 +48,7 @@ void vid_clear(int colour){
 // draw a horizontal line
 void vid_fill_line(int left, int right, int top, int colour){
     volatile char *framebuffer = (volatile char *) (bufferaddr);
-    if (top < 0 || top >= 136) return;
+    if (top < 0 || top >= DISPLAY_HEIGHT) return;
     int swap;
     if (left > right){
 		swap = left;

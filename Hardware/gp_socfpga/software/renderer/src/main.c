@@ -1,9 +1,6 @@
 #include "avalon_addr.h"
 #include "framebuffer.h"
 
-#define WIDTH   (480)
-#define HEIGHT  (272)
-
 // Types of work
 #define TYPE_SOF    (1)
 #define TYPE_EOF    (2)
@@ -14,6 +11,7 @@
 #define TYPE_COPY_START (7)
 
 static unsigned int copy_counter = 0;
+unsigned int coreid = 0;
 
 struct altera_mm_fifo_csr {
     unsigned int fill_level;
@@ -38,6 +36,8 @@ unsigned char *read_fifo(char numbytes){
 }
 
 int main(void){
+	coreid = *((unsigned int *)COREID_BASE);
+	vid_clear(coreid);
     while(1){
         // read the work order and do it
         
