@@ -47,9 +47,7 @@ static unsigned int *buffers[NUMQUEUES];
 void *lwbase;
 void *hwbase;
 
-//static unsigned int freeride[NUMQUEUES];
-
-DEFINE_MUTEX(fr_lock);
+static struct mutex locks[NUMQUEUES];
 
 static unsigned int queue_free_space(int qn){
     int space;
@@ -61,7 +59,7 @@ static unsigned int queue_free_space(int qn){
 }
 
 static void do_a_copy(int wqnum){
-    mutex_lock(&fr_lock);
+    mutex_lock(&locks[wqnum]);
     
     int i;
     int len = (BUFFERSIZE-1)-queue_free_space(wqnum);
@@ -73,50 +71,24 @@ static void do_a_copy(int wqnum){
     }
     wake_up_all(&wait_queues[wqnum]); // Unblock any waiting processes
     
-    mutex_unlock(&fr_lock);
+    mutex_unlock(&locks[wqnum]);
 }
 
 irq_handler_t copy_thread_func(int irq, void *dev_id, struct pt_regs *regs){
-    int wqnum;//, len, i;
+    int wqnum;
     wqnum = irq - 73;
     
     do_a_copy(wqnum);
-    
-    /*
-    
-    // Copy up to 127 values into the FIFO (interrupt occurs when 1 left, and it's 128 long)
-    len = (BUFFERSIZE-1)-queue_free_space(wqnum);
-    if (len > 127) len = 127;
-    for(i=0; i<len; i++){
-        bases[wqnum][0] = buffers[wqnum][rd[wqnum]];
-        rd[wqnum] = (rd[wqnum] + 1) % BUFFERSIZE;
-    }
-    
-    if(len > 0){
-        //printk(KERN_ALERT "IRQ %d l%d (s%d, s%d) (w%d, r%d, w%d, r%d)\n", wqnum, len, queue_free_space(0), queue_free_space(1), wr[0], rd[0], wr[1], rd[1]);
-    }else{
-        mutex_lock(&fr_lock);
-        freeride[wqnum] = 1;
-        mutex_unlock(&fr_lock);
-    }
-    
-    wake_up_all(&wait_queues[wqnum]); // Unblock any waiting processes
-    
-    */
     
     return (irq_handler_t) IRQ_HANDLED;
 }
 
 irq_handler_t irq_handler(int irq, void *dev_id, struct pt_regs *regs){
-    int wqnum;
-    wqnum = irq - 73;
+    int wqnum = irq - 73;
     
     // Clear the 'empty' event
-    iowrite32(0xff,csrs[wqnum]+2);
+    iowrite32(0xff, csrs[wqnum]+2);
     
-    //printk(KERN_ALERT "IRQ");
-    
-    //return (irq_handler_t) IRQ_HANDLED;
     return (irq_handler_t)IRQ_WAKE_THREAD;
 }
 
@@ -161,43 +133,6 @@ static ssize_t write(struct file *file, const char __user *user, size_t size,lof
             
             //printk(KERN_ALERT "wake #%d, %d (%d) (%d, %d)\n", wqnum, queue_free_space(wqnum), csrs[wqnum][0], wr[wqnum], rd[wqnum]);
         }
-        
-        /*
-        
-        //printk(KERN_ALERT "PRE  s %d, w %d, r %d, f %d\n", len, wr[wqnum], rd[wqnum], csrs[wqnum][0]);
-        
-        mutex_lock(&fr_lock);
-        if(freeride[wqnum] || ((queue_free_space(wqnum) == (BUFFERSIZE-1)) && (csrs[wqnum][0] < 3))){ // Queue is almost empty, so fill it
-            freeride[wqnum] = 0;
-            mutex_unlock(&fr_lock);
-            copylen = len;
-            if(len > 127) copylen = 127;
-            for(i=0; i<copylen; i++){
-                bases[wqnum][0] = data[i];
-            }
-        }else{
-            mutex_unlock(&fr_lock);
-            if(queue_free_space(wqnum) < len){
-                //printk(KERN_ALERT "BL #%d, %d, %d (%d) (%d, %d)\n", wqnum, queue_free_space(wqnum), len, csrs[wqnum][0], wr[wqnum], rd[wqnum]);
-                tmp = csrs[wqnum][0];
-                tw = wr[wqnum];
-                tr = rd[wqnum];
-                asm("" ::: "memory");
-                res = wait_event_interruptible_timeout(wait_queues[wqnum], queue_free_space(wqnum) >= len, HZ/2); // Block until there's room in the buffer
-                //res = wait_event_interruptible(wait_queues[wqnum], queue_free_space(wqnum) >= len); // Block until there's room in the buffer
-                
-                if(res <= 1){
-                    printk(KERN_ALERT "WAKE %d\n", res);
-                    printk(KERN_ALERT "PRE  #%d, %d, %d (%d) (%d, %d)\n", wqnum, queue_free_space(wqnum), len, tmp, tw, tr);
-                    printk(KERN_ALERT "POST #%d, %d, %d (%d) (%d, %d)\n", wqnum, queue_free_space(wqnum), len, csrs[wqnum][0], wr[wqnum], rd[wqnum]);
-                }
-                
-                
-                //printk(KERN_ALERT "wake #%d, %d (%d) (%d, %d)\n", wqnum, queue_free_space(wqnum), csrs[wqnum][0], wr[wqnum], rd[wqnum]);
-            }
-        }
-        
-        */
         
         for(i=copylen; i<len; i++){
             buffers[wqnum][wr[wqnum]] = data[i];
@@ -264,25 +199,21 @@ static int __init init_workqueue(void)
         printk(KERN_ALERT "bases[%d] = %p\n", i, bases[i]);
         
         init_waitqueue_head(&wait_queues[i]);
+        mutex_init(&locks[i]);
         
-        printk(KERN_ALERT "fl: %x\n", (csrs[i]+0)[0]);
+        /*printk(KERN_ALERT "fl: %x\n", (csrs[i]+0)[0]);
         printk(KERN_ALERT "is: %x\n", (csrs[i]+1)[0]);
         printk(KERN_ALERT "ev: %x\n", (csrs[i]+2)[0]);
         printk(KERN_ALERT "ie: %x\n", (csrs[i]+3)[0]);
         printk(KERN_ALERT "af: %x\n", (csrs[i]+4)[0]);
-        printk(KERN_ALERT "ae: %x\n", (csrs[i]+5)[0]);
-        
-        // Clear the event register (any pending events are cleared)
-        //iowrite32(0x3f,csrs[i]+2);
-        // Enable IRQ generation for the 'almost empty' event
-        //iowrite32(0x8,csrs[i]+3);
+        printk(KERN_ALERT "ae: %x\n", (csrs[i]+5)[0]);*/
         
         // Enable the 'empty' interrupt
         iowrite32(0x2,csrs[i]+3);
         
-        printk(KERN_ALERT "is: %x\n", (csrs[i]+1)[0]);
+        /*printk(KERN_ALERT "is: %x\n", (csrs[i]+1)[0]);
         printk(KERN_ALERT "ev: %x\n", (csrs[i]+2)[0]);
-        printk(KERN_ALERT "ie: %x\n", (csrs[i]+3)[0]);
+        printk(KERN_ALERT "ie: %x\n", (csrs[i]+3)[0]);*/
         
         // Allocate 4096 bytes for the buffer
         buffers[i] = (unsigned int *)kmalloc(BUFFERSIZE*sizeof(unsigned int), __GFP_WAIT | __GFP_IO | __GFP_FS);
@@ -290,11 +221,6 @@ static int __init init_workqueue(void)
         // Register the interrupt handler
         snprintf(name, sizeof(name), "workqueue_%d", i);
         
-        /*if(request_irq(73+i, (irq_handler_t)irq_handler,
-                   IRQF_SHARED, "workqueue",
-                   (void *)(irq_handler)) != 0){
-            return 1;
-        }*/
         if(request_threaded_irq(73+i, (irq_handler_t)irq_handler,
                    (irq_handler_t) copy_thread_func,
                    IRQF_SHARED, "workqueue",
