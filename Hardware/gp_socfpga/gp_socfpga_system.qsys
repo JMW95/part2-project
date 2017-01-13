@@ -39,7 +39,7 @@
       }
       datum sopceditor_expanded
       {
-         value = "1";
+         value = "0";
          type = "boolean";
       }
    }
@@ -76,7 +76,7 @@
       }
       datum sopceditor_expanded
       {
-         value = "1";
+         value = "0";
          type = "boolean";
       }
    }
@@ -84,7 +84,7 @@
    {
       datum baseAddress
       {
-         value = "16384";
+         value = "8192";
          type = "String";
       }
    }
@@ -92,7 +92,7 @@
    {
       datum baseAddress
       {
-         value = "1064960";
+         value = "1056768";
          type = "String";
       }
    }
@@ -119,12 +119,17 @@
          value = "8";
          type = "int";
       }
+      datum sopceditor_expanded
+      {
+         value = "0";
+         type = "boolean";
+      }
    }
    element core_2.fbuff1
    {
       datum baseAddress
       {
-         value = "32768";
+         value = "16384";
          type = "String";
       }
    }
@@ -132,7 +137,7 @@
    {
       datum baseAddress
       {
-         value = "1081344";
+         value = "1064960";
          type = "String";
       }
    }
@@ -159,12 +164,17 @@
          value = "9";
          type = "int";
       }
+      datum sopceditor_expanded
+      {
+         value = "0";
+         type = "boolean";
+      }
    }
    element core_3.fbuff1
    {
       datum baseAddress
       {
-         value = "49152";
+         value = "24576";
          type = "String";
       }
    }
@@ -172,7 +182,7 @@
    {
       datum baseAddress
       {
-         value = "1097728";
+         value = "1073152";
          type = "String";
       }
    }
@@ -189,6 +199,186 @@
       datum baseAddress
       {
          value = "2293760";
+         type = "String";
+      }
+   }
+   element core_4
+   {
+      datum _sortIndex
+      {
+         value = "10";
+         type = "int";
+      }
+      datum sopceditor_expanded
+      {
+         value = "0";
+         type = "boolean";
+      }
+   }
+   element core_4.fbuff1
+   {
+      datum baseAddress
+      {
+         value = "32768";
+         type = "String";
+      }
+   }
+   element core_4.fbuff2
+   {
+      datum baseAddress
+      {
+         value = "1081344";
+         type = "String";
+      }
+   }
+   element core_4.work_queue_csr
+   {
+      datum baseAddress
+      {
+         value = "20480";
+         type = "String";
+      }
+   }
+   element core_4.work_queue_wr
+   {
+      datum baseAddress
+      {
+         value = "2359296";
+         type = "String";
+      }
+   }
+   element core_5
+   {
+      datum _sortIndex
+      {
+         value = "11";
+         type = "int";
+      }
+      datum sopceditor_expanded
+      {
+         value = "0";
+         type = "boolean";
+      }
+   }
+   element core_5.fbuff1
+   {
+      datum baseAddress
+      {
+         value = "40960";
+         type = "String";
+      }
+   }
+   element core_5.fbuff2
+   {
+      datum baseAddress
+      {
+         value = "1089536";
+         type = "String";
+      }
+   }
+   element core_5.work_queue_csr
+   {
+      datum baseAddress
+      {
+         value = "24576";
+         type = "String";
+      }
+   }
+   element core_5.work_queue_wr
+   {
+      datum baseAddress
+      {
+         value = "2424832";
+         type = "String";
+      }
+   }
+   element core_6
+   {
+      datum _sortIndex
+      {
+         value = "12";
+         type = "int";
+      }
+      datum sopceditor_expanded
+      {
+         value = "0";
+         type = "boolean";
+      }
+   }
+   element core_6.fbuff1
+   {
+      datum baseAddress
+      {
+         value = "49152";
+         type = "String";
+      }
+   }
+   element core_6.fbuff2
+   {
+      datum baseAddress
+      {
+         value = "1097728";
+         type = "String";
+      }
+   }
+   element core_6.work_queue_csr
+   {
+      datum baseAddress
+      {
+         value = "28672";
+         type = "String";
+      }
+   }
+   element core_6.work_queue_wr
+   {
+      datum baseAddress
+      {
+         value = "2490368";
+         type = "String";
+      }
+   }
+   element core_7
+   {
+      datum _sortIndex
+      {
+         value = "13";
+         type = "int";
+      }
+      datum sopceditor_expanded
+      {
+         value = "0";
+         type = "boolean";
+      }
+   }
+   element core_7.fbuff1
+   {
+      datum baseAddress
+      {
+         value = "57344";
+         type = "String";
+      }
+   }
+   element core_7.fbuff2
+   {
+      datum baseAddress
+      {
+         value = "1105920";
+         type = "String";
+      }
+   }
+   element core_7.work_queue_csr
+   {
+      datum baseAddress
+      {
+         value = "32768";
+         type = "String";
+      }
+   }
+   element core_7.work_queue_wr
+   {
+      datum baseAddress
+      {
+         value = "2555904";
          type = "String";
       }
    }
@@ -302,7 +492,7 @@
    dir="end" />
  <interface name="reset" internal="clk_0.clk_in_reset" type="reset" dir="end" />
  <module name="PixelStream_0" kind="PixelStream" version="1.0" enabled="1" />
- <module name="clk_0" kind="clock_source" version="16.1" enabled="1">
+ <module name="clk_0" kind="clock_source" version="16.0" enabled="1">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
   <parameter name="inputClockFrequency" value="0" />
@@ -310,7 +500,7 @@
  </module>
  <module name="core_0" kind="render_core" version="1.0" enabled="1">
   <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="3" />
-  <parameter name="AUTO_CLK_CLOCK_RATE" value="75000000" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="100000000" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="3" />
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
@@ -321,7 +511,7 @@
  </module>
  <module name="core_1" kind="render_core" version="1.0" enabled="1">
   <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="3" />
-  <parameter name="AUTO_CLK_CLOCK_RATE" value="75000000" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="100000000" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="3" />
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
@@ -332,7 +522,7 @@
  </module>
  <module name="core_2" kind="render_core" version="1.0" enabled="1">
   <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="3" />
-  <parameter name="AUTO_CLK_CLOCK_RATE" value="75000000" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="100000000" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="3" />
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
@@ -343,7 +533,7 @@
  </module>
  <module name="core_3" kind="render_core" version="1.0" enabled="1">
   <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="3" />
-  <parameter name="AUTO_CLK_CLOCK_RATE" value="75000000" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="100000000" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="3" />
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
@@ -352,7 +542,51 @@
   <parameter name="AUTO_UNIQUE_ID" value="$${FILENAME}_core_3" />
   <parameter name="core_id" value="3" />
  </module>
- <module name="hps_0" kind="altera_hps" version="16.1" enabled="1">
+ <module name="core_4" kind="render_core" version="1.0" enabled="1">
+  <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="3" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="100000000" />
+  <parameter name="AUTO_CLK_RESET_DOMAIN" value="3" />
+  <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
+  <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
+  <parameter name="AUTO_DEVICE_SPEEDGRADE" value="6" />
+  <parameter name="AUTO_GENERATION_ID" value="0" />
+  <parameter name="AUTO_UNIQUE_ID" value="$${FILENAME}_core_4" />
+  <parameter name="core_id" value="4" />
+ </module>
+ <module name="core_5" kind="render_core" version="1.0" enabled="1">
+  <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="3" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="100000000" />
+  <parameter name="AUTO_CLK_RESET_DOMAIN" value="3" />
+  <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
+  <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
+  <parameter name="AUTO_DEVICE_SPEEDGRADE" value="6" />
+  <parameter name="AUTO_GENERATION_ID" value="0" />
+  <parameter name="AUTO_UNIQUE_ID" value="$${FILENAME}_core_5" />
+  <parameter name="core_id" value="5" />
+ </module>
+ <module name="core_6" kind="render_core" version="1.0" enabled="1">
+  <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="3" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="100000000" />
+  <parameter name="AUTO_CLK_RESET_DOMAIN" value="3" />
+  <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
+  <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
+  <parameter name="AUTO_DEVICE_SPEEDGRADE" value="6" />
+  <parameter name="AUTO_GENERATION_ID" value="0" />
+  <parameter name="AUTO_UNIQUE_ID" value="$${FILENAME}_core_6" />
+  <parameter name="core_id" value="6" />
+ </module>
+ <module name="core_7" kind="render_core" version="1.0" enabled="1">
+  <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="3" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="100000000" />
+  <parameter name="AUTO_CLK_RESET_DOMAIN" value="3" />
+  <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
+  <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
+  <parameter name="AUTO_DEVICE_SPEEDGRADE" value="6" />
+  <parameter name="AUTO_GENERATION_ID" value="0" />
+  <parameter name="AUTO_UNIQUE_ID" value="$${FILENAME}_core_7" />
+  <parameter name="core_id" value="7" />
+ </module>
+ <module name="hps_0" kind="altera_hps" version="16.0" enabled="1">
   <parameter name="ABSTRACT_REAL_COMPARE_TEST" value="false" />
   <parameter name="ABS_RAM_MEM_INIT_FILENAME" value="meminit" />
   <parameter name="ACV_PHY_CLK_ADD_FR_PHASE" value="0.0" />
@@ -485,6 +719,7 @@
   <parameter name="FPGA_PERIPHERAL_INPUT_CLOCK_FREQ_I2C1_SCL_IN" value="100" />
   <parameter name="FPGA_PERIPHERAL_INPUT_CLOCK_FREQ_I2C2_SCL_IN" value="100" />
   <parameter name="FPGA_PERIPHERAL_INPUT_CLOCK_FREQ_I2C3_SCL_IN" value="100" />
+  <parameter name="FPGA_PERIPHERAL_INPUT_CLOCK_FREQ_SDIO_CLK_IN" value="100" />
   <parameter name="FPGA_PERIPHERAL_INPUT_CLOCK_FREQ_SPIS0_SCLK_IN" value="100" />
   <parameter name="FPGA_PERIPHERAL_INPUT_CLOCK_FREQ_SPIS1_SCLK_IN" value="100" />
   <parameter name="FPGA_PERIPHERAL_INPUT_CLOCK_FREQ_USB0_CLK_IN" value="100" />
@@ -503,10 +738,10 @@
   <parameter name="FPGA_PERIPHERAL_OUTPUT_CLOCK_FREQ_SPIM1_SCLK_OUT" value="100" />
   <parameter name="GPIO_Enable">No,No,No,No,No,No,No,No,No,Yes,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,Yes,No,No,No,No,Yes,No,No,No,No,No,No,No,Yes,No,No,No,No,Yes,Yes,No,No,No,No,No,No,Yes,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No</parameter>
   <parameter name="GP_Enable" value="false" />
-  <parameter name="H2F_AXI_CLOCK_FREQ" value="75000000" />
+  <parameter name="H2F_AXI_CLOCK_FREQ" value="100000000" />
   <parameter name="H2F_CTI_CLOCK_FREQ" value="100" />
   <parameter name="H2F_DEBUG_APB_CLOCK_FREQ" value="100" />
-  <parameter name="H2F_LW_AXI_CLOCK_FREQ" value="75000000" />
+  <parameter name="H2F_LW_AXI_CLOCK_FREQ" value="100000000" />
   <parameter name="H2F_TPIU_CLOCK_IN_FREQ" value="100" />
   <parameter name="HARD_EMIF" value="true" />
   <parameter name="HCX_COMPAT_MODE" value="false" />
@@ -883,11 +1118,11 @@
   <parameter name="use_default_mpu_clk" value="true" />
  </module>
  <module name="palette_0" kind="palette" version="1.0" enabled="1" />
- <module name="pio_vsync" kind="altera_avalon_pio" version="16.1" enabled="1">
+ <module name="pio_vsync" kind="altera_avalon_pio" version="16.0" enabled="1">
   <parameter name="bitClearingEdgeCapReg" value="false" />
   <parameter name="bitModifyingOutReg" value="false" />
   <parameter name="captureEdge" value="true" />
-  <parameter name="clockRate" value="75000000" />
+  <parameter name="clockRate" value="100000000" />
   <parameter name="direction" value="Input" />
   <parameter name="edgeType" value="FALLING" />
   <parameter name="generateIRQ" value="true" />
@@ -897,13 +1132,13 @@
   <parameter name="simDrivenValue" value="0" />
   <parameter name="width" value="1" />
  </module>
- <module name="pll_0" kind="altera_pll" version="16.1" enabled="1">
+ <module name="pll_0" kind="altera_pll" version="16.0" enabled="1">
   <parameter name="debug_print_output" value="false" />
   <parameter name="debug_use_rbc_taf_method" value="false" />
   <parameter name="device" value="5CSEMA5F31C6" />
   <parameter name="device_family" value="Cyclone V" />
   <parameter name="gui_active_clk" value="false" />
-  <parameter name="gui_actual_output_clock_frequency0" value="0 MHz" />
+  <parameter name="gui_actual_output_clock_frequency0" value="96.000000 MHz" />
   <parameter name="gui_actual_output_clock_frequency1" value="0 MHz" />
   <parameter name="gui_actual_output_clock_frequency10" value="0 MHz" />
   <parameter name="gui_actual_output_clock_frequency11" value="0 MHz" />
@@ -1016,7 +1251,7 @@
   <parameter name="gui_multiply_factor" value="1" />
   <parameter name="gui_number_of_clocks" value="2" />
   <parameter name="gui_operation_mode" value="direct" />
-  <parameter name="gui_output_clock_frequency0" value="75.0" />
+  <parameter name="gui_output_clock_frequency0" value="100.0" />
   <parameter name="gui_output_clock_frequency1" value="9.0" />
   <parameter name="gui_output_clock_frequency10" value="100.0" />
   <parameter name="gui_output_clock_frequency11" value="100.0" />
@@ -1102,7 +1337,7 @@
  </module>
  <connection
    kind="avalon"
-   version="16.1"
+   version="16.0"
    start="hps_0.h2f_axi_master"
    end="core_0.work_queue_wr">
   <parameter name="arbitrationPriority" value="1" />
@@ -1111,7 +1346,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="16.1"
+   version="16.0"
    start="hps_0.h2f_axi_master"
    end="core_1.work_queue_wr">
   <parameter name="arbitrationPriority" value="1" />
@@ -1120,7 +1355,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="16.1"
+   version="16.0"
    start="hps_0.h2f_axi_master"
    end="core_3.work_queue_wr">
   <parameter name="arbitrationPriority" value="1" />
@@ -1129,7 +1364,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="16.1"
+   version="16.0"
    start="hps_0.h2f_axi_master"
    end="core_2.work_queue_wr">
   <parameter name="arbitrationPriority" value="1" />
@@ -1138,7 +1373,43 @@
  </connection>
  <connection
    kind="avalon"
-   version="16.1"
+   version="16.0"
+   start="hps_0.h2f_axi_master"
+   end="core_4.work_queue_wr">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00240000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="hps_0.h2f_axi_master"
+   end="core_5.work_queue_wr">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00250000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="hps_0.h2f_axi_master"
+   end="core_6.work_queue_wr">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00260000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="hps_0.h2f_axi_master"
+   end="core_7.work_queue_wr">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00270000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
    start="hps_0.h2f_lw_axi_master"
    end="palette_0.palette">
   <parameter name="arbitrationPriority" value="1" />
@@ -1147,7 +1418,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="16.1"
+   version="16.0"
    start="hps_0.h2f_lw_axi_master"
    end="pio_vsync.s1">
   <parameter name="arbitrationPriority" value="1" />
@@ -1156,7 +1427,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="16.1"
+   version="16.0"
    start="hps_0.h2f_lw_axi_master"
    end="PixelStream_0.slave_parameters">
   <parameter name="arbitrationPriority" value="1" />
@@ -1165,7 +1436,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="16.1"
+   version="16.0"
    start="hps_0.h2f_lw_axi_master"
    end="core_0.work_queue_csr">
   <parameter name="arbitrationPriority" value="1" />
@@ -1174,7 +1445,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="16.1"
+   version="16.0"
    start="hps_0.h2f_lw_axi_master"
    end="core_1.work_queue_csr">
   <parameter name="arbitrationPriority" value="1" />
@@ -1183,7 +1454,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="16.1"
+   version="16.0"
    start="hps_0.h2f_lw_axi_master"
    end="core_2.work_queue_csr">
   <parameter name="arbitrationPriority" value="1" />
@@ -1192,7 +1463,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="16.1"
+   version="16.0"
    start="hps_0.h2f_lw_axi_master"
    end="core_3.work_queue_csr">
   <parameter name="arbitrationPriority" value="1" />
@@ -1201,7 +1472,43 @@
  </connection>
  <connection
    kind="avalon"
-   version="16.1"
+   version="16.0"
+   start="hps_0.h2f_lw_axi_master"
+   end="core_4.work_queue_csr">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x5000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="hps_0.h2f_lw_axi_master"
+   end="core_5.work_queue_csr">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x6000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="hps_0.h2f_lw_axi_master"
+   end="core_6.work_queue_csr">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x7000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="hps_0.h2f_lw_axi_master"
+   end="core_7.work_queue_csr">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x8000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
    start="palette_0.master"
    end="core_0.fbuff1">
   <parameter name="arbitrationPriority" value="1" />
@@ -1210,34 +1517,70 @@
  </connection>
  <connection
    kind="avalon"
-   version="16.1"
+   version="16.0"
    start="palette_0.master"
    end="core_1.fbuff1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x2000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="palette_0.master"
+   end="core_2.fbuff1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x4000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
    kind="avalon"
-   version="16.1"
+   version="16.0"
    start="palette_0.master"
-   end="core_2.fbuff1">
+   end="core_3.fbuff1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x6000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="palette_0.master"
+   end="core_4.fbuff1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x8000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
    kind="avalon"
-   version="16.1"
+   version="16.0"
    start="palette_0.master"
-   end="core_3.fbuff1">
+   end="core_5.fbuff1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0xa000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="palette_0.master"
+   end="core_6.fbuff1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0xc000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
    kind="avalon"
-   version="16.1"
+   version="16.0"
+   start="palette_0.master"
+   end="core_7.fbuff1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0xe000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
    start="palette_0.master"
    end="core_0.fbuff2">
   <parameter name="arbitrationPriority" value="1" />
@@ -1246,142 +1589,230 @@
  </connection>
  <connection
    kind="avalon"
-   version="16.1"
+   version="16.0"
    start="palette_0.master"
    end="core_1.fbuff2">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00102000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="palette_0.master"
+   end="core_2.fbuff2">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x00104000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
    kind="avalon"
-   version="16.1"
+   version="16.0"
    start="palette_0.master"
-   end="core_2.fbuff2">
+   end="core_3.fbuff2">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00106000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="palette_0.master"
+   end="core_4.fbuff2">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x00108000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
    kind="avalon"
-   version="16.1"
+   version="16.0"
    start="palette_0.master"
-   end="core_3.fbuff2">
+   end="core_5.fbuff2">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0010a000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="palette_0.master"
+   end="core_6.fbuff2">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x0010c000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
    kind="avalon"
-   version="16.1"
+   version="16.0"
+   start="palette_0.master"
+   end="core_7.fbuff2">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0010e000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
    start="PixelStream_0.master_burstreads"
    end="palette_0.slave">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x0000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
- <connection kind="clock" version="16.1" start="clk_0.clk" end="pll_0.refclk" />
- <connection kind="clock" version="16.1" start="pll_0.outclk0" end="pio_vsync.clk" />
- <connection kind="clock" version="16.1" start="pll_0.outclk0" end="core_0.clk" />
- <connection kind="clock" version="16.1" start="pll_0.outclk0" end="core_1.clk" />
- <connection kind="clock" version="16.1" start="pll_0.outclk0" end="core_2.clk" />
- <connection kind="clock" version="16.1" start="pll_0.outclk0" end="core_3.clk" />
+ <connection kind="clock" version="16.0" start="clk_0.clk" end="pll_0.refclk" />
+ <connection kind="clock" version="16.0" start="pll_0.outclk0" end="pio_vsync.clk" />
+ <connection kind="clock" version="16.0" start="pll_0.outclk0" end="core_0.clk" />
+ <connection kind="clock" version="16.0" start="pll_0.outclk0" end="core_1.clk" />
+ <connection kind="clock" version="16.0" start="pll_0.outclk0" end="core_2.clk" />
+ <connection kind="clock" version="16.0" start="pll_0.outclk0" end="core_3.clk" />
+ <connection kind="clock" version="16.0" start="pll_0.outclk0" end="core_4.clk" />
+ <connection kind="clock" version="16.0" start="pll_0.outclk0" end="core_5.clk" />
+ <connection kind="clock" version="16.0" start="pll_0.outclk0" end="core_6.clk" />
+ <connection kind="clock" version="16.0" start="pll_0.outclk0" end="core_7.clk" />
  <connection
    kind="clock"
-   version="16.1"
+   version="16.0"
    start="pll_0.outclk0"
    end="palette_0.clock" />
  <connection
    kind="clock"
-   version="16.1"
+   version="16.0"
    start="pll_0.outclk0"
    end="PixelStream_0.clockreset" />
  <connection
    kind="clock"
-   version="16.1"
+   version="16.0"
    start="pll_0.outclk0"
    end="hps_0.h2f_axi_clock" />
  <connection
    kind="clock"
-   version="16.1"
+   version="16.0"
    start="pll_0.outclk0"
    end="hps_0.h2f_lw_axi_clock" />
  <connection
    kind="clock"
-   version="16.1"
+   version="16.0"
    start="pll_0.outclk1"
    end="PixelStream_0.video" />
  <connection
    kind="interrupt"
-   version="16.1"
+   version="16.0"
    start="hps_0.f2h_irq0"
    end="pio_vsync.irq">
   <parameter name="irqNumber" value="0" />
  </connection>
  <connection
    kind="interrupt"
-   version="16.1"
+   version="16.0"
    start="hps_0.f2h_irq0"
    end="core_0.work_queue_irq">
   <parameter name="irqNumber" value="1" />
  </connection>
  <connection
    kind="interrupt"
-   version="16.1"
+   version="16.0"
    start="hps_0.f2h_irq0"
    end="core_1.work_queue_irq">
   <parameter name="irqNumber" value="2" />
  </connection>
  <connection
    kind="interrupt"
-   version="16.1"
+   version="16.0"
    start="hps_0.f2h_irq0"
    end="core_2.work_queue_irq">
   <parameter name="irqNumber" value="3" />
  </connection>
  <connection
    kind="interrupt"
-   version="16.1"
+   version="16.0"
    start="hps_0.f2h_irq0"
    end="core_3.work_queue_irq">
   <parameter name="irqNumber" value="4" />
  </connection>
  <connection
-   kind="reset"
-   version="16.1"
-   start="clk_0.clk_reset"
-   end="PixelStream_0.clockreset_reset" />
- <connection kind="reset" version="16.1" start="clk_0.clk_reset" end="pll_0.reset" />
+   kind="interrupt"
+   version="16.0"
+   start="hps_0.f2h_irq0"
+   end="core_4.work_queue_irq">
+  <parameter name="irqNumber" value="5" />
+ </connection>
+ <connection
+   kind="interrupt"
+   version="16.0"
+   start="hps_0.f2h_irq0"
+   end="core_5.work_queue_irq">
+  <parameter name="irqNumber" value="6" />
+ </connection>
+ <connection
+   kind="interrupt"
+   version="16.0"
+   start="hps_0.f2h_irq0"
+   end="core_6.work_queue_irq">
+  <parameter name="irqNumber" value="7" />
+ </connection>
+ <connection
+   kind="interrupt"
+   version="16.0"
+   start="hps_0.f2h_irq0"
+   end="core_7.work_queue_irq">
+  <parameter name="irqNumber" value="8" />
+ </connection>
  <connection
    kind="reset"
-   version="16.1"
+   version="16.0"
+   start="clk_0.clk_reset"
+   end="PixelStream_0.clockreset_reset" />
+ <connection kind="reset" version="16.0" start="clk_0.clk_reset" end="pll_0.reset" />
+ <connection
+   kind="reset"
+   version="16.0"
    start="clk_0.clk_reset"
    end="pio_vsync.reset" />
  <connection
    kind="reset"
-   version="16.1"
+   version="16.0"
    start="clk_0.clk_reset"
    end="palette_0.reset" />
  <connection
    kind="reset"
-   version="16.1"
+   version="16.0"
    start="clk_0.clk_reset"
    end="core_0.reset" />
  <connection
    kind="reset"
-   version="16.1"
+   version="16.0"
    start="clk_0.clk_reset"
    end="core_1.reset" />
  <connection
    kind="reset"
-   version="16.1"
+   version="16.0"
    start="clk_0.clk_reset"
    end="core_3.reset" />
  <connection
    kind="reset"
-   version="16.1"
+   version="16.0"
    start="clk_0.clk_reset"
    end="core_2.reset" />
+ <connection
+   kind="reset"
+   version="16.0"
+   start="clk_0.clk_reset"
+   end="core_4.reset" />
+ <connection
+   kind="reset"
+   version="16.0"
+   start="clk_0.clk_reset"
+   end="core_5.reset" />
+ <connection
+   kind="reset"
+   version="16.0"
+   start="clk_0.clk_reset"
+   end="core_6.reset" />
+ <connection
+   kind="reset"
+   version="16.0"
+   start="clk_0.clk_reset"
+   end="core_7.reset" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.enableEccProtection" value="FALSE" />
  <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />
