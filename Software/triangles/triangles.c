@@ -15,8 +15,8 @@ struct triangle generateTri(){
     
     int i;
     for(i=0; i<3; i++){
-        tri.points[i].x = rand() % 480;
-        tri.points[i].y = rand() % 272;
+        tri.points[i].x = rand() % DISPLAY_WIDTH;
+        tri.points[i].y = rand() % DISPLAY_HEIGHT;
     }
     
     return tri;
@@ -116,6 +116,8 @@ int main(){
         
         //workqueue_eof(0); // END OF FRAME
         //workqueue_eof(1);
+        
+        workqueue_wait_done();
         
         clock_gettime(CLOCK_MONOTONIC, &time2);
         

@@ -22,6 +22,10 @@ void workqueue_init(int queuenum, void *baseaddr, void *csraddr){
     }
 }
 
+void workqueue_wait_done(void){
+    //fgetc(fp);
+}
+
 static void workqueue_add(int queuenum, struct workorder *o){
     static char dat[32];
     

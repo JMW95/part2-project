@@ -29,13 +29,13 @@
 #define WQ_BASE_JUMP 0x10000
 #define WQ_CSR_JUMP 0x1000
 
-#define BUFFERSIZE  8192
+#define BUFFERSIZE  512
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Jamie Wood");
 MODULE_DESCRIPTION("IRQ Workqueue driver");
 
-#define NUMQUEUES 4
+#define NUMQUEUES 8
 volatile unsigned int *bases[NUMQUEUES];
 volatile unsigned int *csrs[NUMQUEUES];
 static wait_queue_head_t wait_queues[NUMQUEUES];
@@ -47,7 +47,11 @@ static unsigned int *buffers[NUMQUEUES];
 void *lwbase;
 void *hwbase;
 
+static DECLARE_WAIT_QUEUE_HEAD (done_queue);
+
 static struct mutex locks[NUMQUEUES];
+
+static unsigned int done[NUMQUEUES];
 
 static unsigned int queue_free_space(int qn){
     int space;
@@ -58,17 +62,28 @@ static unsigned int queue_free_space(int qn){
     return space;
 }
 
+static unsigned int queue_used_space(int qn){
+    int space;
+    space = (wr[qn] - rd[qn]);
+    if (space < 0){
+        space += BUFFERSIZE;
+    }
+    return space;
+}
+
 static void do_a_copy(int wqnum){
     mutex_lock(&locks[wqnum]);
     
     int i;
-    int len = (BUFFERSIZE-1)-queue_free_space(wqnum);
+    int len = queue_used_space(wqnum);
     int space = 127 - csrs[wqnum][0]; // How much space is left in the FIFO
     if (len > space) len = space;
-    for(i=0; i<len; i++){
+    //for(i=0; i<len; i++){
+    while(len--){
         bases[wqnum][0] = buffers[wqnum][rd[wqnum]];
-        rd[wqnum] = (rd[wqnum] + 1) % BUFFERSIZE;
+        rd[wqnum] = (rd[wqnum] + 1) & (BUFFERSIZE-1);
     }
+    
     wake_up_all(&wait_queues[wqnum]); // Unblock any waiting processes
     
     mutex_unlock(&locks[wqnum]);
@@ -78,7 +93,13 @@ irq_handler_t copy_thread_func(int irq, void *dev_id, struct pt_regs *regs){
     int wqnum;
     wqnum = irq - 73;
     
-    do_a_copy(wqnum);
+    /*if(queue_used_space(wqnum) == 0){
+        done[wqnum] = 1;
+        wake_up_all(&done_queue);
+        //printk(KERN_ALERT "e %d\n", wqnum);
+    }else{*/
+        do_a_copy(wqnum);
+    //}
     
     return (irq_handler_t) IRQ_HANDLED;
 }
@@ -98,11 +119,12 @@ static ssize_t write(struct file *file, const char __user *user, size_t size,lof
     static unsigned int buf[1024]; // max data input is a 4k buffer
     static unsigned int *data;
     //printk(KERN_ALERT "%p %p %d\n", data, user, size);
-    if((res = copy_from_user(buf, user, size)) != 0){
-        printk(KERN_ALERT "CFU FAILED %d b remain\n", res);
-    }
+    //if((res = copy_from_user(buf, user, size)) != 0){
+    //    printk(KERN_ALERT "CFU FAILED %d b remain\n", res);
+    //}
     
-    data = &buf[0];
+    //data = &buf[0];
+    data = &user[0];
     
     for(entrynum=0; entrynum < size / 32; entrynum++){    
         wqnum = data[0] >> 24;
@@ -117,34 +139,36 @@ static ssize_t write(struct file *file, const char __user *user, size_t size,lof
         
         if(queue_free_space(wqnum) < len){
             //printk(KERN_ALERT "BL #%d, %d, %d (%d) (%d, %d)\n", wqnum, queue_free_space(wqnum), len, csrs[wqnum][0], wr[wqnum], rd[wqnum]);
-            tmp = csrs[wqnum][0];
-            tw = wr[wqnum];
-            tr = rd[wqnum];
-            asm("" ::: "memory");
+            //tmp = csrs[wqnum][0];
+            //tw = wr[wqnum];
+            //tr = rd[wqnum];
+            //asm("" ::: "memory");
             
-            res = wait_event_interruptible_timeout(wait_queues[wqnum], queue_free_space(wqnum) >= len, HZ/2); // Block until there's room in the buffer
+            res = wait_event_interruptible_timeout(wait_queues[wqnum], queue_free_space(wqnum) >= len, HZ/10); // Block until there's room in the buffer
             //res = wait_event_interruptible(wait_queues[wqnum], queue_free_space(wqnum) >= len); // Block until there's room in the buffer
             
-            if(res <= 1){
-                printk(KERN_ALERT "WAKE %d\n", res);
-                printk(KERN_ALERT "PRE  #%d, %d, %d (%d) (%d, %d)\n", wqnum, queue_free_space(wqnum), len, tmp, tw, tr);
-                printk(KERN_ALERT "POST #%d, %d, %d (%d) (%d, %d)\n", wqnum, queue_free_space(wqnum), len, csrs[wqnum][0], wr[wqnum], rd[wqnum]);
-            }
+            //if(res <= 1){
+            //    printk(KERN_ALERT "WAKE %d\n", res);
+            //    printk(KERN_ALERT "PRE  #%d, %d, %d (%d) (%d, %d)\n", wqnum, queue_free_space(wqnum), len, tmp, tw, tr);
+            //    printk(KERN_ALERT "POST #%d, %d, %d (%d) (%d, %d)\n", wqnum, queue_free_space(wqnum), len, csrs[wqnum][0], wr[wqnum], rd[wqnum]);
+            //}
             
             //printk(KERN_ALERT "wake #%d, %d (%d) (%d, %d)\n", wqnum, queue_free_space(wqnum), csrs[wqnum][0], wr[wqnum], rd[wqnum]);
         }
         
         for(i=copylen; i<len; i++){
             buffers[wqnum][wr[wqnum]] = data[i];
-            wr[wqnum] = (wr[wqnum] + 1) % BUFFERSIZE;
+            wr[wqnum] = (wr[wqnum] + 1) & (BUFFERSIZE-1);
         }
-        if(copylen < len){
+        //if(copylen < len){
             //printk(KERN_ALERT "copied %d bytes\n", (len - copylen));
-        }
+        //}
         
         //printk(KERN_ALERT "POST s %d, w %d, r %d, f %d\n", len, wr[wqnum], rd[wqnum], csrs[wqnum][0]);
         
         data += 8;
+        
+        done[wqnum] = 0;
     }
     
     for(i=0; i<NUMQUEUES; i++){
@@ -153,6 +177,25 @@ static ssize_t write(struct file *file, const char __user *user, size_t size,lof
     }
     
     return size;
+}
+
+static bool allqueuesempty(void){
+    int i;
+    for(i=0; i<NUMQUEUES; i++){
+        if(done[i] == 0){
+            return false;
+        }
+    }
+    return true;
+}
+
+static ssize_t read(struct file *file, char __user *user, size_t size,loff_t*o){
+    if(!allqueuesempty()){
+        printk(KERN_ALERT "sl\n");
+        wait_event_interruptible(done_queue, allqueuesempty()); // Block until all queues are empty
+        printk(KERN_ALERT "wa\n");
+    }
+    return 1;
 }
 
 static int open(struct inode *inode, struct file *file){
@@ -170,7 +213,7 @@ static const struct file_operations workqueue_fops = {
     .open    = open,
     .release = close,
     .write   = write,
-    //.read    = read,
+    .read    = read,
     .llseek  = default_llseek,
 };
 
