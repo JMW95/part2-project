@@ -47,7 +47,7 @@ static unsigned int *buffers[NUMQUEUES];
 void *lwbase;
 void *hwbase;
 
-static unsigned int freeride[NUMQUEUES];
+//static unsigned int freeride[NUMQUEUES];
 
 DEFINE_MUTEX(fr_lock);
 
@@ -60,9 +60,29 @@ static unsigned int queue_free_space(int qn){
     return space;
 }
 
+static void do_a_copy(int wqnum){
+    mutex_lock(&fr_lock);
+    
+    int i;
+    int len = (BUFFERSIZE-1)-queue_free_space(wqnum);
+    int space = 127 - csrs[wqnum][0]; // How much space is left in the FIFO
+    if (len > space) len = space;
+    for(i=0; i<len; i++){
+        bases[wqnum][0] = buffers[wqnum][rd[wqnum]];
+        rd[wqnum] = (rd[wqnum] + 1) % BUFFERSIZE;
+    }
+    wake_up_all(&wait_queues[wqnum]); // Unblock any waiting processes
+    
+    mutex_unlock(&fr_lock);
+}
+
 irq_handler_t copy_thread_func(int irq, void *dev_id, struct pt_regs *regs){
-    int wqnum, len, i;
+    int wqnum;//, len, i;
     wqnum = irq - 73;
+    
+    do_a_copy(wqnum);
+    
+    /*
     
     // Copy up to 127 values into the FIFO (interrupt occurs when 1 left, and it's 128 long)
     len = (BUFFERSIZE-1)-queue_free_space(wqnum);
@@ -82,6 +102,8 @@ irq_handler_t copy_thread_func(int irq, void *dev_id, struct pt_regs *regs){
     
     wake_up_all(&wait_queues[wqnum]); // Unblock any waiting processes
     
+    */
+    
     return (irq_handler_t) IRQ_HANDLED;
 }
 
@@ -89,8 +111,10 @@ irq_handler_t irq_handler(int irq, void *dev_id, struct pt_regs *regs){
     int wqnum;
     wqnum = irq - 73;
     
-    // Clear the 'almost empty' event
+    // Clear the 'empty' event
     iowrite32(0xff,csrs[wqnum]+2);
+    
+    //printk(KERN_ALERT "IRQ");
     
     //return (irq_handler_t) IRQ_HANDLED;
     return (irq_handler_t)IRQ_WAKE_THREAD;
@@ -118,6 +142,27 @@ static ssize_t write(struct file *file, const char __user *user, size_t size,lof
         data[0] = (type << 8) | nbytes;
         
         copylen = 0;
+        
+        if(queue_free_space(wqnum) < len){
+            //printk(KERN_ALERT "BL #%d, %d, %d (%d) (%d, %d)\n", wqnum, queue_free_space(wqnum), len, csrs[wqnum][0], wr[wqnum], rd[wqnum]);
+            tmp = csrs[wqnum][0];
+            tw = wr[wqnum];
+            tr = rd[wqnum];
+            asm("" ::: "memory");
+            
+            res = wait_event_interruptible_timeout(wait_queues[wqnum], queue_free_space(wqnum) >= len, HZ/2); // Block until there's room in the buffer
+            //res = wait_event_interruptible(wait_queues[wqnum], queue_free_space(wqnum) >= len); // Block until there's room in the buffer
+            
+            if(res <= 1){
+                printk(KERN_ALERT "WAKE %d\n", res);
+                printk(KERN_ALERT "PRE  #%d, %d, %d (%d) (%d, %d)\n", wqnum, queue_free_space(wqnum), len, tmp, tw, tr);
+                printk(KERN_ALERT "POST #%d, %d, %d (%d) (%d, %d)\n", wqnum, queue_free_space(wqnum), len, csrs[wqnum][0], wr[wqnum], rd[wqnum]);
+            }
+            
+            //printk(KERN_ALERT "wake #%d, %d (%d) (%d, %d)\n", wqnum, queue_free_space(wqnum), csrs[wqnum][0], wr[wqnum], rd[wqnum]);
+        }
+        
+        /*
         
         //printk(KERN_ALERT "PRE  s %d, w %d, r %d, f %d\n", len, wr[wqnum], rd[wqnum], csrs[wqnum][0]);
         
@@ -152,6 +197,8 @@ static ssize_t write(struct file *file, const char __user *user, size_t size,lof
             }
         }
         
+        */
+        
         for(i=copylen; i<len; i++){
             buffers[wqnum][wr[wqnum]] = data[i];
             wr[wqnum] = (wr[wqnum] + 1) % BUFFERSIZE;
@@ -163,6 +210,11 @@ static ssize_t write(struct file *file, const char __user *user, size_t size,lof
         //printk(KERN_ALERT "POST s %d, w %d, r %d, f %d\n", len, wr[wqnum], rd[wqnum], csrs[wqnum][0]);
         
         data += 8;
+    }
+    
+    for(i=0; i<NUMQUEUES; i++){
+        // Copy some data to get it started
+        do_a_copy(i);
     }
     
     return size;
@@ -221,9 +273,12 @@ static int __init init_workqueue(void)
         printk(KERN_ALERT "ae: %x\n", (csrs[i]+5)[0]);
         
         // Clear the event register (any pending events are cleared)
-        iowrite32(0x3f,csrs[i]+2);
+        //iowrite32(0x3f,csrs[i]+2);
         // Enable IRQ generation for the 'almost empty' event
-        iowrite32(0x8,csrs[i]+3);
+        //iowrite32(0x8,csrs[i]+3);
+        
+        // Enable the 'empty' interrupt
+        iowrite32(0x2,csrs[i]+3);
         
         printk(KERN_ALERT "is: %x\n", (csrs[i]+1)[0]);
         printk(KERN_ALERT "ev: %x\n", (csrs[i]+2)[0]);
