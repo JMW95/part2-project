@@ -24,9 +24,7 @@
 #define ALT_LWFPGASLVS_OFST 0xff200000
 
 #define WQ_0_BASE 0x200000
-#define WQ_1_BASE 0x210000
 #define WQ_0_CSR 0x1000
-#define WQ_1_CSR 0x2000
 
 #define WQ_BASE_JUMP 0x10000
 #define WQ_CSR_JUMP 0x1000
@@ -37,7 +35,7 @@ MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Jamie Wood");
 MODULE_DESCRIPTION("IRQ Workqueue driver");
 
-#define NUMQUEUES 2
+#define NUMQUEUES 4
 volatile unsigned int *bases[NUMQUEUES];
 volatile unsigned int *csrs[NUMQUEUES];
 static wait_queue_head_t wait_queues[NUMQUEUES];
@@ -124,7 +122,7 @@ static ssize_t write(struct file *file, const char __user *user, size_t size,lof
         //printk(KERN_ALERT "PRE  s %d, w %d, r %d, f %d\n", len, wr[wqnum], rd[wqnum], csrs[wqnum][0]);
         
         mutex_lock(&fr_lock);
-        if(freeride[wqnum] || (queue_free_space(wqnum) == (BUFFERSIZE-1) && csrs[wqnum][0] < 3)){ // Queue is almost empty, so fill it
+        if(freeride[wqnum] || ((queue_free_space(wqnum) == (BUFFERSIZE-1)) && (csrs[wqnum][0] < 3))){ // Queue is almost empty, so fill it
             freeride[wqnum] = 0;
             mutex_unlock(&fr_lock);
             copylen = len;
@@ -140,7 +138,7 @@ static ssize_t write(struct file *file, const char __user *user, size_t size,lof
                 tw = wr[wqnum];
                 tr = rd[wqnum];
                 asm("" ::: "memory");
-                res = wait_event_interruptible_timeout(wait_queues[wqnum], queue_free_space(wqnum) >= len, HZ/10); // Block until there's room in the buffer
+                res = wait_event_interruptible_timeout(wait_queues[wqnum], queue_free_space(wqnum) >= len, HZ/2); // Block until there's room in the buffer
                 //res = wait_event_interruptible(wait_queues[wqnum], queue_free_space(wqnum) >= len); // Block until there's room in the buffer
                 
                 if(res <= 1){

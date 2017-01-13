@@ -3,9 +3,9 @@
 
 
 #define WQ_0_BASE 0x200000
-#define WQ_1_BASE 0x210000
+#define WQ_BASE_JUMP 0x10000
 #define WQ_0_CSR 0x1000
-#define WQ_1_CSR 0x2000
+#define WQ_CSR_JUMP 0x1000
 #define PIXELSTREAM_BASE 0x0
 #define PALETTE_BASE 0x200
 

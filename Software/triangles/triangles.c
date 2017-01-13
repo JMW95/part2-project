@@ -64,12 +64,12 @@ int main(){
     palette[6] = palette[14] = PIXEL_MAGENTA;
     palette[7] = palette[15] = PIXEL_YELLOW;
     
-    workqueue_init(0,
-        hw_base + (( unsigned long)(ALT_FPGASLVS_OFST + WQ_0_BASE) & (unsigned long) (HW_REGS_MASK) ),
-        lw_base + (( unsigned long)(ALT_LWFPGASLVS_OFST + WQ_0_CSR) & (unsigned long) (LW_REGS_MASK) ));
-    workqueue_init(1,
-        hw_base + (( unsigned long)(ALT_FPGASLVS_OFST + WQ_1_BASE) & (unsigned long) (HW_REGS_MASK) ),
-        lw_base + (( unsigned long)(ALT_LWFPGASLVS_OFST + WQ_1_CSR) & (unsigned long) (LW_REGS_MASK) ));
+    int i;
+    for(i=0; i<NUM_QUEUES; i++){
+        workqueue_init(i,
+            hw_base + (( unsigned long)(ALT_FPGASLVS_OFST + WQ_0_BASE + (WQ_BASE_JUMP*i)) & (unsigned long) (HW_REGS_MASK) ),
+            lw_base + (( unsigned long)(ALT_LWFPGASLVS_OFST + WQ_0_CSR + (WQ_CSR_JUMP*i)) & (unsigned long) (LW_REGS_MASK) ));
+    }
     
     long t1,t2;
     struct timespec time1, time2;
@@ -98,11 +98,13 @@ int main(){
         clock_gettime(CLOCK_MONOTONIC, &time1);
         
         if(vid_getbuffer() == 0x0){
-            workqueue_sof(0, 1); // START OF FRAME
-            workqueue_sof(1, 1);
+            for(i=0; i<NUM_QUEUES; i++){
+                workqueue_sof(i, 1); // START OF FRAME
+            }
         }else{
-            workqueue_sof(0, 0);
-            workqueue_sof(1, 0);
+            for(i=0; i<NUM_QUEUES; i++){
+                workqueue_sof(i, 0);
+            }
         }
 #ifndef HARDWARE_RENDER
         clear();

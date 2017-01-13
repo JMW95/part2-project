@@ -1,6 +1,8 @@
 #ifndef WORKQUEUE_H
 #define WORKQUEUE_H
 
+#define NUM_QUEUES 4
+
 // Types of work
 #define TYPE_SOF    (1)
 #define TYPE_EOF    (2)
