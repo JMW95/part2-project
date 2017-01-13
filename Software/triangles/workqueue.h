@@ -1,7 +1,7 @@
 #ifndef WORKQUEUE_H
 #define WORKQUEUE_H
 
-#define NUM_QUEUES 4
+#define NUM_QUEUES 8
 
 // Types of work
 #define TYPE_SOF    (1)
@@ -36,5 +36,7 @@ void workqueue_rect(int queuenum, int x1, int y1, int x2, int y2, int col);
 void workqueue_tri(int queuenum, int x1, int y1, int x2, int y2, int x3, int y3, int col);
 void workqueue_copy(int queuenum, char *data, char size);
 void workqueue_copy_start(int queuenum);
+
+void workqueue_wait_done(void);
 
 #endif /* WORKQUEUE_H */

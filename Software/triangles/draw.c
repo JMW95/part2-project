@@ -64,8 +64,8 @@ void drawHorizontalLine(int x1, int x2, int top, int colour){
     int right = max(x1, x2);
     
 #ifdef HARDWARE_RENDER
-    int queuenum = top/68;
-    workqueue_line(queuenum, left, right, top - (queuenum * 68), colour);
+    int queuenum = top/(DISPLAY_HEIGHT/NUM_QUEUES);
+    workqueue_line(queuenum, left, right, top - (queuenum * (DISPLAY_HEIGHT/NUM_QUEUES)), colour);
 #else
     int width = (right - left)+1;
     colour |= (colour << 4);
@@ -198,9 +198,10 @@ void draw(struct triangle *tri, int col){
     struct triangle tmp = sort(tri);
     int i;
     //for(i=0; i<3; i++) printf("point%d: (%d, %d)\n", i, tmp.points[i].x, tmp.points[i].y);
-#ifdef HARDWARE_RENDER_TEMP
+#ifdef HARDWARE_RENDER
     for(i=0; i<NUM_QUEUES; i++){
-        workqueue_tri(i, tmp.points[0].x, tmp.points[0].y-(i*68), tmp.points[1].x, tmp.points[1].y-(i*68), tmp.points[2].x, tmp.points[2].y-(i*68), col);
+        int yoff = i * (DISPLAY_HEIGHT/NUM_QUEUES);
+        workqueue_tri(i, tmp.points[0].x, tmp.points[0].y-yoff, tmp.points[1].x, tmp.points[1].y-yoff, tmp.points[2].x, tmp.points[2].y-yoff, col);
     }
 #else
     // flat bottom
