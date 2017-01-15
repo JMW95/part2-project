@@ -86,9 +86,9 @@ int main(void){
                 x3 = data[4];
                 y3 = data[5];
                 col = data[6];
-                debug_write(2);
+                //debug_write(2);
                 vid_fill_triangle(x1, y1, x2, y2, x3, y3, col);
-                debug_write(0);
+                //debug_write(0);
                 break;
             case TYPE_COPY:
                 // Copy bytes to the framebuffer
