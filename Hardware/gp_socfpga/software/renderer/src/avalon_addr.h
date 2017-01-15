@@ -5,4 +5,6 @@
 
 #define COREID_BASE     (0x00400000)
 
+#define DEBUG_BASE		(0x01000000)
+
 extern unsigned int coreid;

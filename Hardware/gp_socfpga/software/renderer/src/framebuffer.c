@@ -1,4 +1,5 @@
 #include "framebuffer.h"
+#include "debug.h"
 
 #define abs(x) ((x)<0 ? -(x) : (x))
 
@@ -169,6 +170,8 @@ void vid_fill_rect(int left, int top, int right, int bottom, int colour){
 
 // fill a triangle  where the points are sorted in ascending y-order
 void vid_fill_triangle(int x1, int y1, int x2, int y2, int x3, int y3, int colour){
+	debug_write(3);
+	
 	// First draw the top half, from y = y1 to y2
 	int i1 = x1;
 	int i2 = x1;
@@ -210,8 +213,10 @@ void vid_fill_triangle(int x1, int y1, int x2, int y2, int x3, int y3, int colou
 			e2 -= dy2;
 		}
 
+		debug_write(3);
 		// Draw this line
 		vid_fill_line(i1, i2, j, colour);
+		debug_write(2);
 
 		e1 += m1;
 		e2 += m2;
@@ -242,7 +247,9 @@ void vid_fill_triangle(int x1, int y1, int x2, int y2, int x3, int y3, int colou
 			e3 -= dy3;
 		}
 
+		debug_write(3);
 		vid_fill_line(i2, i3, j, colour);
+		debug_write(2);
 
 		e2 += m2;
 		e3 += m3;

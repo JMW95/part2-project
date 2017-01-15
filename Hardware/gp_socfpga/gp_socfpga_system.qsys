@@ -478,6 +478,14 @@
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
+ <interface name="core_0_debug" internal="core_0.debug" type="conduit" dir="end" />
+ <interface name="core_1_debug" internal="core_1.debug" type="conduit" dir="end" />
+ <interface name="core_2_debug" internal="core_2.debug" type="conduit" dir="end" />
+ <interface name="core_3_debug" internal="core_3.debug" type="conduit" dir="end" />
+ <interface name="core_4_debug" internal="core_4.debug" type="conduit" dir="end" />
+ <interface name="core_5_debug" internal="core_5.debug" type="conduit" dir="end" />
+ <interface name="core_6_debug" internal="core_6.debug" type="conduit" dir="end" />
+ <interface name="core_7_debug" internal="core_7.debug" type="conduit" dir="end" />
  <interface name="hps_io" internal="hps_0.hps_io" type="conduit" dir="end" />
  <interface name="memory" internal="hps_0.memory" type="conduit" dir="end" />
  <interface
@@ -1528,15 +1536,6 @@
    kind="avalon"
    version="16.0"
    start="palette_0.master"
-   end="core_2.fbuff1">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x4000" />
-  <parameter name="defaultConnection" value="false" />
- </connection>
- <connection
-   kind="avalon"
-   version="16.0"
-   start="palette_0.master"
    end="core_3.fbuff1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x6000" />
@@ -1576,6 +1575,15 @@
    end="core_7.fbuff1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0xe000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="palette_0.master"
+   end="core_2.fbuff1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x4000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection

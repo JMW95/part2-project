@@ -1,5 +1,6 @@
 #include "avalon_addr.h"
 #include "framebuffer.h"
+#include "debug.h"
 
 // Types of work
 #define TYPE_SOF    (1)
@@ -54,6 +55,7 @@ int main(void){
                 addr = *(unsigned int *)(data);
                 vid_setbuffer(addr == 0 ? 0x100000 : 0x110000);
                 vid_clear(0); //TODO hardware fast-clear?
+                debug_write(0);
                 break;
             case TYPE_EOF:
                 // TODO: End of frame, mark framebuffer as locked
@@ -84,7 +86,9 @@ int main(void){
                 x3 = data[4];
                 y3 = data[5];
                 col = data[6];
+                debug_write(2);
                 vid_fill_triangle(x1, y1, x2, y2, x3, y3, col);
+                debug_write(0);
                 break;
             case TYPE_COPY:
                 // Copy bytes to the framebuffer

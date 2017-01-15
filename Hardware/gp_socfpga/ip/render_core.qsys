@@ -53,7 +53,7 @@
    {
       datum _sortIndex
       {
-         value = "6";
+         value = "7";
          type = "int";
       }
    }
@@ -77,7 +77,7 @@
    {
       datum _sortIndex
       {
-         value = "7";
+         value = "8";
          type = "int";
       }
    }
@@ -97,6 +97,22 @@
          type = "String";
       }
    }
+   element pio_debug
+   {
+      datum _sortIndex
+      {
+         value = "5";
+         type = "int";
+      }
+   }
+   element pio_debug.s1
+   {
+      datum baseAddress
+      {
+         value = "16777216";
+         type = "String";
+      }
+   }
    element reset
    {
       datum _sortIndex
@@ -109,7 +125,7 @@
    {
       datum _sortIndex
       {
-         value = "5";
+         value = "6";
          type = "int";
       }
    }
@@ -182,6 +198,11 @@ proc compose {} {
     send_message INFO [ concat "Core ID: " [ get_parameter_value core_id ] ]
 }]]></instanceScript>
  <interface name="clk" internal="clock.in_clk" type="clock" dir="end" />
+ <interface
+   name="debug"
+   internal="pio_debug.external_connection"
+   type="conduit"
+   dir="end" />
  <interface name="fbuff1" internal="fbuff1.s2" type="avalon" dir="end" />
  <interface name="fbuff2" internal="fbuff2.s2" type="avalon" dir="end" />
  <interface name="reset" internal="reset.in_reset" type="reset" dir="end" />
@@ -312,6 +333,20 @@ proc compose {} {
   <parameter name="useShallowMemBlocks" value="false" />
   <parameter name="writable" value="true" />
  </module>
+ <module name="pio_debug" kind="altera_avalon_pio" version="16.0" enabled="1">
+  <parameter name="bitClearingEdgeCapReg" value="false" />
+  <parameter name="bitModifyingOutReg" value="false" />
+  <parameter name="captureEdge" value="false" />
+  <parameter name="clockRate" value="0" />
+  <parameter name="direction" value="Output" />
+  <parameter name="edgeType" value="RISING" />
+  <parameter name="generateIRQ" value="false" />
+  <parameter name="irqType" value="LEVEL" />
+  <parameter name="resetValue" value="0" />
+  <parameter name="simDoTestBenchWiring" value="false" />
+  <parameter name="simDrivenValue" value="0" />
+  <parameter name="width" value="8" />
+ </module>
  <module name="reset" kind="altera_reset_bridge" version="16.0" enabled="1">
   <parameter name="ACTIVE_LOW_RESET" value="0" />
   <parameter name="AUTO_CLK_CLOCK_RATE" value="0" />
@@ -399,8 +434,14 @@ proc compose {} {
   <parameter name="baseAddress" value="0x00100000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
+ <connection kind="avalon" version="16.0" start="clarvi_0.main" end="pio_debug.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x01000000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
  <connection kind="clock" version="16.0" start="clock.out_clk" end="reset.clk" />
  <connection kind="clock" version="16.0" start="clock.out_clk" end="core_id.clk" />
+ <connection kind="clock" version="16.0" start="clock.out_clk" end="pio_debug.clk" />
  <connection
    kind="clock"
    version="16.0"
@@ -440,6 +481,11 @@ proc compose {} {
    version="16.0"
    start="reset.out_reset"
    end="core_id.reset" />
+ <connection
+   kind="reset"
+   version="16.0"
+   start="reset.out_reset"
+   end="pio_debug.reset" />
  <connection
    kind="reset"
    version="16.0"
