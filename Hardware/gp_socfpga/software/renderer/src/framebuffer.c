@@ -172,6 +172,9 @@ void vid_fill_rect(int left, int top, int right, int bottom, int colour){
 void vid_fill_triangle(int x1, int y1, int x2, int y2, int x3, int y3, int colour){
 	//debug_write(3);
 	
+	if(y1 >= DISPLAY_HEIGHT) return;
+	if(y3 < 0) return;
+	
 	// First draw the top half, from y = y1 to y2
 	int i1 = x1;
 	int i2 = x1;
