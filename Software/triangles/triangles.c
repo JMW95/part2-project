@@ -10,6 +10,9 @@
 #include "mem.h"
 #include "workqueue.h"
 
+#define NUMTRIANGLES 1000
+#define NUMREPS 20
+
 struct triangle generateTri(){
     struct triangle tri;
     
@@ -79,9 +82,6 @@ int main(){
     
     srand(0); // Fixed random seed
     
-    #define NUMTRIANGLES 1000
-    #define NUMREPS 20
-    
     int reps;
     for(reps=0; reps<NUMREPS; reps++){
         
@@ -114,8 +114,9 @@ int main(){
            draw(&tris[i], cols[i]);
         }
         
-        //workqueue_eof(0); // END OF FRAME
-        //workqueue_eof(1);
+        for(i=0; i<NUM_QUEUES; i++){
+            workqueue_eof(i); // END OF FRAME
+        }
         
         workqueue_wait_done();
         

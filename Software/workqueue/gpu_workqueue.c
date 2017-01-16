@@ -25,11 +25,15 @@
 
 #define WQ_0_BASE 0x200000
 #define WQ_0_CSR 0x1000
+#define DONE_0_CSR 0x1100
 
 #define WQ_BASE_JUMP 0x10000
 #define WQ_CSR_JUMP 0x1000
+#define DONE_CSR_JUMP 0x1000
 
 #define BUFFERSIZE  512
+
+#define WORKQUEUE_TYPE_SOF 1
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Jamie Wood");
@@ -38,6 +42,7 @@ MODULE_DESCRIPTION("IRQ Workqueue driver");
 #define NUMQUEUES 8
 volatile unsigned int *bases[NUMQUEUES];
 volatile unsigned int *csrs[NUMQUEUES];
+volatile unsigned int *done_csrs[NUMQUEUES];
 static wait_queue_head_t wait_queues[NUMQUEUES];
 
 static volatile unsigned int rd[NUMQUEUES];
@@ -51,7 +56,7 @@ static DECLARE_WAIT_QUEUE_HEAD (done_queue);
 
 static struct mutex locks[NUMQUEUES];
 
-static unsigned int done[NUMQUEUES];
+static volatile unsigned int done[NUMQUEUES];
 
 static unsigned int queue_free_space(int qn){
     int space;
@@ -72,13 +77,14 @@ static unsigned int queue_used_space(int qn){
 }
 
 static void do_a_copy(int wqnum){
+    int len, space;
     mutex_lock(&locks[wqnum]);
-    
-    int i;
-    int len = queue_used_space(wqnum);
-    int space = 127 - csrs[wqnum][0]; // How much space is left in the FIFO
+    len = queue_used_space(wqnum);
+    space = 127 - csrs[wqnum][0]; // How much space is left in the FIFO
     if (len > space) len = space;
-    //for(i=0; i<len; i++){
+    if(wqnum == 6){
+        printk("dac6: %d\n", len);
+    }
     while(len--){
         bases[wqnum][0] = buffers[wqnum][rd[wqnum]];
         rd[wqnum] = (rd[wqnum] + 1) & (BUFFERSIZE-1);
@@ -93,13 +99,7 @@ irq_handler_t copy_thread_func(int irq, void *dev_id, struct pt_regs *regs){
     int wqnum;
     wqnum = irq - 73;
     
-    /*if(queue_used_space(wqnum) == 0){
-        done[wqnum] = 1;
-        wake_up_all(&done_queue);
-        //printk(KERN_ALERT "e %d\n", wqnum);
-    }else{*/
-        do_a_copy(wqnum);
-    //}
+    do_a_copy(wqnum);
     
     return (irq_handler_t) IRQ_HANDLED;
 }
@@ -113,18 +113,26 @@ irq_handler_t irq_handler(int irq, void *dev_id, struct pt_regs *regs){
     return (irq_handler_t)IRQ_WAKE_THREAD;
 }
 
+irq_handler_t done_handler(int irq, void *dev_id, struct pt_regs *regs){
+    int wqnum = irq - 88;
+    
+    printk(KERN_ALERT "irq %d %p\n", wqnum, done_csrs[wqnum]);
+    
+    // Clear the 'done' interrupt
+    iowrite32(0xff, done_csrs[wqnum]+3);
+    
+    done[wqnum] = 1;
+    
+    wake_up_all(&done_queue);
+    
+    return (irq_handler_t)IRQ_HANDLED;
+}
+
 static ssize_t write(struct file *file, const char __user *user, size_t size,loff_t*o){
     int wqnum, nbytes, len, type, i, copylen, res, entrynum;
-    unsigned int tmp, tw, tr;
-    static unsigned int buf[1024]; // max data input is a 4k buffer
     static unsigned int *data;
-    //printk(KERN_ALERT "%p %p %d\n", data, user, size);
-    //if((res = copy_from_user(buf, user, size)) != 0){
-    //    printk(KERN_ALERT "CFU FAILED %d b remain\n", res);
-    //}
     
-    //data = &buf[0];
-    data = &user[0];
+    data = (unsigned int *)&user[0];
     
     for(entrynum=0; entrynum < size / 32; entrynum++){    
         wqnum = data[0] >> 24;
@@ -132,43 +140,26 @@ static ssize_t write(struct file *file, const char __user *user, size_t size,lof
         len = ((nbytes + 3) / 4) + 1; // add one for the header entry
         type = data[0] & 0xff;
         
+        if(type == WORKQUEUE_TYPE_SOF){
+            printk(KERN_ALERT "reset %d\n", wqnum);
+            done[wqnum] = 0;
+        }
+        
         // replace the first entry with the header
         data[0] = (type << 8) | nbytes;
         
         copylen = 0;
         
         if(queue_free_space(wqnum) < len){
-            //printk(KERN_ALERT "BL #%d, %d, %d (%d) (%d, %d)\n", wqnum, queue_free_space(wqnum), len, csrs[wqnum][0], wr[wqnum], rd[wqnum]);
-            //tmp = csrs[wqnum][0];
-            //tw = wr[wqnum];
-            //tr = rd[wqnum];
-            //asm("" ::: "memory");
-            
             res = wait_event_interruptible_timeout(wait_queues[wqnum], queue_free_space(wqnum) >= len, HZ/10); // Block until there's room in the buffer
-            //res = wait_event_interruptible(wait_queues[wqnum], queue_free_space(wqnum) >= len); // Block until there's room in the buffer
-            
-            //if(res <= 1){
-            //    printk(KERN_ALERT "WAKE %d\n", res);
-            //    printk(KERN_ALERT "PRE  #%d, %d, %d (%d) (%d, %d)\n", wqnum, queue_free_space(wqnum), len, tmp, tw, tr);
-            //    printk(KERN_ALERT "POST #%d, %d, %d (%d) (%d, %d)\n", wqnum, queue_free_space(wqnum), len, csrs[wqnum][0], wr[wqnum], rd[wqnum]);
-            //}
-            
-            //printk(KERN_ALERT "wake #%d, %d (%d) (%d, %d)\n", wqnum, queue_free_space(wqnum), csrs[wqnum][0], wr[wqnum], rd[wqnum]);
         }
         
         for(i=copylen; i<len; i++){
             buffers[wqnum][wr[wqnum]] = data[i];
             wr[wqnum] = (wr[wqnum] + 1) & (BUFFERSIZE-1);
         }
-        //if(copylen < len){
-            //printk(KERN_ALERT "copied %d bytes\n", (len - copylen));
-        //}
-        
-        //printk(KERN_ALERT "POST s %d, w %d, r %d, f %d\n", len, wr[wqnum], rd[wqnum], csrs[wqnum][0]);
         
         data += 8;
-        
-        done[wqnum] = 0;
     }
     
     for(i=0; i<NUMQUEUES; i++){
@@ -238,25 +229,17 @@ static int __init init_workqueue(void)
         
         bases[i] = hwbase + (( unsigned long)(ALT_FPGASLVS_OFST + WQ_0_BASE + (WQ_BASE_JUMP*i)) & (unsigned long) (HW_REGS_MASK) );
         csrs[i] = lwbase + (( unsigned long)(ALT_LWFPGASLVS_OFST + WQ_0_CSR + (WQ_CSR_JUMP*i)) & (unsigned long) (LW_REGS_MASK) );
-        
-        printk(KERN_ALERT "bases[%d] = %p\n", i, bases[i]);
+        done_csrs[i] = lwbase + (( unsigned long)(ALT_LWFPGASLVS_OFST + DONE_0_CSR + (DONE_CSR_JUMP*i)) & (unsigned long) (LW_REGS_MASK) );
         
         init_waitqueue_head(&wait_queues[i]);
         mutex_init(&locks[i]);
         
-        /*printk(KERN_ALERT "fl: %x\n", (csrs[i]+0)[0]);
-        printk(KERN_ALERT "is: %x\n", (csrs[i]+1)[0]);
-        printk(KERN_ALERT "ev: %x\n", (csrs[i]+2)[0]);
-        printk(KERN_ALERT "ie: %x\n", (csrs[i]+3)[0]);
-        printk(KERN_ALERT "af: %x\n", (csrs[i]+4)[0]);
-        printk(KERN_ALERT "ae: %x\n", (csrs[i]+5)[0]);*/
-        
         // Enable the 'empty' interrupt
         iowrite32(0x2,csrs[i]+3);
         
-        /*printk(KERN_ALERT "is: %x\n", (csrs[i]+1)[0]);
-        printk(KERN_ALERT "ev: %x\n", (csrs[i]+2)[0]);
-        printk(KERN_ALERT "ie: %x\n", (csrs[i]+3)[0]);*/
+        // Clear and enable the 'done' interrupt
+        iowrite32(0xff, done_csrs[i]+3);
+        iowrite32(0x1, done_csrs[i]+2);
         
         // Allocate 4096 bytes for the buffer
         buffers[i] = (unsigned int *)kmalloc(BUFFERSIZE*sizeof(unsigned int), __GFP_WAIT | __GFP_IO | __GFP_FS);
@@ -270,6 +253,12 @@ static int __init init_workqueue(void)
                    (void *)(irq_handler)) != 0){
             return 1;
         }
+        
+        if(request_irq(88+i, (irq_handler_t)done_handler,
+                   IRQF_SHARED, "workqueue_done",
+                   (void *)(done_handler)) != 0){
+            return 1;
+        }
     }
     
     return misc_register(&workqueue_dev);
@@ -280,6 +269,7 @@ static void __exit exit_workqueue(void)
     int i;
     for(i=0; i<NUMQUEUES; i++){
         free_irq(73+i, (void*) irq_handler);
+        free_irq(88+i, (void*) done_handler);
         kfree(buffers[i]);
     }
     
