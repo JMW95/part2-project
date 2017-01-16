@@ -226,12 +226,12 @@ gp_socfpga_system u0 (
     .reset_reset_n                   (KEY[0]),
     
     // Clarvi Debug
-    .core_0_debug_export                   (HEX0),
-    .core_1_debug_export                   (HEX1),
-    .core_2_debug_export                   (HEX2),
-    .core_3_debug_export                   (HEX3),
-    .core_4_debug_export                   (HEX4),
-    .core_5_debug_export                   (HEX5),
+    //.core_0_debug_export                   (HEX0),
+    //.core_1_debug_export                   (HEX1),
+    //.core_2_debug_export                   (HEX2),
+    //.core_3_debug_export                   (HEX3),
+    //.core_4_debug_export                   (HEX4),
+    //.core_5_debug_export                   (HEX5),
     
     // PixelStream
     .pixelstream_0_conduit_end_0_lcd_red   (LCD_R),

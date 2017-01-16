@@ -39,8 +39,16 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
+      }
+   }
+   element core_0.done_irq_csr
+   {
+      datum baseAddress
+      {
+         value = "4352";
+         type = "String";
       }
    }
    element core_0.fbuff2
@@ -76,8 +84,16 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
+      }
+   }
+   element core_1.done_irq_csr
+   {
+      datum baseAddress
+      {
+         value = "8448";
+         type = "String";
       }
    }
    element core_1.fbuff1
@@ -121,8 +137,16 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
+      }
+   }
+   element core_2.done_irq_csr
+   {
+      datum baseAddress
+      {
+         value = "12544";
+         type = "String";
       }
    }
    element core_2.fbuff1
@@ -166,8 +190,16 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
+      }
+   }
+   element core_3.done_irq_csr
+   {
+      datum baseAddress
+      {
+         value = "16640";
+         type = "String";
       }
    }
    element core_3.fbuff1
@@ -211,8 +243,16 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
+      }
+   }
+   element core_4.done_irq_csr
+   {
+      datum baseAddress
+      {
+         value = "20736";
+         type = "String";
       }
    }
    element core_4.fbuff1
@@ -256,8 +296,16 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
+      }
+   }
+   element core_5.done_irq_csr
+   {
+      datum baseAddress
+      {
+         value = "24832";
+         type = "String";
       }
    }
    element core_5.fbuff1
@@ -301,8 +349,24 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
+      }
+   }
+   element core_6.done_irq
+   {
+      datum _tags
+      {
+         value = "";
+         type = "String";
+      }
+   }
+   element core_6.done_irq_csr
+   {
+      datum baseAddress
+      {
+         value = "28928";
+         type = "String";
       }
    }
    element core_6.fbuff1
@@ -346,8 +410,16 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
+      }
+   }
+   element core_7.done_irq_csr
+   {
+      datum baseAddress
+      {
+         value = "33024";
+         type = "String";
       }
    }
    element core_7.fbuff1
@@ -478,14 +550,14 @@
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
- <interface name="core_0_debug" internal="core_0.debug" type="conduit" dir="end" />
- <interface name="core_1_debug" internal="core_1.debug" type="conduit" dir="end" />
- <interface name="core_2_debug" internal="core_2.debug" type="conduit" dir="end" />
- <interface name="core_3_debug" internal="core_3.debug" type="conduit" dir="end" />
- <interface name="core_4_debug" internal="core_4.debug" type="conduit" dir="end" />
- <interface name="core_5_debug" internal="core_5.debug" type="conduit" dir="end" />
- <interface name="core_6_debug" internal="core_6.debug" type="conduit" dir="end" />
- <interface name="core_7_debug" internal="core_7.debug" type="conduit" dir="end" />
+ <interface name="core_0_debug" internal="core_0.debug" />
+ <interface name="core_1_debug" internal="core_1.debug" />
+ <interface name="core_2_debug" internal="core_2.debug" />
+ <interface name="core_3_debug" internal="core_3.debug" />
+ <interface name="core_4_debug" internal="core_4.debug" />
+ <interface name="core_5_debug" internal="core_5.debug" />
+ <interface name="core_6_debug" internal="core_6.debug" />
+ <interface name="core_7_debug" internal="core_7.debug" />
  <interface name="hps_io" internal="hps_0.hps_io" type="conduit" dir="end" />
  <interface name="memory" internal="hps_0.memory" type="conduit" dir="end" />
  <interface
@@ -508,7 +580,7 @@
  </module>
  <module name="core_0" kind="render_core" version="1.0" enabled="1">
   <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="3" />
-  <parameter name="AUTO_CLK_CLOCK_RATE" value="100000000" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="75000000" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="3" />
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
@@ -519,7 +591,7 @@
  </module>
  <module name="core_1" kind="render_core" version="1.0" enabled="1">
   <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="3" />
-  <parameter name="AUTO_CLK_CLOCK_RATE" value="100000000" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="75000000" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="3" />
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
@@ -530,7 +602,7 @@
  </module>
  <module name="core_2" kind="render_core" version="1.0" enabled="1">
   <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="3" />
-  <parameter name="AUTO_CLK_CLOCK_RATE" value="100000000" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="75000000" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="3" />
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
@@ -541,7 +613,7 @@
  </module>
  <module name="core_3" kind="render_core" version="1.0" enabled="1">
   <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="3" />
-  <parameter name="AUTO_CLK_CLOCK_RATE" value="100000000" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="75000000" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="3" />
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
@@ -552,7 +624,7 @@
  </module>
  <module name="core_4" kind="render_core" version="1.0" enabled="1">
   <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="3" />
-  <parameter name="AUTO_CLK_CLOCK_RATE" value="100000000" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="75000000" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="3" />
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
@@ -563,7 +635,7 @@
  </module>
  <module name="core_5" kind="render_core" version="1.0" enabled="1">
   <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="3" />
-  <parameter name="AUTO_CLK_CLOCK_RATE" value="100000000" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="75000000" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="3" />
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
@@ -574,7 +646,7 @@
  </module>
  <module name="core_6" kind="render_core" version="1.0" enabled="1">
   <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="3" />
-  <parameter name="AUTO_CLK_CLOCK_RATE" value="100000000" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="75000000" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="3" />
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
@@ -585,7 +657,7 @@
  </module>
  <module name="core_7" kind="render_core" version="1.0" enabled="1">
   <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="3" />
-  <parameter name="AUTO_CLK_CLOCK_RATE" value="100000000" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="75000000" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="3" />
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
@@ -746,10 +818,10 @@
   <parameter name="FPGA_PERIPHERAL_OUTPUT_CLOCK_FREQ_SPIM1_SCLK_OUT" value="100" />
   <parameter name="GPIO_Enable">No,No,No,No,No,No,No,No,No,Yes,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,Yes,No,No,No,No,Yes,No,No,No,No,No,No,No,Yes,No,No,No,No,Yes,Yes,No,No,No,No,No,No,Yes,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No</parameter>
   <parameter name="GP_Enable" value="false" />
-  <parameter name="H2F_AXI_CLOCK_FREQ" value="100000000" />
+  <parameter name="H2F_AXI_CLOCK_FREQ" value="75000000" />
   <parameter name="H2F_CTI_CLOCK_FREQ" value="100" />
   <parameter name="H2F_DEBUG_APB_CLOCK_FREQ" value="100" />
-  <parameter name="H2F_LW_AXI_CLOCK_FREQ" value="100000000" />
+  <parameter name="H2F_LW_AXI_CLOCK_FREQ" value="75000000" />
   <parameter name="H2F_TPIU_CLOCK_IN_FREQ" value="100" />
   <parameter name="HARD_EMIF" value="true" />
   <parameter name="HCX_COMPAT_MODE" value="false" />
@@ -1130,7 +1202,7 @@
   <parameter name="bitClearingEdgeCapReg" value="false" />
   <parameter name="bitModifyingOutReg" value="false" />
   <parameter name="captureEdge" value="true" />
-  <parameter name="clockRate" value="100000000" />
+  <parameter name="clockRate" value="75000000" />
   <parameter name="direction" value="Input" />
   <parameter name="edgeType" value="FALLING" />
   <parameter name="generateIRQ" value="true" />
@@ -1259,7 +1331,7 @@
   <parameter name="gui_multiply_factor" value="1" />
   <parameter name="gui_number_of_clocks" value="2" />
   <parameter name="gui_operation_mode" value="direct" />
-  <parameter name="gui_output_clock_frequency0" value="100.0" />
+  <parameter name="gui_output_clock_frequency0" value="75.0" />
   <parameter name="gui_output_clock_frequency1" value="9.0" />
   <parameter name="gui_output_clock_frequency10" value="100.0" />
   <parameter name="gui_output_clock_frequency11" value="100.0" />
@@ -1413,6 +1485,78 @@
    end="core_7.work_queue_wr">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x00270000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="hps_0.h2f_lw_axi_master"
+   end="core_0.done_irq_csr">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x1100" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="hps_0.h2f_lw_axi_master"
+   end="core_1.done_irq_csr">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x2100" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="hps_0.h2f_lw_axi_master"
+   end="core_2.done_irq_csr">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x3100" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="hps_0.h2f_lw_axi_master"
+   end="core_3.done_irq_csr">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x4100" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="hps_0.h2f_lw_axi_master"
+   end="core_4.done_irq_csr">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x5100" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="hps_0.h2f_lw_axi_master"
+   end="core_5.done_irq_csr">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x6100" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="hps_0.h2f_lw_axi_master"
+   end="core_6.done_irq_csr">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x7100" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="hps_0.h2f_lw_axi_master"
+   end="core_7.done_irq_csr">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x8100" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1702,6 +1846,62 @@
    version="16.0"
    start="pll_0.outclk1"
    end="PixelStream_0.video" />
+ <connection
+   kind="interrupt"
+   version="16.0"
+   start="hps_0.f2h_irq0"
+   end="core_0.done_irq">
+  <parameter name="irqNumber" value="17" />
+ </connection>
+ <connection
+   kind="interrupt"
+   version="16.0"
+   start="hps_0.f2h_irq0"
+   end="core_1.done_irq">
+  <parameter name="irqNumber" value="18" />
+ </connection>
+ <connection
+   kind="interrupt"
+   version="16.0"
+   start="hps_0.f2h_irq0"
+   end="core_2.done_irq">
+  <parameter name="irqNumber" value="19" />
+ </connection>
+ <connection
+   kind="interrupt"
+   version="16.0"
+   start="hps_0.f2h_irq0"
+   end="core_3.done_irq">
+  <parameter name="irqNumber" value="20" />
+ </connection>
+ <connection
+   kind="interrupt"
+   version="16.0"
+   start="hps_0.f2h_irq0"
+   end="core_4.done_irq">
+  <parameter name="irqNumber" value="21" />
+ </connection>
+ <connection
+   kind="interrupt"
+   version="16.0"
+   start="hps_0.f2h_irq0"
+   end="core_5.done_irq">
+  <parameter name="irqNumber" value="22" />
+ </connection>
+ <connection
+   kind="interrupt"
+   version="16.0"
+   start="hps_0.f2h_irq0"
+   end="core_7.done_irq">
+  <parameter name="irqNumber" value="24" />
+ </connection>
+ <connection
+   kind="interrupt"
+   version="16.0"
+   start="hps_0.f2h_irq0"
+   end="core_6.done_irq">
+  <parameter name="irqNumber" value="23" />
+ </connection>
  <connection
    kind="interrupt"
    version="16.0"

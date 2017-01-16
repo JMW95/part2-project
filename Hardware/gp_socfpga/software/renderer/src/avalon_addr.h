@@ -7,4 +7,6 @@
 
 #define DEBUG_BASE		(0x01000000)
 
+#define DONE_IRQ_BASE	(0x01001000)
+
 extern unsigned int coreid;
