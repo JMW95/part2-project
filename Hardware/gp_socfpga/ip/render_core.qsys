@@ -49,11 +49,35 @@
          type = "String";
       }
    }
+   element done_irq_generator
+   {
+      datum _sortIndex
+      {
+         value = "10";
+         type = "int";
+      }
+   }
+   element done_irq_trigger
+   {
+      datum _sortIndex
+      {
+         value = "9";
+         type = "int";
+      }
+   }
+   element done_irq_trigger.s1
+   {
+      datum baseAddress
+      {
+         value = "16781312";
+         type = "String";
+      }
+   }
    element fbuff1
    {
       datum _sortIndex
       {
-         value = "7";
+         value = "6";
          type = "int";
       }
    }
@@ -77,7 +101,7 @@
    {
       datum _sortIndex
       {
-         value = "8";
+         value = "7";
          type = "int";
       }
    }
@@ -101,8 +125,13 @@
    {
       datum _sortIndex
       {
-         value = "5";
+         value = "8";
          type = "int";
+      }
+      datum sopceditor_expanded
+      {
+         value = "0";
+         type = "boolean";
       }
    }
    element pio_debug.s1
@@ -125,7 +154,7 @@
    {
       datum _sortIndex
       {
-         value = "6";
+         value = "5";
          type = "int";
       }
    }
@@ -198,10 +227,16 @@ proc compose {} {
     send_message INFO [ concat "Core ID: " [ get_parameter_value core_id ] ]
 }]]></instanceScript>
  <interface name="clk" internal="clock.in_clk" type="clock" dir="end" />
+ <interface name="debug" internal="pio_debug.external_connection" />
  <interface
-   name="debug"
-   internal="pio_debug.external_connection"
-   type="conduit"
+   name="done_irq"
+   internal="done_irq_generator.irq"
+   type="interrupt"
+   dir="end" />
+ <interface
+   name="done_irq_csr"
+   internal="done_irq_generator.s1"
+   type="avalon"
    dir="end" />
  <interface name="fbuff1" internal="fbuff1.s2" type="avalon" dir="end" />
  <interface name="fbuff2" internal="fbuff2.s2" type="avalon" dir="end" />
@@ -234,7 +269,7 @@ proc compose {} {
    version="16.0"
    enabled="1">
   <parameter name="allowInSystemMemoryContentEditor" value="false" />
-  <parameter name="autoInitializationFileName">$${FILENAME}_clarvi_scratch</parameter>
+  <parameter name="autoInitializationFileName">render_core_clarvi_scratch</parameter>
   <parameter name="blockType" value="AUTO" />
   <parameter name="copyInitFile" value="false" />
   <parameter name="dataWidth" value="32" />
@@ -272,12 +307,48 @@ proc compose {} {
   <parameter name="id" value="0" />
  </module>
  <module
+   name="done_irq_generator"
+   kind="altera_avalon_pio"
+   version="16.0"
+   enabled="1">
+  <parameter name="bitClearingEdgeCapReg" value="false" />
+  <parameter name="bitModifyingOutReg" value="false" />
+  <parameter name="captureEdge" value="true" />
+  <parameter name="clockRate" value="0" />
+  <parameter name="direction" value="Input" />
+  <parameter name="edgeType" value="RISING" />
+  <parameter name="generateIRQ" value="true" />
+  <parameter name="irqType" value="EDGE" />
+  <parameter name="resetValue" value="0" />
+  <parameter name="simDoTestBenchWiring" value="false" />
+  <parameter name="simDrivenValue" value="0" />
+  <parameter name="width" value="1" />
+ </module>
+ <module
+   name="done_irq_trigger"
+   kind="altera_avalon_pio"
+   version="16.0"
+   enabled="1">
+  <parameter name="bitClearingEdgeCapReg" value="false" />
+  <parameter name="bitModifyingOutReg" value="false" />
+  <parameter name="captureEdge" value="false" />
+  <parameter name="clockRate" value="0" />
+  <parameter name="direction" value="Output" />
+  <parameter name="edgeType" value="RISING" />
+  <parameter name="generateIRQ" value="false" />
+  <parameter name="irqType" value="LEVEL" />
+  <parameter name="resetValue" value="0" />
+  <parameter name="simDoTestBenchWiring" value="false" />
+  <parameter name="simDrivenValue" value="0" />
+  <parameter name="width" value="1" />
+ </module>
+ <module
    name="fbuff1"
    kind="altera_avalon_onchip_memory2"
    version="16.0"
    enabled="1">
   <parameter name="allowInSystemMemoryContentEditor" value="false" />
-  <parameter name="autoInitializationFileName" value="$${FILENAME}_fbuff1" />
+  <parameter name="autoInitializationFileName" value="render_core_fbuff1" />
   <parameter name="blockType" value="AUTO" />
   <parameter name="copyInitFile" value="false" />
   <parameter name="dataWidth" value="32" />
@@ -308,7 +379,7 @@ proc compose {} {
    version="16.0"
    enabled="1">
   <parameter name="allowInSystemMemoryContentEditor" value="false" />
-  <parameter name="autoInitializationFileName" value="$${FILENAME}_fbuff2" />
+  <parameter name="autoInitializationFileName" value="render_core_fbuff2" />
   <parameter name="blockType" value="AUTO" />
   <parameter name="copyInitFile" value="false" />
   <parameter name="dataWidth" value="32" />
@@ -333,7 +404,7 @@ proc compose {} {
   <parameter name="useShallowMemBlocks" value="false" />
   <parameter name="writable" value="true" />
  </module>
- <module name="pio_debug" kind="altera_avalon_pio" version="16.0" enabled="1">
+ <module name="pio_debug" kind="altera_avalon_pio" version="16.0" enabled="0">
   <parameter name="bitClearingEdgeCapReg" value="false" />
   <parameter name="bitModifyingOutReg" value="false" />
   <parameter name="captureEdge" value="false" />
@@ -439,9 +510,28 @@ proc compose {} {
   <parameter name="baseAddress" value="0x01000000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="clarvi_0.main"
+   end="done_irq_trigger.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x01001000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
  <connection kind="clock" version="16.0" start="clock.out_clk" end="reset.clk" />
  <connection kind="clock" version="16.0" start="clock.out_clk" end="core_id.clk" />
  <connection kind="clock" version="16.0" start="clock.out_clk" end="pio_debug.clk" />
+ <connection
+   kind="clock"
+   version="16.0"
+   start="clock.out_clk"
+   end="done_irq_generator.clk" />
+ <connection
+   kind="clock"
+   version="16.0"
+   start="clock.out_clk"
+   end="done_irq_trigger.clk" />
  <connection
    kind="clock"
    version="16.0"
@@ -472,6 +562,17 @@ proc compose {} {
    start="clock.out_clk"
    end="clarvi_0.clock" />
  <connection
+   kind="conduit"
+   version="16.0"
+   start="done_irq_trigger.external_connection"
+   end="done_irq_generator.external_connection">
+  <parameter name="endPort" value="" />
+  <parameter name="endPortLSB" value="0" />
+  <parameter name="startPort" value="" />
+  <parameter name="startPortLSB" value="0" />
+  <parameter name="width" value="0" />
+ </connection>
+ <connection
    kind="reset"
    version="16.0"
    start="reset.out_reset"
@@ -486,6 +587,16 @@ proc compose {} {
    version="16.0"
    start="reset.out_reset"
    end="pio_debug.reset" />
+ <connection
+   kind="reset"
+   version="16.0"
+   start="reset.out_reset"
+   end="done_irq_generator.reset" />
+ <connection
+   kind="reset"
+   version="16.0"
+   start="reset.out_reset"
+   end="done_irq_trigger.reset" />
  <connection
    kind="reset"
    version="16.0"
