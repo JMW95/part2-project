@@ -114,7 +114,7 @@ irq_handler_t irq_handler(int irq, void *dev_id, struct pt_regs *regs){
 }
 
 irq_handler_t done_handler(int irq, void *dev_id, struct pt_regs *regs){
-    int wqnum = irq - 88;
+    int wqnum = irq - 89;
     
     printk(KERN_ALERT "irq %d %p\n", wqnum, done_csrs[wqnum]);
     
@@ -254,7 +254,7 @@ static int __init init_workqueue(void)
             return 1;
         }
         
-        if(request_irq(88+i, (irq_handler_t)done_handler,
+        if(request_irq(89+i, (irq_handler_t)done_handler,
                    IRQF_SHARED, "workqueue_done",
                    (void *)(done_handler)) != 0){
             return 1;
@@ -269,7 +269,7 @@ static void __exit exit_workqueue(void)
     int i;
     for(i=0; i<NUMQUEUES; i++){
         free_irq(73+i, (void*) irq_handler);
-        free_irq(88+i, (void*) done_handler);
+        free_irq(89+i, (void*) done_handler);
         kfree(buffers[i]);
     }
     
