@@ -36,15 +36,15 @@ unsigned char *read_fifo(char numbytes){
     return buf;
 }
 
-volatile char *done = (unsigned char *)DONE_IRQ_BASE;
-void write_done_irq(char val){
+volatile unsigned char *done = (volatile unsigned char *)DONE_IRQ_BASE;
+void write_done_irq(unsigned char val){
 	done[0] = val;
 }
 
 int main(void){
-	coreid = *((unsigned int *)COREID_BASE);
-	vid_clear(coreid);
-	write_done_irq(0);
+    coreid = *((unsigned int *)COREID_BASE);
+    vid_clear(coreid);
+    write_done_irq(0);
     while(1){
         // read the work order and do it
         
@@ -57,7 +57,7 @@ int main(void){
         unsigned int addr;
         switch(type){
             case TYPE_SOF:
-				write_done_irq(0);
+                write_done_irq(0);
                 // read address of which buffer to use
                 addr = *(unsigned int *)(data);
                 vid_setbuffer(addr == 0 ? 0x100000 : 0x110000);
@@ -65,7 +65,7 @@ int main(void){
                 //debug_write(0);
                 break;
             case TYPE_EOF:
-				write_done_irq(1);
+                write_done_irq(1);
                 // TODO: End of frame, mark framebuffer as locked
                 break;
             case TYPE_LINE:
