@@ -82,9 +82,6 @@ static void do_a_copy(int wqnum){
     len = queue_used_space(wqnum);
     space = 127 - csrs[wqnum][0]; // How much space is left in the FIFO
     if (len > space) len = space;
-    if(wqnum == 6){
-        printk("dac6: %d\n", len);
-    }
     while(len--){
         bases[wqnum][0] = buffers[wqnum][rd[wqnum]];
         rd[wqnum] = (rd[wqnum] + 1) & (BUFFERSIZE-1);
@@ -116,8 +113,6 @@ irq_handler_t irq_handler(int irq, void *dev_id, struct pt_regs *regs){
 irq_handler_t done_handler(int irq, void *dev_id, struct pt_regs *regs){
     int wqnum = irq - 89;
     
-    printk(KERN_ALERT "irq %d %p\n", wqnum, done_csrs[wqnum]);
-    
     // Clear the 'done' interrupt
     iowrite32(0xff, done_csrs[wqnum]+3);
     
@@ -129,19 +124,24 @@ irq_handler_t done_handler(int irq, void *dev_id, struct pt_regs *regs){
 }
 
 static ssize_t write(struct file *file, const char __user *user, size_t size,loff_t*o){
-    int wqnum, nbytes, len, type, i, copylen, res, entrynum;
+    int wqnum, nbytes, len, type, i, j, copylen, res, entrynum;
+    static char overflowamt = 0;
+    static unsigned int buf[1032]; // max data input is a 4k buffer, plus 32 bytes overflow
     static unsigned int *data;
     
-    data = (unsigned int *)&user[0];
+    if((res = copy_from_user(((char*)buf)+overflowamt, user, size)) != 0){
+        printk(KERN_ALERT "CFU FAILED %d b remain\n", res);
+    }
     
-    for(entrynum=0; entrynum < size / 32; entrynum++){    
+    data = &buf[0];
+    
+    for(entrynum=0; entrynum < (size+overflowamt) / 32; entrynum++){
         wqnum = data[0] >> 24;
         nbytes = (data[0] >> 16) & 0xff;
         len = ((nbytes + 3) / 4) + 1; // add one for the header entry
         type = data[0] & 0xff;
         
         if(type == WORKQUEUE_TYPE_SOF){
-            printk(KERN_ALERT "reset %d\n", wqnum);
             done[wqnum] = 0;
         }
         
@@ -161,6 +161,15 @@ static ssize_t write(struct file *file, const char __user *user, size_t size,lof
         
         data += 8;
     }
+    
+    // Copy any extra bytes back to the start
+    j = 0;
+    for(i=entrynum*32; i<size+overflowamt; i++){
+        char *cdata = (char *)buf;
+        cdata[j] = cdata[i];
+        j++;
+    }
+    overflowamt = j;
     
     for(i=0; i<NUMQUEUES; i++){
         // Copy some data to get it started
@@ -182,9 +191,7 @@ static bool allqueuesempty(void){
 
 static ssize_t read(struct file *file, char __user *user, size_t size,loff_t*o){
     if(!allqueuesempty()){
-        printk(KERN_ALERT "sl\n");
         wait_event_interruptible(done_queue, allqueuesempty()); // Block until all queues are empty
-        printk(KERN_ALERT "wa\n");
     }
     return 1;
 }
@@ -214,10 +221,8 @@ static struct miscdevice workqueue_dev = {
     .fops   = &workqueue_fops,
 };
 
-static int __init init_workqueue(void)
-{
+static int __init init_workqueue(void){
     int i;
-    char name[20];
     
     // get the virtual addr that maps to the Avalon bridge
     lwbase = ioremap_nocache(LW_REGS_BASE, LW_REGS_SPAN);
@@ -245,8 +250,6 @@ static int __init init_workqueue(void)
         buffers[i] = (unsigned int *)kmalloc(BUFFERSIZE*sizeof(unsigned int), __GFP_WAIT | __GFP_IO | __GFP_FS);
         
         // Register the interrupt handler
-        snprintf(name, sizeof(name), "workqueue_%d", i);
-        
         if(request_threaded_irq(73+i, (irq_handler_t)irq_handler,
                    (irq_handler_t) copy_thread_func,
                    IRQF_SHARED, "workqueue",
@@ -264,8 +267,7 @@ static int __init init_workqueue(void)
     return misc_register(&workqueue_dev);
 }
 
-static void __exit exit_workqueue(void)
-{
+static void __exit exit_workqueue(void){
     int i;
     for(i=0; i<NUMQUEUES; i++){
         free_irq(73+i, (void*) irq_handler);
