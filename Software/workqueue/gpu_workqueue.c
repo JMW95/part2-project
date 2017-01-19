@@ -31,7 +31,7 @@
 #define WQ_CSR_JUMP 0x1000
 #define DONE_CSR_JUMP 0x1000
 
-#define BUFFERSIZE  512
+#define BUFFERSIZE  8192
 
 #define WORKQUEUE_TYPE_SOF 1
 
@@ -123,9 +123,9 @@ irq_handler_t done_handler(int irq, void *dev_id, struct pt_regs *regs){
     return (irq_handler_t)IRQ_HANDLED;
 }
 
+static char overflowamt = 0;
 static ssize_t write(struct file *file, const char __user *user, size_t size,loff_t*o){
     int wqnum, nbytes, len, type, i, j, copylen, res, entrynum;
-    static char overflowamt = 0;
     static unsigned int buf[1032]; // max data input is a 4k buffer, plus 32 bytes overflow
     static unsigned int *data;
     
@@ -197,7 +197,8 @@ static ssize_t read(struct file *file, char __user *user, size_t size,loff_t*o){
 }
 
 static int open(struct inode *inode, struct file *file){
-    // Do nothing!
+    // Reset the overflow value
+    overflowamt = 0;
     return 0;
 }
 
