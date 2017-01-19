@@ -26,11 +26,6 @@ struct triangle generateTri(){
 }
 
 int main(){
-    void *hw_base = hw_init();
-    if(hw_base == NULL){
-        return 1;
-    }
-    
     void *lw_base = lw_init();
     if(lw_base == NULL){
         return 1;
@@ -67,12 +62,7 @@ int main(){
     palette[6] = palette[14] = PIXEL_MAGENTA;
     palette[7] = palette[15] = PIXEL_YELLOW;
     
-    int i;
-    for(i=0; i<NUM_QUEUES; i++){
-        workqueue_init(i,
-            hw_base + (( unsigned long)(ALT_FPGASLVS_OFST + WQ_0_BASE + (WQ_BASE_JUMP*i)) & (unsigned long) (HW_REGS_MASK) ),
-            lw_base + (( unsigned long)(ALT_LWFPGASLVS_OFST + WQ_0_CSR + (WQ_CSR_JUMP*i)) & (unsigned long) (LW_REGS_MASK) ));
-    }
+    workqueue_init();
     
     long t1,t2;
     struct timespec time1, time2;

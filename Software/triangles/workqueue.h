@@ -18,16 +18,7 @@ struct workorder {
     char data[16];
 };
 
-struct altera_mm_fifo_csr {
-    unsigned int fill_level;
-    unsigned int i_status;
-    unsigned int event;
-    unsigned int int_enable;
-    unsigned int almostfull;
-    unsigned int almostempty;
-};
-
-void workqueue_init(int queuenum, void *base, void *csr);
+void workqueue_init();
 
 void workqueue_sof(int queuenum, unsigned int addr);
 void workqueue_eof(int queuenum);
