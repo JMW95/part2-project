@@ -10,6 +10,8 @@
 #include <linux/sched.h>
 #include <linux/wait.h>
 
+#include "pixelstream_palette_ioctl.h"
+
 #define HW_REGS_BASE 0xc0000000
 #define HW_REGS_SPAN 0x04000000
 #define HW_REGS_MASK ( HW_REGS_SPAN - 1 )
@@ -20,18 +22,25 @@
 #define LW_REGS_MASK ( LW_REGS_SPAN - 1 )
 #define ALT_LWFPGASLVS_OFST 0xff200000
 
-#define VSYNC_PIO_BASE   0x100
+#define PIXELSTREAM_BASE    0x0
+#define VSYNC_PIO_BASE      0x100
+#define PALETTE_BASE        0x200
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Jamie Wood");
-MODULE_DESCRIPTION("PixelStream VSync interrupt proxy");
+MODULE_DESCRIPTION("PixelStream VSync and Palette");
+
+void *vbase;
 
 volatile int *pio_base;
+volatile int *pixelstream;
+volatile short *palette;
+
 bool hasInterruptHappened = false;
-static DECLARE_WAIT_QUEUE_HEAD (my_queue);
+static DECLARE_WAIT_QUEUE_HEAD (vsync_wait);
 
 irq_handler_t irq_handler(int irq, void *dev_id, struct pt_regs *regs){
-    wake_up_interruptible(&my_queue); // Unblock any waiting processes
+    wake_up_interruptible(&vsync_wait); // Unblock any waiting processes
 
     hasInterruptHappened = true;
 
@@ -43,10 +52,28 @@ irq_handler_t irq_handler(int irq, void *dev_id, struct pt_regs *regs){
 
 static ssize_t read(struct file *file, char __user *user, size_t size,loff_t*o){
     if(!hasInterruptHappened){
-        wait_event_interruptible(my_queue, hasInterruptHappened); // Block until we get a vsync
+        wait_event_interruptible(vsync_wait, hasInterruptHappened); // Block until we get a vsync
     }
     hasInterruptHappened = false;
     return 1;
+}
+
+static long ioctl(struct file *file, unsigned int cmd, unsigned long argaddr){
+    int arg, palettenum;
+    short newval;
+    if(cmd == IOCTL_PALETTE_SET_COLOR){ // change palette entry
+        arg = *(int *)argaddr;
+        palettenum = arg & 0xf;
+        newval = (arg >> 4);
+        
+        palette[palettenum] = newval;
+    }else if(cmd == IOCTL_PIXELSTREAM_SET_BUFFER){ // change pixelstream buffer
+        arg = *(int *)argaddr;
+        pixelstream[8] = arg;
+    }else if(cmd == IOCTL_PIXELSTREAM_GET_BUFFER){ // get pixelstream buffer addr
+        return pixelstream[8];
+    }
+    return 0;
 }
 
 static int open(struct inode *inode, struct file *file){
@@ -64,6 +91,7 @@ static const struct file_operations vsync_fops = {
     .open    = open,
     .release = close,
     //.write   = write,
+    .unlocked_ioctl = ioctl,
     .read    = read,
     .llseek  = default_llseek,
 };
@@ -77,8 +105,10 @@ static struct miscdevice vsync_dev = {
 static int __init init_vsync_handler(void)
 {
     // get the virtual addr that maps to the Avalon bridge
-    void *vbase = ioremap_nocache(LW_REGS_BASE, LW_REGS_SPAN);
+    vbase = ioremap_nocache(LW_REGS_BASE, LW_REGS_SPAN);
     pio_base = vbase + (( unsigned long)(ALT_LWFPGASLVS_OFST + VSYNC_PIO_BASE) & (unsigned long) (LW_REGS_MASK) );
+    pixelstream = vbase + (( unsigned long)(ALT_LWFPGASLVS_OFST + PIXELSTREAM_BASE) & (unsigned long) (LW_REGS_MASK) );
+    palette = vbase + (( unsigned long)(ALT_LWFPGASLVS_OFST + PALETTE_BASE) & (unsigned long) (LW_REGS_MASK) );
     
     // Clear the PIO edgecapture register (clear any pending interrupt)
     iowrite32(0x1,pio_base+3);
@@ -100,6 +130,7 @@ static void __exit exit_vsync_handler(void)
     // Turn off LEDs and de-register irq handler
     free_irq(72, (void*) irq_handler);
     misc_deregister(&vsync_dev);
+    iounmap(vbase);
 }
 
 module_init(init_vsync_handler);
