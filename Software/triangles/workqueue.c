@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <err.h>
 
 static FILE *fp = NULL;
 
@@ -22,12 +23,12 @@ void workqueue_wait_done(void){
 }
 
 static void workqueue_add(int queuenum, struct workorder *o){
-    static char dat[32];
+    static int dat[8];
     
-    *(unsigned int *)(dat) = (queuenum << 24) | (o->size << 16) | (o->type);
-    memcpy(dat+4, o->data, o->size);
+    dat[0] = (queuenum << 24) | (o->size << 16) | (o->type);
+    memcpy(dat+1, o->data, o->size);
     
-    fwrite(dat, 1, 32, fp);
+    fwrite((char *)dat, 1, 32, fp);
 }
 
 static struct workorder s;

@@ -7,8 +7,8 @@
 #include <time.h>
 
 #include "draw.h"
-#include "mem.h"
 #include "workqueue.h"
+#include "pixelstream_palette.h"
 
 #define NUMTRIANGLES 1000
 #define NUMREPS 20
@@ -26,16 +26,8 @@ struct triangle generateTri(){
 }
 
 int main(){
-    void *lw_base = lw_init();
-    if(lw_base == NULL){
-        return 1;
-    }
     
-    FILE *fp = fopen("/dev/pixelstream_vsync", "r");
-    if (fp == NULL){
-        printf("Failed to open /dev/pixelstream_vsync, is the kernel module inserted?\n");
-        return 1;
-    }
+    pixelstream_palette_init();
 
 #ifdef HARDWARE_RENDER
     printf("---------------------------------\n");
@@ -46,21 +38,26 @@ int main(){
     printf("TRIANGLE DEMO - SOFTWARE ONLY\n");
     printf("-----------------------------\n");
 #endif
-
-    pixelstream = lw_base + (( unsigned long)(ALT_LWFPGASLVS_OFST + PIXELSTREAM_BASE) & (unsigned long) (LW_REGS_MASK) );
-    palette = lw_base + (( unsigned long)(ALT_LWFPGASLVS_OFST + PALETTE_BASE) & (unsigned long) (LW_REGS_MASK) );
     
-    pixelstream[8] = 0x0;
+    pixelstream_set_buffer(0);
     
     // Set the palette to bright colours
-    palette[0] = palette[8] = PIXEL_BLACK;
-    palette[1] = palette[9] = PIXEL_WHITE;
-    palette[2] = palette[10] = PIXEL_RED;
-    palette[3] = palette[11] = PIXEL_GREEN;
-    palette[4] = palette[12] = PIXEL_BLUE;
-    palette[5] = palette[13] = PIXEL_CYAN;
-    palette[6] = palette[14] = PIXEL_MAGENTA;
-    palette[7] = palette[15] = PIXEL_YELLOW;
+    palette_set_color(0, PIXEL_BLACK);
+    palette_set_color(1, PIXEL_WHITE);
+    palette_set_color(2, PIXEL_RED);
+    palette_set_color(3, PIXEL_GREEN);
+    palette_set_color(4, PIXEL_BLUE);
+    palette_set_color(5, PIXEL_CYAN);
+    palette_set_color(6, PIXEL_MAGENTA);
+    palette_set_color(7, PIXEL_YELLOW);
+    palette_set_color(8, PIXEL_BLACK);
+    palette_set_color(9, PIXEL_WHITE);
+    palette_set_color(10, PIXEL_RED);
+    palette_set_color(11, PIXEL_GREEN);
+    palette_set_color(12, PIXEL_BLUE);
+    palette_set_color(13, PIXEL_CYAN);
+    palette_set_color(14, PIXEL_MAGENTA);
+    palette_set_color(15, PIXEL_YELLOW);
     
     workqueue_init();
     
@@ -87,7 +84,7 @@ int main(){
         
         clock_gettime(CLOCK_MONOTONIC, &time1);
         
-        if(vid_getbuffer() == 0x0){
+        if(pixelstream_get_buffer() == 0x0){
             for(i=0; i<NUM_QUEUES; i++){
                 workqueue_sof(i, 1); // START OF FRAME
             }
@@ -114,7 +111,7 @@ int main(){
         
         flip();
         
-        fgetc(fp); // wait for a vsync
+        pixelstream_wait_sync();
         
         t1 = (time1.tv_sec * 1000) + (time1.tv_nsec / 1e06);
         t2 = (time2.tv_sec * 1000) + (time2.tv_nsec / 1e06);
@@ -132,4 +129,7 @@ int main(){
     printf("TIMES:\nMin: %d\nMax: %d\nAvg: %.4f\n", mintime, maxtime, ((float)sum/(float)(NUMREPS)));
     printf("RATE: %lu/s\n", (1000*NUMTRIANGLES*NUMREPS) / sum);
 
+    pixelstream_palette_deinit();
+    
+    return 0;
 }

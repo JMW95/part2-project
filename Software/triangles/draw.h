@@ -26,9 +26,6 @@
 #define DISPLAY_WIDTH 480
 #define DISPLAY_HEIGHT 272
 
-volatile int *pixelstream;
-volatile short *palette;
-
 char ftmp[DISPLAY_WIDTH * DISPLAY_HEIGHT / 2];
 
 struct point {

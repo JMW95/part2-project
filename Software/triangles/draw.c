@@ -1,5 +1,6 @@
 #include "draw.h"
 #include "workqueue.h"
+#include "pixelstream_palette.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -238,17 +239,13 @@ void show(){
     }
 }
 
-unsigned int vid_getbuffer(){
-    return pixelstream[8];
-}
-
 void flip(){
 #ifndef HARDWARE_RENDER
     show();
 #endif
-    if(pixelstream[8] == 0x0){
-        pixelstream[8] = 0x400000;
+    if(pixelstream_get_buffer() == 0x0){
+        pixelstream_set_buffer(0x400000);
     }else{
-        pixelstream[8] = 0x0;
+        pixelstream_set_buffer(0);
     }
 }

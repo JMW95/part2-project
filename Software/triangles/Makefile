@@ -1,8 +1,8 @@
 hardware:
-	gcc triangles.c draw.c mem.c workqueue.c -lrt -O3 -DHARDWARE_RENDER
+	gcc triangles.c draw.c workqueue.c pixelstream_palette.c -lrt -O3 -Wall -DHARDWARE_RENDER
 
 software:
-	gcc triangles.c draw.c mem.c workqueue.c -lrt -O3
+	gcc triangles.c draw.c workqueue.c pixelstream_palette.c  -lrt -O3
 
 clean:
 	rm a.out
