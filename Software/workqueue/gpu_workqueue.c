@@ -129,6 +129,8 @@ static ssize_t write(struct file *file, const char __user *user, size_t size,lof
     static unsigned int buf[1032]; // max data input is a 4k buffer, plus 32 bytes overflow
     static unsigned int *data;
     
+    if (size > 4096) size = 4096; // limit ourselves to 4k at a time
+    
     if((res = copy_from_user(((char*)buf)+overflowamt, user, size)) != 0){
         printk(KERN_ALERT "CFU FAILED %d b remain\n", res);
     }
