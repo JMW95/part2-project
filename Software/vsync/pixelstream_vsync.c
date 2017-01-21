@@ -51,6 +51,7 @@ irq_handler_t irq_handler(int irq, void *dev_id, struct pt_regs *regs){
 }
 
 static ssize_t read(struct file *file, char __user *user, size_t size,loff_t*o){
+    hasInterruptHappened = false;
     if(!hasInterruptHappened){
         wait_event_interruptible(vsync_wait, hasInterruptHappened); // Block until we get a vsync
     }
