@@ -20,28 +20,19 @@ void vid_set_pixel(int x, int y, int colour){
     if ((y<0) || (y>DISPLAY_HEIGHT-1))
         return;
     
-    int pixelpos = x+y*DISPLAY_WIDTH;
-    int bufpos = pixelpos/2;
+    int bufpos = x+y*DISPLAY_WIDTH;
     
-    char val = framebuffer[bufpos];
-    if((pixelpos & 1) == 0){ // if x even, use lower 4 bits.
-        val = (val & 0xf0) | (colour & 0x0f);
-    }else{ // use upper 4 bits for odd x
-        val = (val & 0x0f) | ((colour & 0x0f) << 4);
-    }
-    
-    framebuffer[bufpos] = val;
+    framebuffer[bufpos] = colour;
 }
 
 // clear the whole screen
 void vid_clear(int colour){
     volatile int *framebuffer = (volatile int *) (bufferaddr);
-    colour = colour & 0x0f;
-    colour = colour | (colour << 4);
+    colour = colour & 0xff;
     colour = colour | (colour << 8);
     colour = colour | (colour << 16); // 32 bits
     int i = 0;
-    int end = (DISPLAY_WIDTH * DISPLAY_HEIGHT)/8;
+    int end = (DISPLAY_WIDTH * DISPLAY_HEIGHT)/4; // 4 pixels per int32
     while ( i < end )
         framebuffer[i++] = colour;
 }
@@ -49,7 +40,6 @@ void vid_clear(int colour){
 // draw a horizontal line
 void vid_fill_line(int left, int right, int top, int colour){
     volatile char *framebuffer = (volatile char *) (bufferaddr);
-    //if (top < 0 || top >= DISPLAY_HEIGHT) return;
     int swap;
     if (left > right){
 		swap = left;
@@ -57,20 +47,10 @@ void vid_fill_line(int left, int right, int top, int colour){
 		right = swap;
 	}
     int width = (right - left) + 1; // number of pixels to fill
-    colour |= (colour << 4);
     
-    int i = (DISPLAY_WIDTH*top + left) / 2; // first bufferpos to fill
-    
-    if ((right & 1) == 0){ // if end even (and end != start), it's the first 'half' of a pixel
-        framebuffer[i+(width/2)] = (framebuffer[i+(width/2)] & 0xf0) | (colour & 0x0f);
-    }
-    
-    if ((left & 1) != 0) { // if start odd, its the second 'half' of a pixel
-        framebuffer[i] = (framebuffer[i] & 0x0f) | (colour & 0xf0);
-        i++;
-    }
+    int i = DISPLAY_WIDTH*top + left; // first bufferpos to fill
         
-    int endpos = (DISPLAY_WIDTH*top + left + width)/2;
+    int endpos = DISPLAY_WIDTH*top + left + width;
     int len = endpos - i;
     if(len < 12){ // if less than 3 words, copy bytes
         int rem = endpos - i;
@@ -147,22 +127,10 @@ void vid_fill_line(int left, int right, int top, int colour){
 void vid_fill_rect(int left, int top, int right, int bottom, int colour){
     volatile char *framebuffer = (volatile char *) (bufferaddr);
     int width = right - left;
-    colour |= (colour << 4);
     int y;
     for (y=top; y<bottom; y++){
-        int i = (DISPLAY_WIDTH*y + left) / 2; // first bufferpos to fill
-        if (width > 1 && ((right & 1) != 0)){
-            // fill the 'odd half' of the end pixel
-            framebuffer[i+(width/2)] = (framebuffer[i+(width/2)] & 0xf0) | (colour & 0x0f);
-        }
-        
-        if ((left & 1) != 0) {
-            // fill the 'odd half' of the start pixel
-            framebuffer[i] = (framebuffer[i] & 0x0f) | (colour & 0xf0);
-            i++;
-        }
-        
-        int endpos = (DISPLAY_WIDTH*y + right)/2;
+        int i = DISPLAY_WIDTH*y + left; // first bufferpos to fill
+        int endpos = DISPLAY_WIDTH*y + right;
         while (i < endpos)
             framebuffer[i++] = colour;
     }

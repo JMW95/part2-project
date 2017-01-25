@@ -10,11 +10,11 @@ module palette (
     
     output logic avm_master_read,
     output logic [23:0] avm_master_address,
-    input logic [7:0] avm_master_readdata,
+    input logic [15:0] avm_master_readdata,
     input logic avm_master_readdatavalid,
     input logic avm_master_waitrequest,
     
-    input [3:0] avs_palette_address,
+    input [7:0] avs_palette_address,
     input [15:0] avs_palette_writedata,
     output logic [15:0] avs_palette_readdata,
     input avs_palette_write
@@ -37,46 +37,47 @@ endfunction
 `define PIXEL_CYAN      PIXEL24(8'h00, 8'hFF, 8'hFF)
 `define PIXEL_MAGENTA   PIXEL24(8'hFF, 8'h00, 8'hFF)
 
-logic [15:0] palette[16] = '{
-    `PIXEL_BLACK,
-    `PIXEL_WHITE,
-    `PIXEL_RED,
-    `PIXEL_GREEN,
-    `PIXEL_BLUE,
-    `PIXEL_CYAN,
-    `PIXEL_MAGENTA,
-    `PIXEL_YELLOW,
-    `PIXEL_BLACK,
-    `PIXEL_WHITE,
-    `PIXEL_RED,
-    `PIXEL_GREEN,
-    `PIXEL_BLUE,
-    `PIXEL_CYAN,
-    `PIXEL_MAGENTA,
-    `PIXEL_YELLOW
+logic [15:0] palette[256] = '{
+    0: `PIXEL_BLACK,
+    1: `PIXEL_WHITE,
+    2: `PIXEL_RED,
+    3: `PIXEL_GREEN,
+    4: `PIXEL_BLUE,
+    5: `PIXEL_CYAN,
+    6: `PIXEL_MAGENTA,
+    7: `PIXEL_YELLOW,
+    8: `PIXEL_BLACK,
+    9: `PIXEL_WHITE,
+    10: `PIXEL_RED,
+    11: `PIXEL_GREEN,
+    12: `PIXEL_BLUE,
+    13: `PIXEL_CYAN,
+    14: `PIXEL_MAGENTA,
+    15: `PIXEL_YELLOW,
+    default: `PIXEL_BLACK
 };
 
-logic [3:0] pix1, pix2;
+logic [7:0] pix1, pix2;
 logic [23:0] striped_address;
 
-always_comb begin
-    striped_address[23:16] = avs_slave_address[23:16];
+always_comb begin // [16:1] <= [15:0] changes from 8-16bit alignment
+    striped_address[23:17] = avs_slave_address[23:17];
     if(avs_slave_address[15:0] >= 16'hdf20) begin
-        striped_address[15:0] = avs_slave_address[15:0] + 16'he0;
+        striped_address[16:1] = avs_slave_address[15:0] + 16'he0;
     end else if(avs_slave_address[15:0] >= 16'hbf40) begin
-        striped_address[15:0] = avs_slave_address[15:0] + 16'hc0;
+        striped_address[16:1] = avs_slave_address[15:0] + 16'hc0;
     end else if(avs_slave_address[15:0] >= 16'h9f60) begin
-        striped_address[15:0] = avs_slave_address[15:0] + 16'ha0;
+        striped_address[16:1] = avs_slave_address[15:0] + 16'ha0;
     end else if(avs_slave_address[15:0] >= 16'h7f80) begin
-        striped_address[15:0] = avs_slave_address[15:0] + 16'h80;
+        striped_address[16:1] = avs_slave_address[15:0] + 16'h80;
     end else if(avs_slave_address[15:0] >= 16'h5fa0) begin
-        striped_address[15:0] = avs_slave_address[15:0] + 16'h60;
+        striped_address[16:1] = avs_slave_address[15:0] + 16'h60;
     end else if(avs_slave_address[15:0] >= 16'h3fc0) begin
-        striped_address[15:0] = avs_slave_address[15:0] + 16'h40;
+        striped_address[16:1] = avs_slave_address[15:0] + 16'h40;
     end else if(avs_slave_address[15:0] >= 16'h1fe0) begin
-        striped_address[15:0] = avs_slave_address[15:0] + 16'h20;
+        striped_address[16:1] = avs_slave_address[15:0] + 16'h20;
     end else begin
-        striped_address[15:0] = avs_slave_address[15:0];
+        striped_address[16:1] = avs_slave_address[15:0];
     end
 end
 

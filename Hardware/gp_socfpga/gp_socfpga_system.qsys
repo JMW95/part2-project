@@ -100,7 +100,7 @@
    {
       datum baseAddress
       {
-         value = "8192";
+         value = "16384";
          type = "String";
       }
    }
@@ -108,7 +108,7 @@
    {
       datum baseAddress
       {
-         value = "1056768";
+         value = "1064960";
          type = "String";
       }
    }
@@ -153,7 +153,7 @@
    {
       datum baseAddress
       {
-         value = "16384";
+         value = "32768";
          type = "String";
       }
    }
@@ -161,7 +161,7 @@
    {
       datum baseAddress
       {
-         value = "1064960";
+         value = "1081344";
          type = "String";
       }
    }
@@ -206,7 +206,7 @@
    {
       datum baseAddress
       {
-         value = "24576";
+         value = "49152";
          type = "String";
       }
    }
@@ -214,7 +214,7 @@
    {
       datum baseAddress
       {
-         value = "1073152";
+         value = "1097728";
          type = "String";
       }
    }
@@ -259,7 +259,7 @@
    {
       datum baseAddress
       {
-         value = "32768";
+         value = "65536";
          type = "String";
       }
    }
@@ -267,7 +267,7 @@
    {
       datum baseAddress
       {
-         value = "1081344";
+         value = "1114112";
          type = "String";
       }
    }
@@ -312,7 +312,7 @@
    {
       datum baseAddress
       {
-         value = "40960";
+         value = "81920";
          type = "String";
       }
    }
@@ -320,7 +320,7 @@
    {
       datum baseAddress
       {
-         value = "1089536";
+         value = "1130496";
          type = "String";
       }
    }
@@ -373,7 +373,7 @@
    {
       datum baseAddress
       {
-         value = "49152";
+         value = "98304";
          type = "String";
       }
    }
@@ -381,7 +381,7 @@
    {
       datum baseAddress
       {
-         value = "1097728";
+         value = "1146880";
          type = "String";
       }
    }
@@ -426,7 +426,7 @@
    {
       datum baseAddress
       {
-         value = "57344";
+         value = "114688";
          type = "String";
       }
    }
@@ -434,7 +434,7 @@
    {
       datum baseAddress
       {
-         value = "1105920";
+         value = "1163264";
          type = "String";
       }
    }
@@ -451,6 +451,14 @@
       datum baseAddress
       {
          value = "2555904";
+         type = "String";
+      }
+   }
+   element gp_socfpga_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
          type = "String";
       }
    }
@@ -580,7 +588,7 @@
  </module>
  <module name="core_0" kind="render_core" version="1.0" enabled="1">
   <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="3" />
-  <parameter name="AUTO_CLK_CLOCK_RATE" value="95000000" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="90000000" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="3" />
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
@@ -591,7 +599,7 @@
  </module>
  <module name="core_1" kind="render_core" version="1.0" enabled="1">
   <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="3" />
-  <parameter name="AUTO_CLK_CLOCK_RATE" value="95000000" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="90000000" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="3" />
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
@@ -602,7 +610,7 @@
  </module>
  <module name="core_2" kind="render_core" version="1.0" enabled="1">
   <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="3" />
-  <parameter name="AUTO_CLK_CLOCK_RATE" value="95000000" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="90000000" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="3" />
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
@@ -613,7 +621,7 @@
  </module>
  <module name="core_3" kind="render_core" version="1.0" enabled="1">
   <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="3" />
-  <parameter name="AUTO_CLK_CLOCK_RATE" value="95000000" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="90000000" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="3" />
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
@@ -624,7 +632,7 @@
  </module>
  <module name="core_4" kind="render_core" version="1.0" enabled="1">
   <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="3" />
-  <parameter name="AUTO_CLK_CLOCK_RATE" value="95000000" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="90000000" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="3" />
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
@@ -635,7 +643,7 @@
  </module>
  <module name="core_5" kind="render_core" version="1.0" enabled="1">
   <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="3" />
-  <parameter name="AUTO_CLK_CLOCK_RATE" value="95000000" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="90000000" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="3" />
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
@@ -646,7 +654,7 @@
  </module>
  <module name="core_6" kind="render_core" version="1.0" enabled="1">
   <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="3" />
-  <parameter name="AUTO_CLK_CLOCK_RATE" value="95000000" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="90000000" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="3" />
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
@@ -657,7 +665,7 @@
  </module>
  <module name="core_7" kind="render_core" version="1.0" enabled="1">
   <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="3" />
-  <parameter name="AUTO_CLK_CLOCK_RATE" value="95000000" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="90000000" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="3" />
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
@@ -818,10 +826,10 @@
   <parameter name="FPGA_PERIPHERAL_OUTPUT_CLOCK_FREQ_SPIM1_SCLK_OUT" value="100" />
   <parameter name="GPIO_Enable">No,No,No,No,No,No,No,No,No,Yes,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,Yes,No,No,No,No,Yes,No,No,No,No,No,No,No,Yes,No,No,No,No,Yes,Yes,No,No,No,No,No,No,Yes,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No</parameter>
   <parameter name="GP_Enable" value="false" />
-  <parameter name="H2F_AXI_CLOCK_FREQ" value="95000000" />
+  <parameter name="H2F_AXI_CLOCK_FREQ" value="90000000" />
   <parameter name="H2F_CTI_CLOCK_FREQ" value="100" />
   <parameter name="H2F_DEBUG_APB_CLOCK_FREQ" value="100" />
-  <parameter name="H2F_LW_AXI_CLOCK_FREQ" value="95000000" />
+  <parameter name="H2F_LW_AXI_CLOCK_FREQ" value="90000000" />
   <parameter name="H2F_TPIU_CLOCK_IN_FREQ" value="100" />
   <parameter name="HARD_EMIF" value="true" />
   <parameter name="HCX_COMPAT_MODE" value="false" />
@@ -1202,7 +1210,7 @@
   <parameter name="bitClearingEdgeCapReg" value="false" />
   <parameter name="bitModifyingOutReg" value="false" />
   <parameter name="captureEdge" value="true" />
-  <parameter name="clockRate" value="95000000" />
+  <parameter name="clockRate" value="90000000" />
   <parameter name="direction" value="Input" />
   <parameter name="edgeType" value="FALLING" />
   <parameter name="generateIRQ" value="true" />
@@ -1331,7 +1339,7 @@
   <parameter name="gui_multiply_factor" value="1" />
   <parameter name="gui_number_of_clocks" value="2" />
   <parameter name="gui_operation_mode" value="direct" />
-  <parameter name="gui_output_clock_frequency0" value="95.0" />
+  <parameter name="gui_output_clock_frequency0" value="90.0" />
   <parameter name="gui_output_clock_frequency1" value="9.0" />
   <parameter name="gui_output_clock_frequency10" value="100.0" />
   <parameter name="gui_output_clock_frequency11" value="100.0" />
@@ -1673,7 +1681,7 @@
    start="palette_0.master"
    end="core_1.fbuff1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x2000" />
+  <parameter name="baseAddress" value="0x4000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1682,7 +1690,7 @@
    start="palette_0.master"
    end="core_3.fbuff1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x6000" />
+  <parameter name="baseAddress" value="0xc000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1691,7 +1699,7 @@
    start="palette_0.master"
    end="core_4.fbuff1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x8000" />
+  <parameter name="baseAddress" value="0x00010000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1700,7 +1708,7 @@
    start="palette_0.master"
    end="core_5.fbuff1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0xa000" />
+  <parameter name="baseAddress" value="0x00014000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1709,7 +1717,7 @@
    start="palette_0.master"
    end="core_6.fbuff1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0xc000" />
+  <parameter name="baseAddress" value="0x00018000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1718,7 +1726,7 @@
    start="palette_0.master"
    end="core_7.fbuff1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0xe000" />
+  <parameter name="baseAddress" value="0x0001c000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1727,7 +1735,7 @@
    start="palette_0.master"
    end="core_2.fbuff1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x4000" />
+  <parameter name="baseAddress" value="0x8000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1745,7 +1753,7 @@
    start="palette_0.master"
    end="core_1.fbuff2">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00102000" />
+  <parameter name="baseAddress" value="0x00104000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1754,7 +1762,7 @@
    start="palette_0.master"
    end="core_2.fbuff2">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00104000" />
+  <parameter name="baseAddress" value="0x00108000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1763,7 +1771,7 @@
    start="palette_0.master"
    end="core_3.fbuff2">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00106000" />
+  <parameter name="baseAddress" value="0x0010c000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1772,7 +1780,7 @@
    start="palette_0.master"
    end="core_4.fbuff2">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00108000" />
+  <parameter name="baseAddress" value="0x00110000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1781,7 +1789,7 @@
    start="palette_0.master"
    end="core_5.fbuff2">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0010a000" />
+  <parameter name="baseAddress" value="0x00114000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1790,7 +1798,7 @@
    start="palette_0.master"
    end="core_6.fbuff2">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0010c000" />
+  <parameter name="baseAddress" value="0x00118000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1799,7 +1807,7 @@
    start="palette_0.master"
    end="core_7.fbuff2">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0010e000" />
+  <parameter name="baseAddress" value="0x0011c000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection

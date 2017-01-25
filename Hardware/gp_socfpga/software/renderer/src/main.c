@@ -14,26 +14,16 @@
 static unsigned int copy_counter = 0;
 unsigned int coreid = 0;
 
-struct altera_mm_fifo_csr {
-    unsigned int fill_level;
-    unsigned int i_status;
-    unsigned int event;
-    unsigned int int_enable;
-    unsigned int almostfull;
-    unsigned int almostempty;
-};
-
 volatile unsigned int *fifo = (unsigned int *)(SHARED_BASE);
-volatile struct altera_mm_fifo_csr *fifo_csr = (struct altera_mm_fifo_csr *)(SHARED_BASE+0x100);
 
 unsigned char *read_fifo(char numbytes){
-    static unsigned char buf[256];
-    unsigned int *ptr = (unsigned int *)(buf);
+    static unsigned int buf[64];
+    unsigned int *ptr = buf;
     int numreads = (numbytes+3)/4;
     while(numreads--){
         *ptr++ = fifo[0];
     }
-    return buf;
+    return (char *)buf;
 }
 
 volatile unsigned char *done = (volatile unsigned char *)DONE_IRQ_BASE;
