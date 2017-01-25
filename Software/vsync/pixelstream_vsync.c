@@ -64,8 +64,8 @@ static long ioctl(struct file *file, unsigned int cmd, unsigned long argaddr){
     short newval;
     if(cmd == IOCTL_PALETTE_SET_COLOR){ // change palette entry
         arg = *(int *)argaddr;
-        palettenum = arg & 0xf;
-        newval = (arg >> 4);
+        palettenum = arg & 0xff;
+        newval = (arg >> 8);
         
         palette[palettenum] = newval;
     }else if(cmd == IOCTL_PIXELSTREAM_SET_BUFFER){ // change pixelstream buffer
