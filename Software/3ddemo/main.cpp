@@ -29,6 +29,17 @@ bool trizcomp(Triangle2D a, Triangle2D b){
     return a.maxdepth < b.maxdepth;
 }
 
+char colourtable[][3] = {
+    {0,0,0},
+    {255,255,255},
+    {255,0,0},
+    {0,255,0},
+    {0,0,255},
+    {0,255,255},
+    {255,0,255},
+    {255,255,0}
+};
+
 void transform(const Model &m, Matrix4 &modelView, Matrix4& proj,
                 std::vector<Triangle2D> &renderfaces){
     Vector3 camnormal(0,0,1);
@@ -67,7 +78,7 @@ void transform(const Model &m, Matrix4 &modelView, Matrix4& proj,
         }
         
         if(valid){
-            tri.color = col*16;
+            tri.color = m.color*32 + (col*32);
             tri.maxdepth = maxdepth;
             renderfaces.push_back(tri);
         }
@@ -88,6 +99,9 @@ int main(int argc, char *argv[]){
     Model teapot("Teapot.obj");
     Model basicMan("BasicCriypticman.obj");
     
+    teapot.color = 2;
+    basicMan.color = 3;
+    
     GPU g;
     Timer calc, draw, frame, sync;
     
@@ -95,8 +109,13 @@ int main(int argc, char *argv[]){
     g.sof();
     g.eof();
     
-    for(int i=0; i<16; i++){
-        g.set_palette_color(i, PIXEL24(i*16, i*16, i*16));
+    for(int col=0; col<8; col++){
+        for(int shade=0; shade<32; shade++){
+            g.set_palette_color(col*32 + shade,
+                 PIXEL24((colourtable[col][0]*shade)/32,
+                    (colourtable[col][1]*shade)/32,
+                    (colourtable[col][2]*shade)/32));
+        }
     }
     
     std::vector<Triangle2D> renderfaces;
@@ -126,7 +145,8 @@ int main(int argc, char *argv[]){
         
         // BasicCriypticman
         {
-        auto s = Matrix4::scale_matrix(1, 1, 1);
+        float sc = 0.6 + 0.4*sin(deg2rad(i*2));
+        auto s = Matrix4::scale_matrix(sc, sc, sc);
         auto r = Matrix4::rotation_matrix(0, deg2rad(i*-10), 0);
         auto t = Matrix4::translation_matrix(3, -2.5, 30);
         auto mv = t * r * s;

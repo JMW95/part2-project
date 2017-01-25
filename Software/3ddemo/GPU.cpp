@@ -18,22 +18,12 @@ void GPU::_draw_horiz_line(int x1, int x2, int top, int colour){
     int right = std::max(x1, x2);
     
     int width = (right - left)+1;
-    colour |= (colour << 4);
     
     volatile char *framebuffer = (char *)ftmp;
     
-    int i = (DISPLAY_WIDTH*top + left) / 2; // first bufferpos to fill
+    int i = DISPLAY_WIDTH*top + left; // first bufferpos to fill
     
-    if ((right & 1) == 0){ // if end even, it's the first 'half' of a pixel
-        framebuffer[i+(width/2)] = (framebuffer[i+(width/2)] & 0xf0) | (colour & 0x0f);
-    }
-    
-    if ((left & 1) != 0) { // if start odd, its the second 'half' of a pixel
-        framebuffer[i] = (framebuffer[i] & 0x0f) | (colour & 0xf0);
-        i++;
-    }
-        
-    int endpos = (DISPLAY_WIDTH*top + left + width)/2;
+    int endpos = DISPLAY_WIDTH*top + left + width;
     int len = endpos - i;
     
     if(len < 12){ // if less than 3 words, copy bytes
@@ -230,7 +220,7 @@ void GPU::vsync(){
 }
 
 void GPU::set_palette_color(int entrynum, int color){
-    int data = (color << 4) | entrynum;
+    int data = (color << 8) | entrynum;
     ioctl(fileno(_pixf), IOCTL_PALETTE_SET_COLOR, &data);
 }
 
@@ -243,7 +233,7 @@ void GPU::sof(){
         write_workpacket(i, TYPE_SOF, (char*)&buf, 4);
     }
     if(!use_hardware){
-        memset((void *)ftmp, 0, DISPLAY_WIDTH*DISPLAY_HEIGHT/2);
+        memset((void *)ftmp, 0, DISPLAY_WIDTH*DISPLAY_HEIGHT);
     }
 }
 
@@ -283,7 +273,7 @@ void GPU::eof(){
     if(!use_hardware){
         int wq = 0;
         for(wq = 0; wq < NUMCORES; wq++){
-            int nbytes = (DISPLAY_WIDTH*DISPLAY_HEIGHT/2) / NUMCORES; // copy half the bytes to each wq
+            int nbytes = (DISPLAY_WIDTH*DISPLAY_HEIGHT) / NUMCORES;
             int i = wq * nbytes; // starting points
             write_workpacket(wq, TYPE_COPY_START, NULL, 0);
             while(nbytes > 0){

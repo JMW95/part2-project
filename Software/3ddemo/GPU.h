@@ -15,7 +15,7 @@ private:
     FILE* _pixf;
     FILE* _wqf;
     bool use_hardware;
-    char ftmp[DISPLAY_WIDTH * DISPLAY_HEIGHT / 2];
+    char ftmp[DISPLAY_WIDTH * DISPLAY_HEIGHT];
     
     void set_buffer(unsigned int addr);
     Triangle2D trisort(const Triangle2D& tri);
