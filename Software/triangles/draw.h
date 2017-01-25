@@ -26,7 +26,7 @@
 #define DISPLAY_WIDTH 480
 #define DISPLAY_HEIGHT 272
 
-char ftmp[DISPLAY_WIDTH * DISPLAY_HEIGHT / 2];
+char ftmp[DISPLAY_WIDTH * DISPLAY_HEIGHT];
 
 struct point {
     int x;

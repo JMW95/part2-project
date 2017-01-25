@@ -9,7 +9,7 @@
 static FILE *fp;
 
 void palette_set_color(char entrynum, short color){
-    int data = (color << 4) | entrynum;
+    int data = (color << 8) | entrynum;
     ioctl(fileno(fp), IOCTL_PALETTE_SET_COLOR, &data);
 }
 

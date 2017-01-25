@@ -9,17 +9,9 @@
 #define max(a,b) ((a)<(b)?(b):(a))
 
 void plot(int x, int y, int colour){
-    int pixelpos = x+y*DISPLAY_WIDTH;
-    int bufpos = pixelpos/2;
+    int bufpos = x+y*DISPLAY_WIDTH;
     
-    char val = ftmp[bufpos];
-    if((pixelpos & 1) == 0){ // if x even, use lower 4 bits.
-        val = (val & 0xf0) | (colour & 0x0f);
-    }else{ // use upper 4 bits for odd x
-        val = (val & 0x0f) | ((colour & 0x0f) << 4);
-    }
-    
-    ftmp[bufpos] = val;
+    ftmp[bufpos] = colour;
 }
 
 // Sort the points by y-coordinate so that V1 is the highest.
@@ -69,22 +61,12 @@ void drawHorizontalLine(int x1, int x2, int top, int colour){
     workqueue_line(queuenum, left, right, top - (queuenum * (DISPLAY_HEIGHT/NUM_QUEUES)), colour);
 #else
     int width = (right - left)+1;
-    colour |= (colour << 4);
     
     volatile char *framebuffer = (char *)ftmp;
     
-    int i = (DISPLAY_WIDTH*top + left) / 2; // first bufferpos to fill
-    
-    if ((right & 1) == 0){ // if end even, it's the first 'half' of a pixel
-        framebuffer[i+(width/2)] = (framebuffer[i+(width/2)] & 0xf0) | (colour & 0x0f);
-    }
-    
-    if ((left & 1) != 0) { // if start odd, its the second 'half' of a pixel
-        framebuffer[i] = (framebuffer[i] & 0x0f) | (colour & 0xf0);
-        i++;
-    }
+    int i = DISPLAY_WIDTH*top + left; // first bufferpos to fill
         
-    int endpos = (DISPLAY_WIDTH*top + left + width)/2;
+    int endpos = DISPLAY_WIDTH*top + left + width;
     int len = endpos - i;
     
     if(len < 12){ // if less than 3 words, copy bytes
@@ -222,13 +204,13 @@ void draw(struct triangle *tri, int col){
 }
 
 void clear(){
-    memset((void *)ftmp, 0, DISPLAY_WIDTH*DISPLAY_HEIGHT/2);
+    memset((void *)ftmp, 0, DISPLAY_WIDTH*DISPLAY_HEIGHT);
 }
 
 void show(){
     int wq = 0;
     for(wq = 0; wq < NUM_QUEUES; wq++){
-        int nbytes = (DISPLAY_WIDTH*DISPLAY_HEIGHT/2) / NUM_QUEUES; // copy half the bytes to each wq
+        int nbytes = (DISPLAY_WIDTH*DISPLAY_HEIGHT) / NUM_QUEUES;
         int i = wq * nbytes; // starting points
         workqueue_copy_start(wq);
         while(nbytes > 0){
