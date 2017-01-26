@@ -10,7 +10,7 @@ struct Point2D {
 struct Triangle2D{
     struct Point2D points[3];
     float depths[3];
-    float maxdepth;
+    float mindepth;
     short color;
 };
 

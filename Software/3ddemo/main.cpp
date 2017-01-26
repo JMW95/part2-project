@@ -26,7 +26,7 @@ static float deg2rad(float degrees){
 }
 
 bool trizcomp(Triangle2D a, Triangle2D b){
-    return a.maxdepth < b.maxdepth;
+    return a.mindepth < b.mindepth;
 }
 
 char colourtable[][3] = {
@@ -55,7 +55,7 @@ void transform(const Model &m, Matrix4 &modelView, Matrix4& proj,
         auto col = camnormal.dot(f.normal);
         if(col < 0) continue; // Back-face culling
         
-        float maxdepth = -1e10;
+        float mindepth = 1e10;
         for(int i=0; i<3; i++){
             auto v = T * (*it).vertices[i];
             v.vals[0] /= v.vals[3];
@@ -72,14 +72,14 @@ void transform(const Model &m, Matrix4 &modelView, Matrix4& proj,
             tri.points[i].x = 480 * ((v.vals[0] + 1) / 2);
             tri.points[i].y = 272 * ((v.vals[1] + 1) / 2);
             tri.depths[i] = v.vals[2];
-            if(v.vals[2] > maxdepth){
-                maxdepth = v.vals[2];
+            if(v.vals[2] < mindepth){
+                mindepth = v.vals[2];
             }
         }
         
         if(valid){
             tri.color = m.color*32 + (col*32);
-            tri.maxdepth = maxdepth;
+            tri.mindepth = mindepth;
             renderfaces.push_back(tri);
         }
         
@@ -136,6 +136,7 @@ int main(int argc, char *argv[]){
         
         // Teapot
         {
+        teapot.color = ((i/30)%7)+1;
         auto s = Matrix4::scale_matrix(1, 1, 1);
         auto r = Matrix4::rotation_matrix(0, deg2rad(i*3), 0);
         auto t = Matrix4::translation_matrix(-1.5, -1, 30);
@@ -145,6 +146,7 @@ int main(int argc, char *argv[]){
         
         // BasicCriypticman
         {
+        basicMan.color = (((i+75)/30)%7)+1;
         float sc = 0.6 + 0.4*sin(deg2rad(i*2));
         auto s = Matrix4::scale_matrix(sc, sc, sc);
         auto r = Matrix4::rotation_matrix(0, deg2rad(i*-10), 0);
