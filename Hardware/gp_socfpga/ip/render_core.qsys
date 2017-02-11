@@ -130,7 +130,7 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
       }
    }
@@ -214,6 +214,13 @@
    defaultValue="0"
    legalRanges=""
    description="" />
+ <instanceParameter
+   name="fbuff_size"
+   displayName="fbuff_size"
+   type="integer"
+   defaultValue="0"
+   legalRanges=""
+   description="" />
  <instanceScript><![CDATA[# request a specific version of the scripting API
 package require -exact qsys 16.0
 
@@ -224,10 +231,16 @@ proc compose {} {
     # manipulate parameters in here
     # Example: set_instance_parameter_value child0 param0 [ get_parameter_value new_parameter_0 ]
     set_instance_parameter_value core_id id [ get_parameter_value core_id ]
+    set_instance_parameter_value fbuff1 memorySize [ get_parameter_value fbuff_size ]
+    set_instance_parameter_value fbuff2 memorySize [ get_parameter_value fbuff_size ]
     send_message INFO [ concat "Core ID: " [ get_parameter_value core_id ] ]
 }]]></instanceScript>
  <interface name="clk" internal="clock.in_clk" type="clock" dir="end" />
- <interface name="debug" internal="pio_debug.external_connection" />
+ <interface
+   name="debug"
+   internal="pio_debug.external_connection"
+   type="conduit"
+   dir="end" />
  <interface
    name="done_irq"
    internal="done_irq_generator.irq"
@@ -404,7 +417,7 @@ proc compose {} {
   <parameter name="useShallowMemBlocks" value="false" />
   <parameter name="writable" value="true" />
  </module>
- <module name="pio_debug" kind="altera_avalon_pio" version="16.0" enabled="0">
+ <module name="pio_debug" kind="altera_avalon_pio" version="16.0" enabled="1">
   <parameter name="bitClearingEdgeCapReg" value="false" />
   <parameter name="bitModifyingOutReg" value="false" />
   <parameter name="captureEdge" value="false" />

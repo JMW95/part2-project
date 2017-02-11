@@ -1,4 +1,6 @@
-module palette (
+module palette #(
+    parameter NUM_CORES = 8
+)(
     input clk,
     input reset,
     
@@ -46,40 +48,66 @@ logic [15:0] palette[256] = '{
     5: `PIXEL_CYAN,
     6: `PIXEL_MAGENTA,
     7: `PIXEL_YELLOW,
-    8: `PIXEL_BLACK,
-    9: `PIXEL_WHITE,
-    10: `PIXEL_RED,
-    11: `PIXEL_GREEN,
-    12: `PIXEL_BLUE,
-    13: `PIXEL_CYAN,
-    14: `PIXEL_MAGENTA,
-    15: `PIXEL_YELLOW,
     default: `PIXEL_BLACK
 };
 
 logic [7:0] pix1, pix2;
 logic [23:0] striped_address;
 
-always_comb begin // [16:1] <= [15:0] changes from 8-16bit alignment
-    striped_address[23:17] = avs_slave_address[23:17];
-    if(avs_slave_address[15:0] >= 16'hdf20) begin
-        striped_address[16:1] = avs_slave_address[15:0] + 16'he0;
-    end else if(avs_slave_address[15:0] >= 16'hbf40) begin
-        striped_address[16:1] = avs_slave_address[15:0] + 16'hc0;
-    end else if(avs_slave_address[15:0] >= 16'h9f60) begin
-        striped_address[16:1] = avs_slave_address[15:0] + 16'ha0;
-    end else if(avs_slave_address[15:0] >= 16'h7f80) begin
-        striped_address[16:1] = avs_slave_address[15:0] + 16'h80;
-    end else if(avs_slave_address[15:0] >= 16'h5fa0) begin
-        striped_address[16:1] = avs_slave_address[15:0] + 16'h60;
-    end else if(avs_slave_address[15:0] >= 16'h3fc0) begin
-        striped_address[16:1] = avs_slave_address[15:0] + 16'h40;
-    end else if(avs_slave_address[15:0] >= 16'h1fe0) begin
-        striped_address[16:1] = avs_slave_address[15:0] + 16'h20;
-    end else begin
-        striped_address[16:1] = avs_slave_address[15:0];
+generate
+    if (NUM_CORES == 8) begin
+        always_comb begin // [16:1] <= [15:0] changes from 8-16bit alignment
+            striped_address[23:17] = avs_slave_address[23:17];
+            if(avs_slave_address[15:0] >= 16'hdf20) begin
+                striped_address[16:1] = avs_slave_address[15:0] + 16'he0;
+            end else if(avs_slave_address[15:0] >= 16'hbf40) begin
+                striped_address[16:1] = avs_slave_address[15:0] + 16'hc0;
+            end else if(avs_slave_address[15:0] >= 16'h9f60) begin
+                striped_address[16:1] = avs_slave_address[15:0] + 16'ha0;
+            end else if(avs_slave_address[15:0] >= 16'h7f80) begin
+                striped_address[16:1] = avs_slave_address[15:0] + 16'h80;
+            end else if(avs_slave_address[15:0] >= 16'h5fa0) begin
+                striped_address[16:1] = avs_slave_address[15:0] + 16'h60;
+            end else if(avs_slave_address[15:0] >= 16'h3fc0) begin
+                striped_address[16:1] = avs_slave_address[15:0] + 16'h40;
+            end else if(avs_slave_address[15:0] >= 16'h1fe0) begin
+                striped_address[16:1] = avs_slave_address[15:0] + 16'h20;
+            end else begin
+                striped_address[16:1] = avs_slave_address[15:0];
+            end
+        end
     end
-end
+    if (NUM_CORES == 4) begin
+        always_comb begin // [16:1] <= [15:0] changes from 8-16bit alignment
+            striped_address[23:17] = avs_slave_address[23:17];
+            if(avs_slave_address[15:0] >= 16'hbf40) begin
+                striped_address[16:1] = avs_slave_address[15:0] + 16'hc0;
+            end else if(avs_slave_address[15:0] >= 16'h7f80) begin
+                striped_address[16:1] = avs_slave_address[15:0] + 16'h80;
+            end else if(avs_slave_address[15:0] >= 16'h3fc0) begin
+                striped_address[16:1] = avs_slave_address[15:0] + 16'h40;
+            end else begin
+                striped_address[16:1] = avs_slave_address[15:0];
+            end
+        end
+    end
+    if (NUM_CORES == 2) begin
+        always_comb begin // [16:1] <= [15:0] changes from 8-16bit alignment
+            striped_address[23:17] = avs_slave_address[23:17];
+            if(avs_slave_address[15:0] >= 16'h7f80) begin
+                striped_address[16:1] = avs_slave_address[15:0] + 16'h80;
+            end else begin
+                striped_address[16:1] = avs_slave_address[15:0];
+            end
+        end
+    end
+    if (NUM_CORES == 1) begin
+        always_comb begin // [16:1] <= [15:0] changes from 8-16bit alignment
+            striped_address[23:17] = avs_slave_address[23:17];
+            striped_address[16:1] = avs_slave_address[15:0];
+        end
+    end
+endgenerate
 
 always_ff @(posedge clk) begin
     if(reset) begin
