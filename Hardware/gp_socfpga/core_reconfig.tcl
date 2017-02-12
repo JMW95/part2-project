@@ -29,13 +29,11 @@ load_system "${system_name}.qsys"
 
 
 
-stage "SETTING FRAMEBUFFER MEMORY SIZES"
-# Size of framebuffer in bytes, for each core
-set fbs [ expr (480*272)/$num_cores ]
-# Go through each core and set its fbuff_size parameter
+stage "RECONFIGURING CORES"
+# Go through each core and set its num_cores parameter
 for { set i 0 } { $i < 8 } { incr i } {
 	set ci core_$i
-	set_instance_parameter_value $ci fbuff_size $fbs
+	set_instance_parameter_value $ci num_cores $num_cores
 	if { $i < $num_cores } {
 		set_instance_property $ci ENABLED true
 	} else {
@@ -57,8 +55,9 @@ for { set i 0 } { $i < $num_cores } {incr i } {
 
 
 
-stage "SETTING PALETTE INFO"
+stage "SETTING GLOBAL INFO"
 set_instance_parameter_value palette_0 NUM_CORES $num_cores
+set_instance_parameter_value num_cores_id id $num_cores
 
 
 

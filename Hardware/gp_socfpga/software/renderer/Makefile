@@ -17,7 +17,6 @@ C_OBJ_FILES := $(patsubst src/%.c,build/%.o,$(C_FILES))
 AS_OBJ_FILES := $(patsubst src/%.s,build/%.o,$(AS_FILES))
 ASP_OBJ_FILES := $(patsubst src/%.S,build/%.o,$(ASP_FILES))
 
-
 # settings for the compilers
 RISCV_PREFIX = riscv32-unknown-elf-
 CC = $(RISCV_PREFIX)gcc
@@ -26,7 +25,7 @@ OBJCOPY = $(RISCV_PREFIX)objcopy
 OBJDUMP = $(RISCV_PREFIX)objdump
 
 TARGET_ARCH = -m32 -march=RV32I
-CCFLAGS = -O3 $(TARGET_ARCH)
+CCFLAGS = -O3 $(TARGET_ARCH) -Wall
 
 # Lists of rules: the name of a file, followed by the files it depends on.
 # When typing 'make' not followed by a rule name, the first rule is followed.  This rule depends on

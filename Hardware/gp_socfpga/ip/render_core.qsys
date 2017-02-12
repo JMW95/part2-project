@@ -21,7 +21,7 @@
    {
       datum _sortIndex
       {
-         value = "4";
+         value = "5";
          type = "int";
       }
    }
@@ -53,7 +53,7 @@
    {
       datum _sortIndex
       {
-         value = "10";
+         value = "11";
          type = "int";
       }
    }
@@ -61,7 +61,7 @@
    {
       datum _sortIndex
       {
-         value = "9";
+         value = "10";
          type = "int";
       }
    }
@@ -77,7 +77,7 @@
    {
       datum _sortIndex
       {
-         value = "6";
+         value = "7";
          type = "int";
       }
    }
@@ -101,7 +101,7 @@
    {
       datum _sortIndex
       {
-         value = "7";
+         value = "8";
          type = "int";
       }
    }
@@ -109,7 +109,7 @@
    {
       datum baseAddress
       {
-         value = "1114112";
+         value = "1179648";
          type = "String";
       }
    }
@@ -121,11 +121,27 @@
          type = "String";
       }
    }
+   element num_cores_id
+   {
+      datum _sortIndex
+      {
+         value = "4";
+         type = "int";
+      }
+   }
+   element num_cores_id.control_slave
+   {
+      datum baseAddress
+      {
+         value = "5242880";
+         type = "String";
+      }
+   }
    element pio_debug
    {
       datum _sortIndex
       {
-         value = "8";
+         value = "9";
          type = "int";
       }
       datum sopceditor_expanded
@@ -154,7 +170,7 @@
    {
       datum _sortIndex
       {
-         value = "5";
+         value = "6";
          type = "int";
       }
    }
@@ -215,10 +231,10 @@
    legalRanges=""
    description="" />
  <instanceParameter
-   name="fbuff_size"
-   displayName="fbuff_size"
+   name="num_cores"
+   displayName="num_cores"
    type="integer"
-   defaultValue="0"
+   defaultValue="1"
    legalRanges=""
    description="" />
  <instanceScript><![CDATA[# request a specific version of the scripting API
@@ -228,11 +244,14 @@ package require -exact qsys 16.0
 set_module_property COMPOSITION_CALLBACK compose
 
 proc compose {} {
-    # manipulate parameters in here
-    # Example: set_instance_parameter_value child0 param0 [ get_parameter_value new_parameter_0 ]
     set_instance_parameter_value core_id id [ get_parameter_value core_id ]
-    set_instance_parameter_value fbuff1 memorySize [ get_parameter_value fbuff_size ]
-    set_instance_parameter_value fbuff2 memorySize [ get_parameter_value fbuff_size ]
+    
+    set nc [ get_parameter_value num_cores ]
+    set memsize [ expr (480*272) / $nc ]
+    
+    set_instance_parameter_value fbuff1 memorySize $memsize
+    set_instance_parameter_value fbuff2 memorySize $memsize
+    set_instance_parameter_value num_cores_id id $nc
     send_message INFO [ concat "Core ID: " [ get_parameter_value core_id ] ]
 }]]></instanceScript>
  <interface name="clk" internal="clock.in_clk" type="clock" dir="end" />
@@ -282,7 +301,7 @@ proc compose {} {
    version="16.0"
    enabled="1">
   <parameter name="allowInSystemMemoryContentEditor" value="false" />
-  <parameter name="autoInitializationFileName">$${FILENAME}_clarvi_scratch</parameter>
+  <parameter name="autoInitializationFileName">render_core_clarvi_scratch</parameter>
   <parameter name="blockType" value="AUTO" />
   <parameter name="copyInitFile" value="false" />
   <parameter name="dataWidth" value="32" />
@@ -361,7 +380,7 @@ proc compose {} {
    version="16.0"
    enabled="1">
   <parameter name="allowInSystemMemoryContentEditor" value="false" />
-  <parameter name="autoInitializationFileName" value="$${FILENAME}_fbuff1" />
+  <parameter name="autoInitializationFileName" value="render_core_fbuff1" />
   <parameter name="blockType" value="AUTO" />
   <parameter name="copyInitFile" value="false" />
   <parameter name="dataWidth" value="32" />
@@ -392,7 +411,7 @@ proc compose {} {
    version="16.0"
    enabled="1">
   <parameter name="allowInSystemMemoryContentEditor" value="false" />
-  <parameter name="autoInitializationFileName" value="$${FILENAME}_fbuff2" />
+  <parameter name="autoInitializationFileName" value="render_core_fbuff2" />
   <parameter name="blockType" value="AUTO" />
   <parameter name="copyInitFile" value="false" />
   <parameter name="dataWidth" value="32" />
@@ -416,6 +435,13 @@ proc compose {} {
   <parameter name="useNonDefaultInitFile" value="false" />
   <parameter name="useShallowMemBlocks" value="false" />
   <parameter name="writable" value="true" />
+ </module>
+ <module
+   name="num_cores_id"
+   kind="altera_avalon_sysid_qsys"
+   version="16.0"
+   enabled="1">
+  <parameter name="id" value="0" />
  </module>
  <module name="pio_debug" kind="altera_avalon_pio" version="16.0" enabled="1">
   <parameter name="bitClearingEdgeCapReg" value="false" />
@@ -485,6 +511,15 @@ proc compose {} {
    kind="avalon"
    version="16.0"
    start="clarvi_0.main"
+   end="num_cores_id.control_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00500000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="clarvi_0.main"
    end="work_queue_ff.out">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x00200000" />
@@ -510,7 +545,7 @@ proc compose {} {
  </connection>
  <connection kind="avalon" version="16.0" start="clarvi_0.main" end="fbuff2.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00110000" />
+  <parameter name="baseAddress" value="0x00120000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection kind="avalon" version="16.0" start="clarvi_0.main" end="fbuff1.s1">
@@ -545,6 +580,11 @@ proc compose {} {
    version="16.0"
    start="clock.out_clk"
    end="done_irq_trigger.clk" />
+ <connection
+   kind="clock"
+   version="16.0"
+   start="clock.out_clk"
+   end="num_cores_id.clk" />
  <connection
    kind="clock"
    version="16.0"
@@ -610,6 +650,11 @@ proc compose {} {
    version="16.0"
    start="reset.out_reset"
    end="done_irq_trigger.reset" />
+ <connection
+   kind="reset"
+   version="16.0"
+   start="reset.out_reset"
+   end="num_cores_id.reset" />
  <connection
    kind="reset"
    version="16.0"

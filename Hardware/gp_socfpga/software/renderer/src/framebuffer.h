@@ -4,7 +4,7 @@
 #include "avalon_addr.h"
 
 #define DISPLAY_WIDTH   480
-#define DISPLAY_HEIGHT  34
+extern int DISPLAY_HEIGHT;
 
 void vid_set_pixel(int x, int y, int colour);
 

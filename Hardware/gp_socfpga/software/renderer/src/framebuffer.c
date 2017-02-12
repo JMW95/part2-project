@@ -126,7 +126,6 @@ void vid_fill_line(int left, int right, int top, int colour){
 // fill a certain rectangle
 void vid_fill_rect(int left, int top, int right, int bottom, int colour){
     volatile char *framebuffer = (volatile char *) (bufferaddr);
-    int width = right - left;
     int y;
     for (y=top; y<bottom; y++){
         int i = DISPLAY_WIDTH*y + left; // first bufferpos to fill

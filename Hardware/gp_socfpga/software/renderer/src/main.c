@@ -13,6 +13,9 @@
 
 static unsigned int copy_counter = 0;
 unsigned int coreid = 0;
+unsigned int num_cores = 0;
+
+int DISPLAY_HEIGHT = 0;
 
 volatile unsigned int *fifo = (unsigned int *)(SHARED_BASE);
 
@@ -23,15 +26,26 @@ unsigned char *read_fifo(char numbytes){
     while(numreads--){
         *ptr++ = fifo[0];
     }
-    return (char *)buf;
+    return (unsigned char *)buf;
 }
 
 volatile unsigned char *done = (volatile unsigned char *)DONE_IRQ_BASE;
 void write_done_irq(unsigned char val){
-	done[0] = val;
+    done[0] = val;
 }
 
 int main(void){
+    num_cores = *(unsigned int *)(NUM_CORES_BASE);
+    if(num_cores == 1){
+        DISPLAY_HEIGHT = 272;
+    }else if(num_cores == 2){
+        DISPLAY_HEIGHT = 136;
+    }else if(num_cores == 4){
+        DISPLAY_HEIGHT = 68;
+    }else if(num_cores == 8){
+        DISPLAY_HEIGHT = 34;
+    }
+
     coreid = *((unsigned int *)COREID_BASE);
     vid_clear(coreid);
     write_done_irq(0);
@@ -50,7 +64,7 @@ int main(void){
                 write_done_irq(0);
                 // read address of which buffer to use
                 addr = *(unsigned int *)(data);
-                vid_setbuffer(addr == 0 ? 0x100000 : 0x110000);
+                vid_setbuffer(addr == 0 ? BUFFER1 : BUFFER2);
                 vid_clear(0); //TODO hardware fast-clear?
                 //debug_write(0);
                 break;
