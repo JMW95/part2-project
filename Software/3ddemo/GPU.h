@@ -8,10 +8,12 @@
 #define DISPLAY_HEIGHT 272
 
 #include "../vsync/pixelstream_palette_ioctl.h"
+#include "../workqueue/gpu_workqueue_ioctl.h"
 
 class GPU{
 private:
     int buf;
+    unsigned int num_cores;
     FILE* _pixf;
     FILE* _wqf;
     bool use_hardware;
@@ -34,6 +36,7 @@ public:
     void vsync();
     void set_palette_color(int entrynum, int color);
     unsigned int get_buffer();
+    unsigned int get_num_cores();
     void set_use_hardware(bool use);
     
     void sof();

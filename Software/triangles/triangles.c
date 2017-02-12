@@ -13,6 +13,8 @@
 #define NUMTRIANGLES 1000
 #define NUMREPS 20
 
+int num_cores = 0;
+
 struct triangle generateTri(){
     struct triangle tri;
     
@@ -61,6 +63,9 @@ int main(){
     
     workqueue_init();
     
+    num_cores = workqueue_get_num_cores();
+    printf("GPU has %d cores.\n", num_cores);
+    
     long t1,t2;
     struct timespec time1, time2;
     int mintime = 0xffffff;
@@ -85,11 +90,11 @@ int main(){
         clock_gettime(CLOCK_MONOTONIC, &time1);
         
         if(pixelstream_get_buffer() == 0x0){
-            for(i=0; i<NUM_QUEUES; i++){
+            for(i=0; i<num_cores; i++){
                 workqueue_sof(i, 1); // START OF FRAME
             }
         }else{
-            for(i=0; i<NUM_QUEUES; i++){
+            for(i=0; i<num_cores; i++){
                 workqueue_sof(i, 0);
             }
         }
@@ -101,7 +106,7 @@ int main(){
            draw(&tris[i], cols[i]);
         }
         
-        for(i=0; i<NUM_QUEUES; i++){
+        for(i=0; i<num_cores; i++){
             workqueue_eof(i); // END OF FRAME
         }
         

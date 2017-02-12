@@ -5,6 +5,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <err.h>
+#include <sys/ioctl.h>
+
+#include "../workqueue/gpu_workqueue_ioctl.h"
 
 static FILE *fp = NULL;
 
@@ -15,6 +18,10 @@ void workqueue_init(){
             errx(1, "Failed to open /dev/gpu_workqueue, is the kernel module inserted?\n");
         }
     }
+}
+
+int workqueue_get_num_cores(void){
+    return ioctl(fileno(fp), IOCTL_WORKQUEUE_GET_NUM_CORES, NULL);
 }
 
 void workqueue_wait_done(void){

@@ -1,8 +1,6 @@
 #ifndef WORKQUEUE_H
 #define WORKQUEUE_H
 
-#define NUM_QUEUES 8
-
 // Types of work
 #define TYPE_SOF    (1)
 #define TYPE_EOF    (2)
@@ -12,6 +10,8 @@
 #define TYPE_COPY   (6)
 #define TYPE_COPY_START (7)
 
+extern int num_cores;
+
 struct workorder {
     char type;
     char size;
@@ -19,6 +19,8 @@ struct workorder {
 };
 
 void workqueue_init();
+
+int workqueue_get_num_cores(void);
 
 void workqueue_sof(int queuenum, unsigned int addr);
 void workqueue_eof(int queuenum);

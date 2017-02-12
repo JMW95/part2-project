@@ -95,7 +95,6 @@ int main(int argc, char *argv[]){
     sigfillset(&sa.sa_mask);
     sigaction(SIGINT,&sa,NULL);
     
-    
     Model teapot("Teapot.obj");
     Model basicMan("BasicCriypticman.obj");
     
@@ -104,6 +103,10 @@ int main(int argc, char *argv[]){
     
     GPU g;
     Timer calc, draw, frame, sync;
+
+    g.set_use_hardware(true);
+    
+    std::cout << "GPU has " << g.get_num_cores() << " cores." << std::endl;
     
     //Initialise to a black screen
     g.sof();
@@ -125,6 +128,7 @@ int main(int argc, char *argv[]){
         
         if(i%180 == 0){
             g.set_use_hardware(i%360 == 0);
+            std::cout << "using hardware? : " << (i%360 == 0) << std::endl;
         }
         
         frame.start();

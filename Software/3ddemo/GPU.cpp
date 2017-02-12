@@ -5,8 +5,6 @@
 
 #include "GPU.h"
 
-#define NUMCORES 8
-
 #define TYPE_SOF 1
 #define TYPE_EOF 2
 #define TYPE_TRI 5
@@ -138,6 +136,8 @@ GPU::GPU(){
         throw std::runtime_error("/dev/gpu_workqueue not found!");
     }
     
+    num_cores = ioctl(fileno(_wqf), IOCTL_WORKQUEUE_GET_NUM_CORES, NULL);
+    
     use_hardware = false;
     
     buf = 1;
@@ -228,8 +228,12 @@ unsigned int GPU::get_buffer(){
     return ioctl(fileno(_pixf), IOCTL_PIXELSTREAM_GET_BUFFER, NULL);
 }
 
+unsigned int GPU::get_num_cores(){
+    return num_cores;
+}
+
 void GPU::sof(){
-    for(int i=0; i<NUMCORES; i++){
+    for(unsigned int i=0; i<num_cores; i++){
         write_workpacket(i, TYPE_SOF, (char*)&buf, 4);
     }
     if(!use_hardware){
@@ -248,11 +252,11 @@ void GPU::triangle(const Triangle2D& in_tri){
         data[4] = tri.points[2].x;
         data[5] = tri.points[2].y;
         data[6] = in_tri.color;
-        for(int i=0; i<NUMCORES; i++){
+        for(unsigned int i=0; i<num_cores; i++){
             write_workpacket(i, TYPE_TRI, (char *)data, 14);
-            data[1] -= 34;
-            data[3] -= 34;
-            data[5] -= 34;
+            data[1] -= (272/num_cores);
+            data[3] -= (272/num_cores);
+            data[5] -= (272/num_cores);
         }
     }else{
         if (tri.points[1].y == tri.points[2].y){
@@ -271,9 +275,9 @@ void GPU::triangle(const Triangle2D& in_tri){
 
 void GPU::eof(){
     if(!use_hardware){
-        int wq = 0;
-        for(wq = 0; wq < NUMCORES; wq++){
-            int nbytes = (DISPLAY_WIDTH*DISPLAY_HEIGHT) / NUMCORES;
+        unsigned int wq = 0;
+        for(wq = 0; wq < num_cores; wq++){
+            int nbytes = (DISPLAY_WIDTH*DISPLAY_HEIGHT) / num_cores;
             int i = wq * nbytes; // starting points
             write_workpacket(wq, TYPE_COPY_START, NULL, 0);
             while(nbytes > 0){
@@ -283,7 +287,7 @@ void GPU::eof(){
             }
         }
     }
-    for(int i=0; i<NUMCORES; i++){
+    for(unsigned int i=0; i<num_cores; i++){
         write_workpacket(i, TYPE_EOF, NULL, 0);
     }
 }

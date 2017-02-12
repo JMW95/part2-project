@@ -13,6 +13,8 @@
 #include <linux/wait.h>
 #include <linux/uaccess.h>
 
+#include "gpu_workqueue_ioctl.h"
+
 #define HW_REGS_BASE 0xc0000000
 #define HW_REGS_SPAN 0x0c000000 // Actually 0x3c000000, but this doesn't work..
 #define HW_REGS_MASK ( HW_REGS_SPAN - 1 )
@@ -22,6 +24,8 @@
 #define LW_REGS_SPAN 0x00200000
 #define LW_REGS_MASK ( LW_REGS_SPAN - 1 )
 #define ALT_LWFPGASLVS_OFST 0xff200000
+
+#define NUM_CORES_BASE 0x400
 
 #define WQ_0_BASE 0x200000
 #define WQ_0_CSR 0x1000
@@ -35,28 +39,31 @@
 
 #define WORKQUEUE_TYPE_SOF 1
 
+#define MAX_NUM_CORES 8
+
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Jamie Wood");
 MODULE_DESCRIPTION("IRQ Workqueue driver");
 
-#define NUMQUEUES 8
-volatile unsigned int *bases[NUMQUEUES];
-volatile unsigned int *csrs[NUMQUEUES];
-volatile unsigned int *done_csrs[NUMQUEUES];
-static wait_queue_head_t wait_queues[NUMQUEUES];
+volatile unsigned int *bases[MAX_NUM_CORES];
+volatile unsigned int *csrs[MAX_NUM_CORES];
+volatile unsigned int *done_csrs[MAX_NUM_CORES];
+static wait_queue_head_t wait_queues[MAX_NUM_CORES];
 
-static volatile unsigned int rd[NUMQUEUES];
-static volatile unsigned int wr[NUMQUEUES];
-static unsigned int *buffers[NUMQUEUES];
+static volatile unsigned int rd[MAX_NUM_CORES];
+static volatile unsigned int wr[MAX_NUM_CORES];
+static unsigned int *buffers[MAX_NUM_CORES];
 
 void *lwbase;
 void *hwbase;
 
+static unsigned int num_cores = 0;
+
 static DECLARE_WAIT_QUEUE_HEAD (done_queue);
 
-static struct mutex locks[NUMQUEUES];
+static struct mutex locks[MAX_NUM_CORES];
 
-static volatile unsigned int done[NUMQUEUES];
+static volatile unsigned int done[MAX_NUM_CORES];
 
 static unsigned int queue_free_space(int qn){
     int space;
@@ -173,7 +180,7 @@ static ssize_t write(struct file *file, const char __user *user, size_t size,lof
     }
     overflowamt = j;
     
-    for(i=0; i<NUMQUEUES; i++){
+    for(i=0; i<num_cores; i++){
         // Copy some data to get it started
         do_a_copy(i);
     }
@@ -183,7 +190,7 @@ static ssize_t write(struct file *file, const char __user *user, size_t size,lof
 
 static bool allqueuesempty(void){
     int i;
-    for(i=0; i<NUMQUEUES; i++){
+    for(i=0; i<num_cores; i++){
         if(done[i] == 0){
             return false;
         }
@@ -196,6 +203,13 @@ static ssize_t read(struct file *file, char __user *user, size_t size,loff_t*o){
         wait_event_interruptible(done_queue, allqueuesempty()); // Block until all queues are empty
     }
     return 1;
+}
+
+static long ioctl(struct file *file, unsigned int cmd, unsigned long argaddr){
+    if(cmd == IOCTL_WORKQUEUE_GET_NUM_CORES){ // get number of cores
+        return num_cores;
+    }
+    return 0;
 }
 
 static int open(struct inode *inode, struct file *file){
@@ -214,6 +228,7 @@ static const struct file_operations workqueue_fops = {
     .open    = open,
     .release = close,
     .write   = write,
+    .unlocked_ioctl = ioctl,
     .read    = read,
     .llseek  = default_llseek,
 };
@@ -226,14 +241,18 @@ static struct miscdevice workqueue_dev = {
 
 static int __init init_workqueue(void){
     int i;
+    volatile unsigned int *numcores_base;
     
     // get the virtual addr that maps to the Avalon bridge
     lwbase = ioremap_nocache(LW_REGS_BASE, LW_REGS_SPAN);
     hwbase = ioremap_nocache(HW_REGS_BASE, HW_REGS_SPAN);
     
-    printk(KERN_ALERT "lw: %p, hw: %p\n", lwbase, hwbase);
+    numcores_base = lwbase + (( unsigned long)(ALT_LWFPGASLVS_OFST + NUM_CORES_BASE) & (unsigned long) (LW_REGS_MASK) );
+    num_cores = *numcores_base;
     
-    for(i=0;i<NUMQUEUES;i++){
+    printk(KERN_ALERT "lw: %p, hw: %p, nc: %d\n", lwbase, hwbase, num_cores);
+    
+    for(i=0;i<num_cores;i++){
         
         bases[i] = hwbase + (( unsigned long)(ALT_FPGASLVS_OFST + WQ_0_BASE + (WQ_BASE_JUMP*i)) & (unsigned long) (HW_REGS_MASK) );
         csrs[i] = lwbase + (( unsigned long)(ALT_LWFPGASLVS_OFST + WQ_0_CSR + (WQ_CSR_JUMP*i)) & (unsigned long) (LW_REGS_MASK) );
@@ -272,7 +291,7 @@ static int __init init_workqueue(void){
 
 static void __exit exit_workqueue(void){
     int i;
-    for(i=0; i<NUMQUEUES; i++){
+    for(i=0; i<num_cores; i++){
         free_irq(73+i, (void*) irq_handler);
         free_irq(89+i, (void*) done_handler);
         kfree(buffers[i]);

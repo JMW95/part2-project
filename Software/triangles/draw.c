@@ -57,8 +57,8 @@ void drawHorizontalLine(int x1, int x2, int top, int colour){
     int right = max(x1, x2);
     
 #ifdef HARDWARE_RENDER
-    int queuenum = top/(DISPLAY_HEIGHT/NUM_QUEUES);
-    workqueue_line(queuenum, left, right, top - (queuenum * (DISPLAY_HEIGHT/NUM_QUEUES)), colour);
+    int queuenum = top/(DISPLAY_HEIGHT/num_cores);
+    workqueue_line(queuenum, left, right, top - (queuenum * (DISPLAY_HEIGHT/num_cores)), colour);
 #else
     int width = (right - left)+1;
     
@@ -182,8 +182,8 @@ void draw(struct triangle *tri, int col){
     int i;
     //for(i=0; i<3; i++) printf("point%d: (%d, %d)\n", i, tmp.points[i].x, tmp.points[i].y);
 #ifdef HARDWARE_RENDER
-    for(i=0; i<NUM_QUEUES; i++){
-        int yoff = i * (DISPLAY_HEIGHT/NUM_QUEUES);
+    for(i=0; i<num_cores; i++){
+        int yoff = i * (DISPLAY_HEIGHT/num_cores);
         workqueue_tri(i, tmp.points[0].x, tmp.points[0].y-yoff, tmp.points[1].x, tmp.points[1].y-yoff, tmp.points[2].x, tmp.points[2].y-yoff, col);
     }
 #else
@@ -209,8 +209,8 @@ void clear(){
 
 void show(){
     int wq = 0;
-    for(wq = 0; wq < NUM_QUEUES; wq++){
-        int nbytes = (DISPLAY_WIDTH*DISPLAY_HEIGHT) / NUM_QUEUES;
+    for(wq = 0; wq < num_cores; wq++){
+        int nbytes = (DISPLAY_WIDTH*DISPLAY_HEIGHT) / num_cores;
         int i = wq * nbytes; // starting points
         workqueue_copy_start(wq);
         while(nbytes > 0){
