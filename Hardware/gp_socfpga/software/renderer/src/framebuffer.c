@@ -11,7 +11,7 @@ void vid_setbuffer(unsigned int addr){
 
 // clear the whole screen
 void vid_clear(int colour){
-    volatile int *framebuffer = (volatile int *) (bufferaddr);
+    volatile int *framebuffer = (volatile int *) (bufferaddr) + (1 << 16);
     colour = colour & 0xff;
     colour = colour | (colour << 8);
     colour = colour | (colour << 16); // 32 bits
@@ -19,6 +19,7 @@ void vid_clear(int colour){
     int end = (DISPLAY_WIDTH * DISPLAY_HEIGHT)/4; // 4 pixels per int32
     while ( i < end )
         framebuffer[i++] = colour;
+
 }
 
 // draw a horizontal line
@@ -35,13 +36,9 @@ void vid_fill_line(int left, int right, int top, int colour){
 
 // fill a certain rectangle
 void vid_fill_rect(int left, int top, int right, int bottom, int colour){
-    volatile char *framebuffer = (volatile char *) (bufferaddr);
     int y;
     for (y=top; y<bottom; y++){
-        int i = DISPLAY_WIDTH*y + left; // first bufferpos to fill
-        int endpos = DISPLAY_WIDTH*y + right;
-        while (i < endpos)
-            framebuffer[i++] = colour;
+        vid_fill_line(left, right, y, colour);
     }
 }
 
