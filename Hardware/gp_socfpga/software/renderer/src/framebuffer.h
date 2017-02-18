@@ -6,8 +6,6 @@
 #define DISPLAY_WIDTH   480
 extern int DISPLAY_HEIGHT;
 
-void vid_set_pixel(int x, int y, int colour);
-
 void vid_fill_line(int left, int right, int top, int colour);
 
 void vid_fill_rect(int left, int top, int right, int bottom, int colour);

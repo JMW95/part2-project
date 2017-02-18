@@ -53,7 +53,7 @@
    {
       datum _sortIndex
       {
-         value = "11";
+         value = "12";
          type = "int";
       }
    }
@@ -61,7 +61,7 @@
    {
       datum _sortIndex
       {
-         value = "10";
+         value = "11";
          type = "int";
       }
    }
@@ -77,7 +77,7 @@
    {
       datum _sortIndex
       {
-         value = "7";
+         value = "8";
          type = "int";
       }
    }
@@ -85,7 +85,7 @@
    {
       datum baseAddress
       {
-         value = "1048576";
+         value = "0";
          type = "String";
       }
    }
@@ -101,7 +101,7 @@
    {
       datum _sortIndex
       {
-         value = "8";
+         value = "9";
          type = "int";
       }
    }
@@ -109,7 +109,7 @@
    {
       datum baseAddress
       {
-         value = "1179648";
+         value = "131072";
          type = "String";
       }
    }
@@ -118,6 +118,22 @@
       datum baseAddress
       {
          value = "65536";
+         type = "String";
+      }
+   }
+   element line_filler
+   {
+      datum _sortIndex
+      {
+         value = "7";
+         type = "int";
+      }
+   }
+   element line_filler.slave
+   {
+      datum baseAddress
+      {
+         value = "3145728";
          type = "String";
       }
    }
@@ -141,7 +157,7 @@
    {
       datum _sortIndex
       {
-         value = "9";
+         value = "10";
          type = "int";
       }
       datum sopceditor_expanded
@@ -301,7 +317,7 @@ proc compose {} {
    version="16.0"
    enabled="1">
   <parameter name="allowInSystemMemoryContentEditor" value="false" />
-  <parameter name="autoInitializationFileName">render_core_clarvi_scratch</parameter>
+  <parameter name="autoInitializationFileName">$${FILENAME}_clarvi_scratch</parameter>
   <parameter name="blockType" value="AUTO" />
   <parameter name="copyInitFile" value="false" />
   <parameter name="dataWidth" value="32" />
@@ -380,7 +396,7 @@ proc compose {} {
    version="16.0"
    enabled="1">
   <parameter name="allowInSystemMemoryContentEditor" value="false" />
-  <parameter name="autoInitializationFileName" value="render_core_fbuff1" />
+  <parameter name="autoInitializationFileName" value="$${FILENAME}_fbuff1" />
   <parameter name="blockType" value="AUTO" />
   <parameter name="copyInitFile" value="false" />
   <parameter name="dataWidth" value="32" />
@@ -411,7 +427,7 @@ proc compose {} {
    version="16.0"
    enabled="1">
   <parameter name="allowInSystemMemoryContentEditor" value="false" />
-  <parameter name="autoInitializationFileName" value="render_core_fbuff2" />
+  <parameter name="autoInitializationFileName" value="$${FILENAME}_fbuff2" />
   <parameter name="blockType" value="AUTO" />
   <parameter name="copyInitFile" value="false" />
   <parameter name="dataWidth" value="32" />
@@ -436,6 +452,7 @@ proc compose {} {
   <parameter name="useShallowMemBlocks" value="false" />
   <parameter name="writable" value="true" />
  </module>
+ <module name="line_filler" kind="line_filler" version="1.0" enabled="1" />
  <module
    name="num_cores_id"
    kind="altera_avalon_sysid_qsys"
@@ -492,6 +509,24 @@ proc compose {} {
  <connection
    kind="avalon"
    version="16.0"
+   start="line_filler.fbuff"
+   end="fbuff1.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="line_filler.fbuff"
+   end="fbuff2.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00020000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
    start="clarvi_0.instr"
    end="clarvi_scratch.s2">
   <parameter name="arbitrationPriority" value="1" />
@@ -543,16 +578,6 @@ proc compose {} {
   <parameter name="baseAddress" value="0x0000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
- <connection kind="avalon" version="16.0" start="clarvi_0.main" end="fbuff2.s1">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00120000" />
-  <parameter name="defaultConnection" value="false" />
- </connection>
- <connection kind="avalon" version="16.0" start="clarvi_0.main" end="fbuff1.s1">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00100000" />
-  <parameter name="defaultConnection" value="false" />
- </connection>
  <connection kind="avalon" version="16.0" start="clarvi_0.main" end="pio_debug.s1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x01000000" />
@@ -565,6 +590,15 @@ proc compose {} {
    end="done_irq_trigger.s1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x01001000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="clarvi_0.main"
+   end="line_filler.slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00300000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection kind="clock" version="16.0" start="clock.out_clk" end="reset.clk" />
@@ -615,6 +649,11 @@ proc compose {} {
    start="clock.out_clk"
    end="clarvi_0.clock" />
  <connection
+   kind="clock"
+   version="16.0"
+   start="clock.out_clk"
+   end="line_filler.clock" />
+ <connection
    kind="conduit"
    version="16.0"
    start="done_irq_trigger.external_connection"
@@ -655,6 +694,11 @@ proc compose {} {
    version="16.0"
    start="reset.out_reset"
    end="num_cores_id.reset" />
+ <connection
+   kind="reset"
+   version="16.0"
+   start="reset.out_reset"
+   end="line_filler.reset" />
  <connection
    kind="reset"
    version="16.0"

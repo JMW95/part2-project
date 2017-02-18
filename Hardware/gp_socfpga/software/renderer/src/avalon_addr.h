@@ -1,5 +1,5 @@
-#define BUFFER1         (0x00100000)
-#define BUFFER2         (0x00120000)
+#define BUFFER1         (0x00300000)
+#define BUFFER2         (0x00320000)
 
 #define SHARED_BASE     (0x00200000)
 
