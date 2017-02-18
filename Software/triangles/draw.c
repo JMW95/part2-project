@@ -182,9 +182,17 @@ void draw(struct triangle *tri, int col){
     int i;
     //for(i=0; i<3; i++) printf("point%d: (%d, %d)\n", i, tmp.points[i].x, tmp.points[i].y);
 #ifdef HARDWARE_RENDER
-    for(i=0; i<num_cores; i++){
-        int yoff = i * (DISPLAY_HEIGHT/num_cores);
-        workqueue_tri(i, tmp.points[0].x, tmp.points[0].y-yoff, tmp.points[1].x, tmp.points[1].y-yoff, tmp.points[2].x, tmp.points[2].y-yoff, col);
+    short offset = DISPLAY_HEIGHT / num_cores;
+    unsigned int start = tmp.points[0].y / offset; // Which is the first core which touches this triangle
+    unsigned int end = tmp.points[2].y / offset; // Which is the last core which touches this triangle
+    //if(end >= num_cores){
+    //    end = num_cores - 1;
+    //}
+    for(i=start; i<=end; i++){
+        tmp.points[0].y -= offset;
+        tmp.points[1].y -= offset;
+        tmp.points[2].y -= offset;
+        workqueue_tri(i, tmp.points[0].x, tmp.points[0].y, tmp.points[1].x, tmp.points[1].y, tmp.points[2].x, tmp.points[2].y, col);
     }
 #else
     // flat bottom

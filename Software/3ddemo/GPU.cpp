@@ -254,18 +254,24 @@ void GPU::triangle(const Triangle2D& in_tri){
     Triangle2D tri = trisort(in_tri);
     if(use_hardware){
         short data[7];
+        short offset = 272 / num_cores;
+        unsigned int start = tri.points[0].y / offset; // Which is the first core which touches this triangle
+        unsigned int end = tri.points[2].y / offset; // Which is the last core which touches this triangle
+        if(end >= num_cores){
+            end = num_cores - 1;
+        }
         data[0] = tri.points[0].x;
-        data[1] = tri.points[0].y;
+        data[1] = tri.points[0].y - (start * offset);
         data[2] = tri.points[1].x;
-        data[3] = tri.points[1].y;
+        data[3] = tri.points[1].y - (start * offset);
         data[4] = tri.points[2].x;
-        data[5] = tri.points[2].y;
+        data[5] = tri.points[2].y - (start * offset);
         data[6] = in_tri.color;
-        for(unsigned int i=0; i<num_cores; i++){
+        for(unsigned int i=start; i <= end; i++){
             write_workpacket(i, TYPE_TRI, (char *)data, 14);
-            data[1] -= (272/num_cores);
-            data[3] -= (272/num_cores);
-            data[5] -= (272/num_cores);
+            data[1] -= offset;
+            data[3] -= offset;
+            data[5] -= offset;
         }
     }else{
         if (tri.points[1].y == tri.points[2].y){
