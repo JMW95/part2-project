@@ -17,6 +17,7 @@ private:
     FILE* _pixf;
     FILE* _wqf;
     bool use_hardware;
+    bool save_output;
     char ftmp[DISPLAY_WIDTH * DISPLAY_HEIGHT];
     
     void set_buffer(unsigned int addr);
@@ -38,6 +39,7 @@ public:
     unsigned int get_buffer();
     unsigned int get_num_cores();
     void set_use_hardware(bool use);
+    void set_save_output(bool save);
     
     void sof();
     void triangle(const Triangle2D& tri);
