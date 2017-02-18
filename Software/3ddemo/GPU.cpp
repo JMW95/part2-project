@@ -15,6 +15,9 @@ void GPU::_draw_horiz_line(int x1, int x2, int top, int colour){
     int left = std::min(x1, x2);
     int right = std::max(x1, x2);
     
+    if(top < 0 || top >= DISPLAY_HEIGHT)
+        return;
+    
     int width = (right - left)+1;
     
     volatile char *framebuffer = (char *)ftmp;
@@ -139,6 +142,7 @@ GPU::GPU(){
     num_cores = ioctl(fileno(_wqf), IOCTL_WORKQUEUE_GET_NUM_CORES, NULL);
     
     use_hardware = false;
+    save_output = false;
     
     buf = 1;
     set_buffer(0);
@@ -219,7 +223,12 @@ void GPU::vsync(){
     fgetc(_pixf);
 }
 
+static int palette[256][3];
+
 void GPU::set_palette_color(int entrynum, int color){
+    palette[entrynum][0] = ((color >> 11) & 0x1F) << 3;
+    palette[entrynum][1] = ((color >> 5) & 0x3F) << 2;
+    palette[entrynum][2] = ((color >> 0) & 0x1F) << 3;
     int data = (color << 8) | entrynum;
     ioctl(fileno(_pixf), IOCTL_PALETTE_SET_COLOR, &data);
 }
@@ -273,8 +282,35 @@ void GPU::triangle(const Triangle2D& in_tri){
     }
 }
 
+static int nframes = 0;
+
 void GPU::eof(){
     if(!use_hardware){
+        if(save_output){
+            // Write output file
+            std::ofstream file("frame_" + std::to_string(nframes) + ".ppm");
+            
+            // PPM file header
+            file << "P3\n480 272\n255\n";
+            
+            for(int y=0; y<272; y++){
+                for(int x=0; x<480; x++){
+                    int c = ftmp[y*480 + x];
+                    int r = palette[c][0];
+                    int g = palette[c][1];
+                    int b = palette[c][2];
+                    file << b << " " << g << " " << r;
+                    if(x < 479){
+                        file << " ";
+                    }
+                }
+                file << "\n";
+            }
+            
+            file.close();
+            nframes ++;
+        }
+        
         unsigned int wq = 0;
         for(wq = 0; wq < num_cores; wq++){
             int nbytes = (DISPLAY_WIDTH*DISPLAY_HEIGHT) / num_cores;
@@ -294,4 +330,8 @@ void GPU::eof(){
 
 void GPU::set_use_hardware(bool use){
     use_hardware = use;
+}
+
+void GPU::set_save_output(bool save){
+    save_output = save;
 }
