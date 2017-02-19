@@ -93,8 +93,13 @@ always_ff @(posedge clk) begin
         if(state == 0) begin
             if(pending_op.valid) begin
                 // Copy in our pending instruction so it can be executing
-                de_ex_op.left <= pending_op.left;
-                de_ex_op.right <= pending_op.right;
+                if(pending_op.left < pending_op.right) begin // Swap them to the right ordering
+					de_ex_op.left <= pending_op.left;
+					de_ex_op.right <= pending_op.right;
+				end else begin
+					de_ex_op.left <= pending_op.right;
+					de_ex_op.right <= pending_op.left;
+				end
                 de_ex_op.ycoord <= pending_op.ycoord;
                 de_ex_op.buffernum <= pending_op.buffernum;
                 de_ex_op.colour <= pending_op.colour;

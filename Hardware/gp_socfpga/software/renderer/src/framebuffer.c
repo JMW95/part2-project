@@ -26,11 +26,8 @@ void vid_clear(int colour){
 void vid_fill_line(int left, int right, int top, int colour){
     volatile int *line_filler = (volatile int *) (bufferaddr) + top;
     unsigned int data;
-    if(left <= right){
-		data = (colour << 18) | (right << 9) | (left);
-	}else{
-		data = (colour << 18) | (left << 9) | (right);
-	}
+    // It doesn't matter if left/right need to be swapped - the hardware will do it
+	data = (colour << 18) | (right << 9) | (left);
     line_filler[0] = data;
 }
 
@@ -45,9 +42,6 @@ void vid_fill_rect(int left, int top, int right, int bottom, int colour){
 // fill a triangle  where the points are sorted in ascending y-order
 void vid_fill_triangle(int x1, int y1, int x2, int y2, int x3, int y3, int colour){
 	//debug_write(3);
-	
-	if(y1 >= DISPLAY_HEIGHT) return;
-	if(y3 < 0) return;
 	
 	// First draw the top half, from y = y1 to y2
 	int i1 = x1;
