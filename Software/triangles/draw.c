@@ -188,11 +188,14 @@ void draw(struct triangle *tri, int col){
     //if(end >= num_cores){
     //    end = num_cores - 1;
     //}
+    tmp.points[0].y -= start * offset;
+    tmp.points[1].y -= start * offset;
+    tmp.points[2].y -= start * offset;
     for(i=start; i<=end; i++){
+        workqueue_tri(i, tmp.points[0].x, tmp.points[0].y, tmp.points[1].x, tmp.points[1].y, tmp.points[2].x, tmp.points[2].y, col);
         tmp.points[0].y -= offset;
         tmp.points[1].y -= offset;
         tmp.points[2].y -= offset;
-        workqueue_tri(i, tmp.points[0].x, tmp.points[0].y, tmp.points[1].x, tmp.points[1].y, tmp.points[2].x, tmp.points[2].y, col);
     }
 #else
     // flat bottom
