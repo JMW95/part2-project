@@ -138,8 +138,8 @@ always_ff @(posedge clk) begin
         avm_master_address <= striped_address;
         
         if (avm_master_readdatavalid) begin
-            pix1 <= avm_master_readdata[7:0];
-            pix2 <= avm_master_readdata[15:8];
+            pix1 <= avm_master_readdata[15:8];
+            pix2 <= avm_master_readdata[7:0];
             valid <= 1;
         end else begin
             valid <= 0;
