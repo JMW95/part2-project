@@ -74,12 +74,12 @@ void vid_fill_triangle(int x1, int y1, int x2, int y2, int x3, int y3, int colou
 	// Scan down the y-axis, advancing each instance of Bresenham's algorithm to the new endpoint
 	int j;
 	for(j=y1; j<y2; j++){
-		while(e1 >= 0){
+		while(e1 > 0){
 			i1 += iinc1;
 			e1 -= dy1;
 		}
 
-		while(e2 >= 0){
+		while(e2 > 0){
 			i2 += iinc2;
 			e2 -= dy2;
 		}
@@ -111,12 +111,12 @@ void vid_fill_triangle(int x1, int y1, int x2, int y2, int x3, int y3, int colou
 	}
 
 	for(j=y2; j<y3; j++){
-		while (e2 >= 0){
+		while (e2 > 0){
 			i2 += iinc2;
 			e2 -= dy2;
 		}
 
-		while (e3 >= 0){
+		while (e3 > 0){
 			i3 += iinc3;
 			e3 -= dy3;
 		}
