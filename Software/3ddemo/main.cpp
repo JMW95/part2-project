@@ -40,6 +40,70 @@ char colourtable[][3] = {
     {255,255,0}
 };
 
+Vector3 computeVertIntersection(Vector3 p1, Vector3 p2, float xc){
+    float x0 = p1.vals[0];
+    float y0 = p1.vals[1];
+    float z0 = p1.vals[2];
+    float x1 = p2.vals[0];
+    float y1 = p2.vals[1];
+    float z1 = p2.vals[2];
+    Vector3 tmp;
+    tmp.vals[0] = xc;
+    tmp.vals[1] = y0 + (xc - x0)*((y1-y0)/(x1-x0));
+    tmp.vals[2] = z0 + (xc - x0)*((z1-z0)/(x1-x0));
+    return tmp;
+}
+
+Vector3 computeHorizIntersection(Vector3 p1, Vector3 p2, float yc){
+    float x0 = p1.vals[0];
+    float y0 = p1.vals[1];
+    float z0 = p1.vals[2];
+    float x1 = p2.vals[0];
+    float y1 = p2.vals[1];
+    float z1 = p2.vals[2];
+    Vector3 tmp;
+    tmp.vals[0] = x0 + (yc - y0)*((x1-x0)/(y1-y0));
+    tmp.vals[1] = yc;
+    tmp.vals[2] = z0 + (yc - y0)*((z1-z0)/(y1-y0));
+    return tmp;
+}
+
+void clipVert(std::vector<Vector3> &outputList, float xc, bool lessIsIn){
+    if(outputList.size() < 3) return;
+    std::vector<Vector3> inputList = outputList;
+    outputList.clear();
+    Vector3 S = inputList.back();
+    for(auto E = inputList.begin(); E < inputList.end(); ++E){
+        if((lessIsIn && E->vals[0] < xc) || (!lessIsIn && E->vals[0] >= xc)){
+            if((lessIsIn && S.vals[0] >= xc) || (!lessIsIn && S.vals[0] < xc)){
+                outputList.push_back(computeVertIntersection(S, *E, xc));
+            }
+            outputList.push_back(*E);
+        }else if((lessIsIn && S.vals[0] < xc) || (!lessIsIn && S.vals[0] >= xc)){
+            outputList.push_back(computeVertIntersection(S, *E, xc));
+        }
+        S = *E;
+    }
+}
+
+void clipHoriz(std::vector<Vector3> &outputList, float yc, bool lessIsIn){
+    if(outputList.size() < 3) return;
+    std::vector<Vector3> inputList = outputList;
+    outputList.clear();
+    Vector3 S = inputList.back();
+    for(auto E = inputList.begin(); E < inputList.end(); ++E){
+        if((lessIsIn && E->vals[1] < yc) || (!lessIsIn && E->vals[1] >= yc)){
+            if((lessIsIn && S.vals[1] >= yc) || (!lessIsIn && S.vals[1] < yc)){
+                outputList.push_back(computeHorizIntersection(S, *E, yc));
+            }
+            outputList.push_back(*E);
+        }else if((lessIsIn && S.vals[1] < yc) || (!lessIsIn && S.vals[1] >= yc)){
+            outputList.push_back(computeHorizIntersection(S, *E, yc));
+        }
+        S = *E;
+    }
+}
+
 void transform(const Model &m, Matrix4 &modelView, Matrix4& proj,
                 std::vector<Triangle2D> &renderfaces){
     Vector3 camnormal(0,0,1);
@@ -49,40 +113,73 @@ void transform(const Model &m, Matrix4 &modelView, Matrix4& proj,
     
     for(auto it = m.faces.begin(); it < m.faces.end(); ++it){
         auto f = Face();
-        bool valid = true;
         
         f.normal = (NMV * (*it).normal).normalise();
         auto col = camnormal.dot(f.normal);
         if(col < 0) continue; // Back-face culling
         
-        float mindepth = 1e10;
+        // Transform each vertex of this face
         for(int i=0; i<3; i++){
             auto v = T * (*it).vertices[i];
             v.vals[0] /= v.vals[3];
             v.vals[1] /= v.vals[3];
             v.vals[2] /= v.vals[3];
-            if (v.vals[0] < -1 || v.vals[0] > 1 ||
-                    v.vals[1] < -1 || v.vals[1] > 1 ||
-                    v.vals[2] < 0){ // Vertex is OOB
-                i = 2;
-                valid = false;
-                continue;
-            }
             f.vertices[i] = v;
-            tri.points[i].x = 480 * ((v.vals[0] + 1) / 2);
-            tri.points[i].y = 272 * ((v.vals[1] + 1) / 2);
-            tri.depths[i] = v.vals[2];
-            if(v.vals[2] < mindepth){
-                mindepth = v.vals[2];
+        }
+        
+        // Input -> triangle to be clipped
+        // Output -> list of vertices in clipped polygon
+        
+        std::vector<Vector3> outputList;
+        outputList.push_back(f.vertices[0]);
+        outputList.push_back(f.vertices[1]);
+        outputList.push_back(f.vertices[2]);
+        
+        // left edge
+        clipVert(outputList, -1, false);
+        // top edge
+        clipHoriz(outputList, -1, false);
+        // right edge
+        clipVert(outputList, 1, true);
+        // bottom edge
+        clipHoriz(outputList, 1, true);
+        
+        if(outputList.size() >= 3){ // At least 1 triangle to draw
+            auto v0 = outputList[0];
+            for(unsigned int i=0; i<outputList.size()-2; i++){
+                auto v1 = outputList[i+1];
+                auto v2 = outputList[i+2];
+                
+                tri.points[0].x = 479 * ((v0.vals[0] + 1) / 2);
+                tri.points[0].y = 271 * ((v0.vals[1] + 1) / 2);
+                tri.depths[0] = v0.vals[2];
+                
+                tri.points[1].x = 479 * ((v1.vals[0] + 1) / 2);
+                tri.points[1].y = 271 * ((v1.vals[1] + 1) / 2);
+                tri.depths[1] = v1.vals[2];
+                
+                tri.points[2].x = 479 * ((v2.vals[0] + 1) / 2);
+                tri.points[2].y = 271 * ((v2.vals[1] + 1) / 2);
+                tri.depths[2] = v2.vals[2];
+                
+                tri.color = m.color*32 + (col*32);
+                
+                float mindepth = 1e10;
+                if(v0.vals[2] <= v1.vals[2] && v0.vals[2] <= v2.vals[2]){
+                    mindepth = v0.vals[2];
+                }
+                if(v1.vals[2] <= v0.vals[2] && v1.vals[2] <= v2.vals[2]){
+                    mindepth = v1.vals[2];
+                }
+                if(v2.vals[2] <= v0.vals[2] && v2.vals[2] <= v1.vals[2]){
+                    mindepth = v2.vals[2];
+                }
+                
+                tri.mindepth = mindepth;
+                
+                renderfaces.push_back(tri);
             }
         }
-        
-        if(valid){
-            tri.color = m.color*32 + (col*32);
-            tri.mindepth = mindepth;
-            renderfaces.push_back(tri);
-        }
-        
     }
 }
 
@@ -127,8 +224,8 @@ int main(int argc, char *argv[]){
     while(!quit.load()){
         
         if(i%180 == 0){
-            g.set_use_hardware(i%360 == 0);
-            std::cout << "using hardware? : " << (i%360 == 0) << std::endl;
+            //g.set_use_hardware(i%360 == 0);
+            //std::cout << "using hardware? : " << (i%360 == 0) << std::endl;
         }
         
         frame.start();
@@ -141,7 +238,7 @@ int main(int argc, char *argv[]){
         // Teapot
         {
         teapot.color = ((i/30)%7)+1;
-        auto s = Matrix4::scale_matrix(1, 1, 1);
+        auto s = Matrix4::scale_matrix(2, 2, 2);
         auto r = Matrix4::rotation_matrix(0, deg2rad(i*3), 0);
         auto t = Matrix4::translation_matrix(-1.5, -1, 30);
         auto mv = t * r * s;
