@@ -52,12 +52,14 @@ logic [15:0] palette[256] = '{
 };
 
 logic [7:0] pix1, pix2;
+logic valid;
 logic [23:0] striped_address;
 
 generate
     if (NUM_CORES == 8) begin
         always_comb begin // [16:1] <= [15:0] changes from 8-16bit alignment
             striped_address[23:17] = avs_slave_address[23:17];
+            striped_address[0] = 0;
             if(avs_slave_address[15:0] >= 16'hdf20) begin
                 striped_address[16:1] = avs_slave_address[15:0] + 16'he0;
             end else if(avs_slave_address[15:0] >= 16'hbf40) begin
@@ -80,6 +82,7 @@ generate
     if (NUM_CORES == 4) begin
         always_comb begin // [16:1] <= [15:0] changes from 8-16bit alignment
             striped_address[23:17] = avs_slave_address[23:17];
+            striped_address[0] = 0;
             if(avs_slave_address[15:0] >= 16'hbf40) begin
                 striped_address[16:1] = avs_slave_address[15:0] + 16'hc0;
             end else if(avs_slave_address[15:0] >= 16'h7f80) begin
@@ -94,6 +97,7 @@ generate
     if (NUM_CORES == 2) begin
         always_comb begin // [16:1] <= [15:0] changes from 8-16bit alignment
             striped_address[23:17] = avs_slave_address[23:17];
+            striped_address[0] = 0;
             if(avs_slave_address[15:0] >= 16'h7f80) begin
                 striped_address[16:1] = avs_slave_address[15:0] + 16'h80;
             end else begin
@@ -105,6 +109,7 @@ generate
         always_comb begin // [16:1] <= [15:0] changes from 8-16bit alignment
             striped_address[23:17] = avs_slave_address[23:17];
             striped_address[16:1] = avs_slave_address[15:0];
+            striped_address[0] = 0;
         end
     end
 endgenerate
@@ -116,22 +121,35 @@ always_ff @(posedge clk) begin
         avm_master_read <= 0;
         avm_master_address <= '0;
         avs_slave_waitrequest <= 0;
+        pix1 <= '0;
+        pix2 <= '0;
+        valid <= 0;
     end else begin
     
         if (avs_palette_write) begin
             palette[avs_palette_address] <= avs_palette_writedata;
         end
-        avs_palette_readdata <= palette[avs_palette_address];
+        //avs_palette_readdata <= palette[avs_palette_address];
+        avs_palette_readdata <= '0;
     
         avs_slave_waitrequest <= avm_master_waitrequest;
         
         avm_master_read <= avs_slave_read;
         avm_master_address <= striped_address;
-        avs_slave_readdatavalid <= avm_master_readdatavalid;
         
         if (avm_master_readdatavalid) begin
-            {pix1, pix2} = avm_master_readdata;
-            avs_slave_readdata = { palette[pix1], palette[pix2] };
+            pix1 <= avm_master_readdata[7:0];
+            pix2 <= avm_master_readdata[15:8];
+            valid <= 1;
+        end else begin
+            valid <= 0;
+        end
+
+        if (valid) begin
+            avs_slave_readdata <= { palette[pix1], palette[pix2] };
+            avs_slave_readdatavalid <= 1;
+        end else begin
+            avs_slave_readdatavalid <= 0;
         end
         
     end
