@@ -20,7 +20,7 @@ Face::Face(Vector4 a, Vector4 b, Vector4 c){
     normal = face_normal_from_vertices(a, b, c);
 }
 
-Model::Model(std::string filename){
+Model::Model(std::string filename, char color){
     
     std::cout << "Loading model from " << filename << std::endl;
     
@@ -60,4 +60,6 @@ Model::Model(std::string filename){
     file.close();
     
     std::cout << vertices.size() << " vertices, " << faces.size() << " faces" << std::endl;
+    
+    this->color = color;
 }

@@ -22,5 +22,5 @@ public:
     std::vector<Face> faces;
     char color;
     
-    Model(std::string filename);
+    Model(std::string filename, char colour=0);
 };
