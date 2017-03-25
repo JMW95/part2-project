@@ -3,8 +3,11 @@ LDLIBS = -l3dlib -lrt
 
 OBJECTS = main.o
 
-demo: $(OBJECTS)
+demo: $(OBJECTS) ../3dlib/lib3dlib.a
 	g++ $(CXXFLAGS) -o $@ $^ $(LDLIBS)
+
+../3dlib/lib3dlib.a:
+	make -C ../3dlib/
 
 clean:
 	rm -rf demo $(OBJECTS)
