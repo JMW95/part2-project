@@ -15,8 +15,8 @@ public:
 };
 
 class Model{
-private:
-    
+protected:
+    void _face(int a, int b, int c);
 public:
     std::vector<Vector4> vertices;
     std::vector<Face> faces;

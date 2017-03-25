@@ -66,3 +66,8 @@ Model::Model(std::string filename, char color){
     
     this->color = color;
 }
+
+// Counter-clockwise vertex ordering
+void Model::_face(int a, int b, int c){
+    faces.push_back(Face(vertices[a], vertices[b], vertices[c]));
+}
