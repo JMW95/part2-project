@@ -22,29 +22,29 @@ public:
     
     // Matrix addition
     void operator+=(const Matrix4& other);
-    Matrix4 operator+(const Matrix4& other);
+    Matrix4 operator+(const Matrix4& other) const;
     
     // Matrix subtraction
     void operator-=(const Matrix4& other);
-    Matrix4 operator-(const Matrix4& other);
+    Matrix4 operator-(const Matrix4& other) const;
     
     // Matrix multiplication
     void operator*=(const Matrix4& other);
-    Matrix4 operator*(const Matrix4& other);
+    Matrix4 operator*(const Matrix4& other) const;
     
     // Vector multiplication
-    Vector4 operator*(const Vector4& other);
+    Vector4 operator*(const Vector4& other) const;
     
     // Scalar multiplication
     void operator*=(const float scale);
-    Matrix4 operator*(const float scale);
+    Matrix4 operator*(const float scale) const;
     
     // Scalar division
     void operator/=(const float scale);
-    Matrix4 operator/(const float scale);
+    Matrix4 operator/(const float scale) const;
 
-    Matrix4 transpose();
-    Matrix3 topleft();
+    Matrix4 transpose() const;
+    Matrix3 topleft() const;
 };
 
 inline std::ostream & operator<<(std::ostream & Str, Matrix4 const & v) { 

@@ -8,7 +8,8 @@
 
 class Util{
 public:
-    static void transform(const Model &m, Matrix4 &modelView, Matrix4& proj,
+    static void transform(const Model &m, const Matrix4 &modelView, const Matrix4& proj,
                 std::vector<Triangle2D> &renderfaces);
     static void sort_triangles(std::vector<Triangle2D> &renderfaces);
+    static float deg2rad(float degrees);
 };

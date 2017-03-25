@@ -66,7 +66,7 @@ static void clipHoriz(std::vector<Vector3> &outputList, float yc, bool lessIsIn)
     }
 }
 
-void Util::transform(const Model &m, Matrix4 &modelView, Matrix4& proj,
+void Util::transform(const Model &m, const Matrix4 &modelView, const Matrix4& proj,
                 std::vector<Triangle2D> &renderfaces){
     Vector3 camnormal(0,0,1);
     Triangle2D tri;
@@ -151,4 +151,8 @@ static bool trizcomp(Triangle2D a, Triangle2D b){
 
 void Util::sort_triangles(std::vector<Triangle2D> &renderfaces){
     std::sort(renderfaces.begin(), renderfaces.end(), trizcomp);
+}
+
+float Util::deg2rad(float degrees){
+    return degrees * 3.14159 / 180.0;
 }

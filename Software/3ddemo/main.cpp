@@ -19,10 +19,6 @@ void got_signal(int){
     quit.store(true);
 }
 
-static float deg2rad(float degrees){
-    return degrees * 3.14159 / 180.0;
-}
-
 char colourtable[][3] = {
     {0,0,0},
     {255,255,255},
@@ -88,7 +84,7 @@ int main(int argc, char *argv[]){
         {
         teapot.color = ((i/30)%7)+1;
         auto s = Matrix4::scale_matrix(2, 2, 2);
-        auto r = Matrix4::rotation_matrix(0, deg2rad(i*3), 0);
+        auto r = Matrix4::rotation_matrix(0, Util::deg2rad(i*3), 0);
         auto t = Matrix4::translation_matrix(-1.5, -1, 30);
         auto mv = t * r * s;
         Util::transform(teapot, mv, p, renderfaces);
@@ -97,9 +93,9 @@ int main(int argc, char *argv[]){
         // BasicCriypticman
         {
         basicMan.color = (((i+75)/30)%7)+1;
-        float sc = 0.6 + 0.4*sin(deg2rad(i*2));
+        float sc = 0.6 + 0.4*sin(Util::deg2rad(i*2));
         auto s = Matrix4::scale_matrix(sc, sc, sc);
-        auto r = Matrix4::rotation_matrix(0, deg2rad(i*-10), 0);
+        auto r = Matrix4::rotation_matrix(0, Util::deg2rad(i*-10), 0);
         auto t = Matrix4::translation_matrix(3, -2.5, 30);
         auto mv = t * r * s;
         Util::transform(basicMan, mv, p, renderfaces);

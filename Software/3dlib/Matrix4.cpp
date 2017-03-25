@@ -87,7 +87,7 @@ Matrix4 Matrix4::perspective_matrix(float fovy, float aspect, float near, float 
     return m;
 }
 
-Matrix4 Matrix4::transpose(){
+Matrix4 Matrix4::transpose() const{
     Matrix4 res;
     for(int i=0; i<4; i++){
         for(int j=0; j<4; j++){
@@ -97,7 +97,7 @@ Matrix4 Matrix4::transpose(){
     return res;
 }
 
-Matrix3 Matrix4::topleft(){
+Matrix3 Matrix4::topleft() const{
     Matrix3 res;
     for(int i=0; i<3; i++){
         for(int j=0; j<3; j++){
@@ -122,7 +122,7 @@ void Matrix4::operator+=(const Matrix4& other){
         }
     }
 }
-Matrix4 Matrix4::operator+(const Matrix4& other){
+Matrix4 Matrix4::operator+(const Matrix4& other) const{
     Matrix4 res = *this;
     res += other;
     return res;
@@ -135,7 +135,7 @@ void Matrix4::operator-=(const Matrix4& other){
         }
     }
 }
-Matrix4 Matrix4::operator-(const Matrix4& other){
+Matrix4 Matrix4::operator-(const Matrix4& other) const{
     Matrix4 res = *this;
     res -= other;
     return res;
@@ -158,13 +158,13 @@ void Matrix4::operator*=(const Matrix4& other){
         }
     }
 }
-Matrix4 Matrix4::operator*(const Matrix4& other){
+Matrix4 Matrix4::operator*(const Matrix4& other) const{
     Matrix4 res = *this;
     res *= other;
     return res;
 }
 
-Vector4 Matrix4::operator*(const Vector4& other){
+Vector4 Matrix4::operator*(const Vector4& other) const{
     Vector4 res;
     for(int i=0; i<4; i++){
         float tmp = 0;
@@ -183,7 +183,7 @@ void Matrix4::operator*=(const float scale){
         }
     }
 }
-Matrix4 Matrix4::operator*(const float scale){
+Matrix4 Matrix4::operator*(const float scale) const{
     Matrix4 res = *this;
     res *= scale;
     return res;
@@ -196,7 +196,7 @@ void Matrix4::operator/=(const float scale){
         }
     }
 }
-Matrix4 Matrix4::operator/(const float scale){
+Matrix4 Matrix4::operator/(const float scale) const{
     Matrix4 res = *this;
     res /= scale;
     return res;
