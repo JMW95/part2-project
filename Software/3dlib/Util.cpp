@@ -77,7 +77,7 @@ void Util::transform(const Model &m, Matrix4 &modelView, Matrix4& proj,
         auto f = Face();
         
         f.normal = (NMV * (*it).normal).normalise();
-        auto col = camnormal.dot(f.normal);
+        auto col = -camnormal.dot(f.normal);
         if(col < 0) continue; // Back-face culling
         
         // Transform each vertex of this face

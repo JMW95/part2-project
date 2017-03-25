@@ -7,8 +7,8 @@
 #include <string>
 
 static Vector3 face_normal_from_vertices(Vector4 &a, Vector4 &b, Vector4 &c){
-    auto v1 = c - a;
-    auto v2 = b - a;
+    auto v1 = b - a;
+    auto v2 = c - a;
     return Vector3(v1).cross(Vector3(v2));
 }
 
@@ -18,6 +18,9 @@ Face::Face(Vector4 a, Vector4 b, Vector4 c){
     vertices[2] = c;
     
     normal = face_normal_from_vertices(a, b, c);
+}
+
+Model::Model(){
 }
 
 Model::Model(std::string filename, char color){
