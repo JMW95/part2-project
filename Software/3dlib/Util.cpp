@@ -80,6 +80,8 @@ void Util::transform(const Model &m, const Matrix4 &modelView, const Matrix4& pr
         auto col = -camnormal.dot(f.normal);
         if(col <= 0) continue; // Back-face culling
         
+        bool valid = true;
+        
         // Transform each vertex of this face
         for(int i=0; i<3; i++){
             auto v = T * (*it).vertices[i];
@@ -87,8 +89,13 @@ void Util::transform(const Model &m, const Matrix4 &modelView, const Matrix4& pr
             v.vals[1] /= v.vals[3];
             v.vals[2] /= v.vals[3];
             f.vertices[i] = v;
+            if(v.vals[2] < 0){
+                valid = false;
+                break;
+            }
         }
         
+        if(!valid) continue;
         // Input -> triangle to be clipped
         // Output -> list of vertices in clipped polygon
         
