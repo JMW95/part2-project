@@ -10,3 +10,5 @@ qsys-script --system=gp_socfpga_system.qsys --cmd="set num_cores $1" --script=co
 qsys-generate --synthesis=VERILOG gp_socfpga_system.qsys
 
 quartus_sh --flow compile gp_socfpga
+
+quartus_cpf -c convert_to_rbf.cof
