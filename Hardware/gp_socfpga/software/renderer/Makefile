@@ -24,7 +24,13 @@ LD = $(RISCV_PREFIX)ld
 OBJCOPY = $(RISCV_PREFIX)objcopy
 OBJDUMP = $(RISCV_PREFIX)objdump
 
-TARGET_ARCH = -m32 -march=RV32I
+GCC_VERSION_7 := $(shell expr `$(CC) -dumpversion | sed -e 's/\.\([0-9][0-9]\)/\1/g' -e 's/\.\([0-9]\)/0\1/g' -e 's/^[0-9]\{3,4\}$$/&00/'` \>= 70000)
+
+ifeq "$(GCC_VERSION_7)" "1"
+	TARGET_ARCH = -march=rv32i
+else
+	TARGET_ARCH = -m32 -march=RV32I
+endif
 CCFLAGS = -O3 $(TARGET_ARCH) -Wall
 
 # Lists of rules: the name of a file, followed by the files it depends on.
