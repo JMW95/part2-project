@@ -13,7 +13,7 @@ if [ ! -f "hardware" ]; then
 	mv a.out hardware
 fi
 
-./hardware
-./software
+python average.py hardware
+python average.py software
 
 popd
