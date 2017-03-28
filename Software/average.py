@@ -2,7 +2,7 @@ import sys
 import subprocess
 import math
 
-NUMREADINGS = 3
+NUMREADINGS = 5
 
 if len(sys.argv) != 2:
 	print "Usage: %s <software/hardware>" % (sys.argv[0],)
