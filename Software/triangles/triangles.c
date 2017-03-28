@@ -65,8 +65,8 @@ if (argc == 1){
     
     workqueue_init();
     
+    num_cores = workqueue_get_num_cores();
     if (argc == 1){
-        num_cores = workqueue_get_num_cores();
         printf("GPU has %d cores.\n", num_cores);
     }
     
