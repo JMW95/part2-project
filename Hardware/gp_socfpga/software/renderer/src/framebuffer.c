@@ -3,6 +3,15 @@
 
 #define abs(x) ((x)<0 ? -(x) : (x))
 
+#define ALGORITHM_LINE_FILLER   1
+#define ALGORITHM_BYTE_FILL     2
+#define ALGORITHM_WORD_FILL     3
+#define ALGORITHM_UNROLLED      4
+
+#ifndef ALGORITHM
+    #define ALGORITHM ALGORITHM_LINE_FILLER
+#endif
+
 static unsigned int bufferaddr = BUFFER1;
 
 void vid_setbuffer(unsigned int addr){
@@ -24,11 +33,158 @@ void vid_clear(int colour){
 
 // draw a horizontal line
 void vid_fill_line(int left, int right, int top, int colour){
+#if ALGORITHM == ALGORITHM_LINE_FILLER
     volatile int *line_filler = (volatile int *) (bufferaddr) + top;
     unsigned int data;
     // It doesn't matter if left/right need to be swapped - the hardware will do it
 	data = (colour << 18) | (right << 9) | (left);
     line_filler[0] = data;
+#elif ALGORITHM == ALGORITHM_BYTE_FILL
+    volatile char *framebuffer = (volatile char *) (bufferaddr) + (1 << 18);
+    int swap;
+    if (left > right){
+		swap = left;
+		left = right;
+		right = swap;
+    }
+    int width = (right - left) + 1; // number of pixels to fill
+    int i = DISPLAY_WIDTH*top + left; // first bufferpos to fill
+    int endpos = DISPLAY_WIDTH*top + left + width;
+    
+    while(i < endpos){
+        framebuffer[i++] = colour;
+    }
+#elif ALGORITHM == ALGORITHM_WORD_FILL
+    volatile char *framebuffer = (volatile char *) (bufferaddr) + (1 << 18);
+    int swap;
+    if (left > right){
+		swap = left;
+		left = right;
+		right = swap;
+    }
+    int width = (right - left) + 1; // number of pixels to fill
+    int i = DISPLAY_WIDTH*top + left; // first bufferpos to fill
+    int endpos = DISPLAY_WIDTH*top + left + width;
+    
+    int len = endpos - i;
+    if(len < 12){ // if less than 3 words, copy bytes
+        while (i < endpos)
+            framebuffer[i++] = colour;
+        return;
+    }
+    
+    int c32 = colour | (colour << 8); // extend to 32-bits
+    c32 |= (c32 << 16);
+    
+    unsigned int t;
+    
+    volatile char *dst = framebuffer + i;
+    // Align dst by filling in bytes
+    if ((t = (int)dst & 3) != 0){
+        t = 4 - t; // number of bytes to fill
+        len -= t;
+        do {
+            *dst++ = colour;
+        } while (--t != 0);
+    }
+    
+    // Fill as many full words as possible
+    t = len / 4;
+    do {
+        *(unsigned int *)dst = c32;
+        dst += 4;
+    } while (--t != 0);
+    
+    // Fill in any trailing bytes
+    t = len & 3;
+    if (t != 0){
+        do {
+            *dst++ = colour;
+        } while (--t != 0);
+    }
+#elif ALGORITHM == ALGORITHM_UNROLLED
+    volatile char *framebuffer = (volatile char *) (bufferaddr) + (1 << 18);
+    int swap;
+    if (left > right){
+		swap = left;
+		left = right;
+		right = swap;
+    }
+    int width = (right - left) + 1; // number of pixels to fill
+    int i = DISPLAY_WIDTH*top + left; // first bufferpos to fill
+    int endpos = DISPLAY_WIDTH*top + left + width;
+    
+    int len = endpos - i;
+    if(len < 12){ // if less than 3 words, copy bytes
+        int rem = endpos - i;
+        rem = 11 - rem;
+        framebuffer += i;
+        switch(rem){
+            case 0: framebuffer[10] = colour;
+            case 1: framebuffer[9] = colour;
+            case 2: framebuffer[8] = colour;
+            case 3: framebuffer[7] = colour;
+            case 4: framebuffer[6] = colour;
+            case 5: framebuffer[5] = colour;
+            case 6: framebuffer[4] = colour;
+            case 7: framebuffer[3] = colour;
+            case 8: framebuffer[2] = colour;
+            case 9: framebuffer[1] = colour;
+            case 10: framebuffer[0] = colour;
+        }
+        
+        return;
+    }
+    
+    int c32 = colour | (colour << 8); // extend to 32-bits
+    c32 |= (c32 << 16);
+    
+    unsigned int t;
+    
+    volatile char *dst = framebuffer + i;
+    // Align dst by filling in bytes
+    if ((t = (int)dst & 3) != 0){
+        len = (len + t) - 4;
+        switch(t){
+            case 1: dst[2] = colour;
+            case 2: dst[1] = colour;
+            case 3: dst[0] = colour;
+        }
+        dst += (4-t);
+    }
+    
+    // Fill as many full words as possible
+    t = len / 4;
+    
+    // Use a Duff's Device to unroll the copying loop
+    int tmp = (t+7) / 8; // t is at least 1
+    unsigned int *dst32 = (unsigned int *)dst;
+    dst32 -= (8 - (t & 7)) & 7; // align to 128-bit boundary.
+    switch(t & 7){
+        case 0: do{ dst32[0] = c32;
+        case 7: dst32[1] = c32;
+        case 6: dst32[2] = c32;
+        case 5: dst32[3] = c32;
+        case 4: dst32[4] = c32;
+        case 3: dst32[5] = c32;
+        case 2: dst32[6] = c32;
+        case 1: dst32[7] = c32;
+            dst32 += 8;
+        }while(--tmp > 0);
+    }
+    dst = (char *)dst32;
+    
+    // Fill in any trailing bytes
+    t = len & 3;
+    if (t != 0){
+        switch(3-t){
+            case 0: dst[2] = colour;
+            case 1: dst[1] = colour;
+            case 2: dst[0] = colour;
+        }
+    }
+#endif
+
 }
 
 // fill a certain rectangle

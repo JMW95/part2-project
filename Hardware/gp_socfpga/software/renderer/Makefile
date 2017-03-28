@@ -31,7 +31,9 @@ ifeq "$(GCC_VERSION_7)" "1"
 else
 	TARGET_ARCH = -m32 -march=RV32I
 endif
-CCFLAGS = -O3 $(TARGET_ARCH) -Wall
+
+ALGORITHM ?= ALGORITHM_LINE_FILLER
+CCFLAGS = -O3 $(TARGET_ARCH) -Wall -DALGORITHM=$(ALGORITHM)
 
 # Lists of rules: the name of a file, followed by the files it depends on.
 # When typing 'make' not followed by a rule name, the first rule is followed.  This rule depends on
