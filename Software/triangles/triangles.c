@@ -10,7 +10,7 @@
 #include "workqueue.h"
 #include "pixelstream_palette.h"
 
-#define NUMTRIANGLES 1000
+#define NUMTRIANGLES 10000
 #define NUMREPS 20
 
 int num_cores = 0;
