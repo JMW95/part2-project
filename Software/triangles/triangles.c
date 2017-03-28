@@ -27,10 +27,11 @@ struct triangle generateTri(){
     return tri;
 }
 
-int main(){
+int main(int argc, char **argv){
     
     pixelstream_palette_init();
 
+if (argc == 1){
 #ifdef HARDWARE_RENDER
     printf("---------------------------------\n");
     printf("TRIANGLE DEMO - HARDWARE ASSISTED\n");
@@ -40,6 +41,7 @@ int main(){
     printf("TRIANGLE DEMO - SOFTWARE ONLY\n");
     printf("-----------------------------\n");
 #endif
+}
     
     pixelstream_set_buffer(0);
     
@@ -63,8 +65,10 @@ int main(){
     
     workqueue_init();
     
-    num_cores = workqueue_get_num_cores();
-    printf("GPU has %d cores.\n", num_cores);
+    if (argc == 1){
+        num_cores = workqueue_get_num_cores();
+        printf("GPU has %d cores.\n", num_cores);
+    }
     
     long t1,t2;
     struct timespec time1, time2;
@@ -122,7 +126,9 @@ int main(){
         t2 = (time2.tv_sec * 1000) + (time2.tv_nsec / 1e06);
         
         int elapsed = (t2-t1);
-        printf("DRAW:     Elapsed %d\n", elapsed);
+        if (argc == 1){
+            printf("DRAW:     Elapsed %d\n", elapsed);
+        }
         
         if (elapsed < mintime) mintime = elapsed;
         if (elapsed > maxtime) maxtime = elapsed;
@@ -130,8 +136,10 @@ int main(){
         
     }
     
-    printf("--------------------\n");
-    printf("TIMES:\nMin: %d\nMax: %d\nAvg: %.4f\n", mintime, maxtime, ((float)sum/(float)(NUMREPS)));
+    if (argc == 1){
+        printf("--------------------\n");
+        printf("TIMES:\nMin: %d\nMax: %d\nAvg: %.4f\n", mintime, maxtime, ((float)sum/(float)(NUMREPS)));
+    }
     printf("RATE: %lu/s\n", (1000*NUMTRIANGLES*NUMREPS) / sum);
 
     pixelstream_palette_deinit();
