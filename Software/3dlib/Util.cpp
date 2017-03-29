@@ -82,6 +82,11 @@ void Util::transform(const Model &m, const Matrix4 &modelView, const Matrix4& pr
         
         bool valid = true;
         
+        float minx = 1e10;
+        float maxx = -1e10;
+        float miny = 1e10;
+        float maxy = -1e10;
+        
         // Transform each vertex of this face
         for(int i=0; i<3; i++){
             auto v = T * (*it).vertices[i];
@@ -93,25 +98,40 @@ void Util::transform(const Model &m, const Matrix4 &modelView, const Matrix4& pr
                 valid = false;
                 break;
             }
+            
+            // Bounding box
+            if(v.vals[0] < minx) minx = v.vals[0];
+            if(v.vals[0] > maxx) maxx = v.vals[0];
+            if(v.vals[1] < miny) miny = v.vals[1];
+            if(v.vals[1] > maxy) maxy = v.vals[1];
         }
         
         if(!valid) continue;
+        
+        // Check bounding box and only clip if necessary
+        if (minx > 1 || maxx < -1 || miny > 1 || maxy < -1){
+            continue;
+        }
+        
         // Input -> triangle to be clipped
         // Output -> list of vertices in clipped polygon
-        
         std::vector<Vector3> outputList;
         outputList.push_back(f.vertices[0]);
         outputList.push_back(f.vertices[1]);
         outputList.push_back(f.vertices[2]);
         
-        // left edge
-        clipVert(outputList, -1, false);
-        // top edge
-        clipHoriz(outputList, -1, false);
-        // right edge
-        clipVert(outputList, 1, true);
-        // bottom edge
-        clipHoriz(outputList, 1, true);
+        if (minx >= -1 && maxx <= 1 && miny >= -1 && maxy <= 1){
+            // Don't need to clip!
+        }else{
+            // left edge
+            clipVert(outputList, -1, false);
+            // top edge
+            clipHoriz(outputList, -1, false);
+            // right edge
+            clipVert(outputList, 1, true);
+            // bottom edge
+            clipHoriz(outputList, 1, true);
+        }
         
         if(outputList.size() >= 3){ // At least 1 triangle to draw
             auto v0 = outputList[0];
