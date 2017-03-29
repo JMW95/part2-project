@@ -6,7 +6,7 @@
 
 static Cube cube;
 
-Powerup::Powerup(float x, float y, float z) : Entity::Entity(x,y,z,0,0,0,3,3,3){
+Powerup::Powerup(float x, float y, float z) : Entity::Entity(x,y,z,0,0,0,1,1,1){
 }
 
 void Powerup::update(float time){

@@ -13,6 +13,7 @@
 #include "Primitives.h"
 #include "Entity.h"
 #include "World.h"
+#include "Camera.h"
 
 #define PIXEL16(r,g,b) (((r & 0x1F)<<11) | ((g & 0x3F)<<5) | ((b & 0x1F)<<0))
 #define PIXEL24(r,g,b) PIXEL16((r>>3), (g>>2), (b>>3))
@@ -67,49 +68,41 @@ int main(int argc, char *argv[]){
     std::vector<Triangle2D> renderfaces;
     std::vector<Entity*> entities;
     World world;
+    Camera camera;
     
-    entities.push_back(new Powerup(-1.5, 2, 30));
-    entities.push_back(new Teapot(-1.5, -1, 30));
-    entities.push_back(new Tree(0, 0, 5));
-    Model basicMan("BasicCriypticman.obj");
+    //entities.push_back(new Powerup(-1.5, 2, 30));
+    //entities.push_back(new Teapot(-1.5, -1, 30));
+    
+    world.generate(entities);
+    
+    Model castle("models/castle.obj", 3);
     
     int i=0;
     while(!quit.load()){
-        //i=2;
-        
         frame.start();
         calc.start();
         
         renderfaces.clear();
         
-        auto p = Matrix4::perspective_matrix(90, 16.0/9.0, 0.1, 50);
+        auto p = Matrix4::perspective_matrix(90, 16.0/9.0, 0.1, 100);
         
-        // BasicCriypticman
-        //*
-        {
-        basicMan.color = (((i+70)/30)%7)+1;
-        float sc = 0.6 + 0.4*sin(Util::deg2rad(i*2));
-        auto s = Matrix4::scale_matrix(sc, sc, sc);
-        auto r = Matrix4::rotation_matrix(0, Util::deg2rad(i*-10), 0);
-        auto t = Matrix4::translation_matrix(3, -2.5, 30);
-        auto mv = t * r * s;
-        Util::transform(basicMan, mv, p, renderfaces);
-        }
-        //*/
+        // Update camera position
+        //camera.move_right(0.03);
+        //camera.move_forward(-0.03);
         
-        float camx = 0;
-        float camy = 0.3;
-        float camz = 10.0f * sin(Util::deg2rad(i*4.0));
-        //float camz = 0;
-        float camrx = 0;
-        float camry = 0;
-        float camrz = 0;
-        auto camr = Matrix4::rotation_matrix(-camrx, -camry, -camrz);
-        auto camt = Matrix4::translation_matrix(-camx, -camy, -camz);
-        auto cam = camr * camt;
+        auto cam = camera.get_view_matrix();
         
         // Render world
         world.render(cam, p, renderfaces);
+        
+        // Castle
+        {
+        auto s = Matrix4::scale_matrix(1, 1, 1);
+        auto r = Matrix4::rotation_matrix(0, 0, 0);
+        auto t = Matrix4::translation_matrix(0, 0, 40);
+        auto mv = t * r * s;
+        //Util::transform(castle, mv, p, renderfaces);
+        }
         
         // Update and render entities
         for(auto it = entities.begin(); it < entities.end(); ++it){

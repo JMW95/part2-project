@@ -2,7 +2,7 @@
 
 #include "Util.h"
 
-Model teapot("Teapot.obj");
+Model teapot("models/Teapot.obj");
 
 Teapot::Teapot(float x, float y, float z) : Entity::Entity(x,y,z,0,0,0,0.5,0.5,0.5){
 }

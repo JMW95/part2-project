@@ -2,7 +2,7 @@
 
 #include "Util.h"
 
-Model tree("lowpolytree.obj");
+Model tree("models/lowpolytree.obj");
 
 Tree::Tree(float x, float y, float z) : Entity::Entity(x,y,z,0,0,0,.1,.1,.1){
     tree.color = 6;
