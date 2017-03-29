@@ -101,7 +101,7 @@ static void clipZ(std::vector<Vector4> &outputList, float zc){
 
 void Util::transform(const Model &m, const Matrix4 &modelView, const Matrix4& proj,
                 std::vector<Triangle2D> &renderfaces){
-    Vector3 camnormal(0,0,1);
+    Vector3 lightnormal(-0.7071067811865475,-0.7071067811865475,0);
     Triangle2D tri;
     auto T = proj * modelView;
     auto NMV = modelView.topleft().inverse().transpose();
@@ -219,9 +219,9 @@ void Util::transform(const Model &m, const Matrix4 &modelView, const Matrix4& pr
         }
         
         // Shading
-        auto camdot = -camnormal.dot(facenormal);
-        if (camdot < 0) camdot = 0;
-        float shade = 0.3 + 0.7 * (camdot);
+        auto ldot = -lightnormal.dot(facenormal);
+        if (ldot < 0) ldot = 0;
+        float shade = 0.3 + 0.7 * (ldot);
         int col = shade * 31;
         
         if(outputList.size() >= 3){ // At least 1 triangle to draw
