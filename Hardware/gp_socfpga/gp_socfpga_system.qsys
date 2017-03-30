@@ -9,11 +9,19 @@
    categories="System" />
  <parameter name="bonusData"><![CDATA[bonusData 
 {
+   element ButtonsCtrl_0
+   {
+      datum _sortIndex
+      {
+         value = "6";
+         type = "int";
+      }
+   }
    element PixelStream_0
    {
       datum _sortIndex
       {
-         value = "5";
+         value = "7";
          type = "int";
       }
    }
@@ -34,7 +42,7 @@
    {
       datum _sortIndex
       {
-         value = "7";
+         value = "9";
          type = "int";
       }
       datum sopceditor_expanded
@@ -79,7 +87,7 @@
    {
       datum _sortIndex
       {
-         value = "8";
+         value = "10";
          type = "int";
       }
       datum sopceditor_expanded
@@ -132,7 +140,7 @@
    {
       datum _sortIndex
       {
-         value = "9";
+         value = "11";
          type = "int";
       }
       datum sopceditor_expanded
@@ -185,7 +193,7 @@
    {
       datum _sortIndex
       {
-         value = "10";
+         value = "12";
          type = "int";
       }
       datum sopceditor_expanded
@@ -238,7 +246,7 @@
    {
       datum _sortIndex
       {
-         value = "11";
+         value = "13";
          type = "int";
       }
       datum sopceditor_expanded
@@ -291,7 +299,7 @@
    {
       datum _sortIndex
       {
-         value = "12";
+         value = "14";
          type = "int";
       }
       datum sopceditor_expanded
@@ -344,7 +352,7 @@
    {
       datum _sortIndex
       {
-         value = "13";
+         value = "15";
          type = "int";
       }
       datum sopceditor_expanded
@@ -405,7 +413,7 @@
    {
       datum _sortIndex
       {
-         value = "14";
+         value = "16";
          type = "int";
       }
       datum sopceditor_expanded
@@ -511,7 +519,7 @@
    {
       datum _sortIndex
       {
-         value = "6";
+         value = "8";
          type = "int";
       }
    }
@@ -520,6 +528,22 @@
       datum baseAddress
       {
          value = "512";
+         type = "String";
+      }
+   }
+   element pio_buttons
+   {
+      datum _sortIndex
+      {
+         value = "5";
+         type = "int";
+      }
+   }
+   element pio_buttons.s1
+   {
+      datum baseAddress
+      {
+         value = "1280";
          type = "String";
       }
    }
@@ -595,6 +619,17 @@
    type="conduit"
    dir="end" />
  <interface name="reset" internal="clk_0.clk_in_reset" type="reset" dir="end" />
+ <interface
+   name="shiftreg_in"
+   internal="ButtonsCtrl_0.shiftreg_in"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="shiftreg_out"
+   internal="ButtonsCtrl_0.shiftreg_out"
+   type="conduit"
+   dir="end" />
+ <module name="ButtonsCtrl_0" kind="ButtonsCtrl" version="1.0" enabled="1" />
  <module name="PixelStream_0" kind="PixelStream" version="1.0" enabled="1" />
  <module name="clk_0" kind="clock_source" version="16.0" enabled="1">
   <parameter name="clockFrequency" value="50000000" />
@@ -610,7 +645,7 @@
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
   <parameter name="AUTO_DEVICE_SPEEDGRADE" value="6" />
   <parameter name="AUTO_GENERATION_ID" value="0" />
-  <parameter name="AUTO_UNIQUE_ID">gp_socfpga_system_core_0</parameter>
+  <parameter name="AUTO_UNIQUE_ID" value="$${FILENAME}_core_0" />
   <parameter name="core_id" value="0" />
   <parameter name="num_cores" value="1" />
  </module>
@@ -1239,6 +1274,24 @@
  <module name="palette_0" kind="palette" version="1.0" enabled="1">
   <parameter name="NUM_CORES" value="1" />
  </module>
+ <module
+   name="pio_buttons"
+   kind="altera_avalon_pio"
+   version="16.0"
+   enabled="1">
+  <parameter name="bitClearingEdgeCapReg" value="false" />
+  <parameter name="bitModifyingOutReg" value="false" />
+  <parameter name="captureEdge" value="false" />
+  <parameter name="clockRate" value="75000000" />
+  <parameter name="direction" value="Input" />
+  <parameter name="edgeType" value="RISING" />
+  <parameter name="generateIRQ" value="false" />
+  <parameter name="irqType" value="LEVEL" />
+  <parameter name="resetValue" value="0" />
+  <parameter name="simDoTestBenchWiring" value="false" />
+  <parameter name="simDrivenValue" value="0" />
+  <parameter name="width" value="16" />
+ </module>
  <module name="pio_vsync" kind="altera_avalon_pio" version="16.0" enabled="1">
   <parameter name="bitClearingEdgeCapReg" value="false" />
   <parameter name="bitModifyingOutReg" value="false" />
@@ -1631,6 +1684,15 @@
    kind="avalon"
    version="16.0"
    start="hps_0.h2f_lw_axi_master"
+   end="pio_buttons.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0500" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="16.0"
+   start="hps_0.h2f_lw_axi_master"
    end="PixelStream_0.slave_parameters">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x0000" />
@@ -1880,7 +1942,17 @@
    kind="clock"
    version="16.0"
    start="pll_0.outclk0"
+   end="pio_buttons.clk" />
+ <connection
+   kind="clock"
+   version="16.0"
+   start="pll_0.outclk0"
    end="palette_0.clock" />
+ <connection
+   kind="clock"
+   version="16.0"
+   start="pll_0.outclk0"
+   end="ButtonsCtrl_0.clock" />
  <connection
    kind="clock"
    version="16.0"
@@ -1901,6 +1973,17 @@
    version="16.0"
    start="pll_0.outclk1"
    end="PixelStream_0.video" />
+ <connection
+   kind="conduit"
+   version="16.0"
+   start="pio_buttons.external_connection"
+   end="ButtonsCtrl_0.buttons">
+  <parameter name="endPort" value="" />
+  <parameter name="endPortLSB" value="0" />
+  <parameter name="startPort" value="" />
+  <parameter name="startPortLSB" value="0" />
+  <parameter name="width" value="0" />
+ </connection>
  <connection
    kind="interrupt"
    version="16.0"
@@ -2081,6 +2164,16 @@
    version="16.0"
    start="clk_0.clk_reset"
    end="num_cores_id.reset" />
+ <connection
+   kind="reset"
+   version="16.0"
+   start="clk_0.clk_reset"
+   end="ButtonsCtrl_0.reset" />
+ <connection
+   kind="reset"
+   version="16.0"
+   start="clk_0.clk_reset"
+   end="pio_buttons.reset" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.enableEccProtection" value="FALSE" />
  <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />

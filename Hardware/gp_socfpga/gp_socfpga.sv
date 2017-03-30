@@ -233,6 +233,10 @@ gp_socfpga_system u0 (
     //.core_4_debug_export                   (HEX4),
     //.core_5_debug_export                   (HEX5),
     
+    .shiftreg_in_shiftreg_in          (SHIFT_OUT),
+    .shiftreg_out_shiftreg_loadn      (SHIFT_LOAD),
+    .shiftreg_out_shiftreg_clk        (SHIFT_CLKIN),
+    
     // PixelStream
     .pixelstream_0_conduit_end_0_lcd_red   (LCD_R),
     .pixelstream_0_conduit_end_0_lcd_green (LCD_G),
