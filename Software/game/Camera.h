@@ -14,4 +14,6 @@ public:
     Vector3 get_right_vector();
     void move_forward(float dist);
     void move_right(float dist);
+    void pitch(float diff);
+    void yaw(float diff);
 };

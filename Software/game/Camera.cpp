@@ -25,12 +25,10 @@ Vector3 Camera::get_forward_vector(){
 }
 
 Vector3 Camera::get_right_vector(){
-    float p = rotation.vals[0] + Util::deg2rad(90);
     float t = rotation.vals[1] - Util::deg2rad(90);
-    float x = sin(p) * sin(t);
-    float y = cos(p);
-    float z = sin(p) * cos(t);
-    return Vector3(x, y, z);
+    float x = sin(t);
+    float z = cos(t);
+    return Vector3(x, 0, z);
 }
 
 void Camera::move_forward(float dist){
@@ -39,4 +37,12 @@ void Camera::move_forward(float dist){
 
 void Camera::move_right(float dist){
     position += get_right_vector() * dist;
+}
+
+void Camera::pitch(float diff){
+    rotation.vals[0] += diff;
+}
+
+void Camera::yaw(float diff){
+    rotation.vals[1] += diff;
 }

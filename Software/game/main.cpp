@@ -84,11 +84,32 @@ int main(int argc, char *argv[]){
         
         renderfaces.clear();
         
-        auto p = Matrix4::perspective_matrix(90, 16.0/9.0, 0.1, 100);
+        auto p = Matrix4::perspective_matrix(120, 16.0/9.0, 0.1, 100);
+        
+        g.read_buttons();
         
         // Update camera position
-        //camera.move_right(0.03);
-        //camera.move_forward(-0.03);
+        if(g.is_button_pressed(GPU::BUTTON_Y)){
+            camera.move_forward(0.03);
+        }else if(g.is_button_pressed(GPU::BUTTON_A)){
+            camera.move_forward(-0.03);
+        }
+        if(g.is_button_pressed(GPU::BUTTON_X)){
+            camera.move_right(-0.03);
+        }else if(g.is_button_pressed(GPU::BUTTON_B)){
+            camera.move_right(0.03);
+        }
+        
+        if(g.is_button_pressed(GPU::NAV_U)){
+            camera.pitch(Util::deg2rad(-1));
+        }else if(g.is_button_pressed(GPU::NAV_D)){
+            camera.pitch(Util::deg2rad(1));
+        }
+        if(g.is_button_pressed(GPU::NAV_L)){
+            camera.yaw(Util::deg2rad(1));
+        }else if(g.is_button_pressed(GPU::NAV_R)){
+            camera.yaw(Util::deg2rad(-1));
+        }
         
         auto cam = camera.get_view_matrix();
         
@@ -97,11 +118,11 @@ int main(int argc, char *argv[]){
         
         // Castle
         {
-        auto s = Matrix4::scale_matrix(1, 1, 1);
+        auto s = Matrix4::scale_matrix(.1, .1, .1);
         auto r = Matrix4::rotation_matrix(0, 0, 0);
-        auto t = Matrix4::translation_matrix(0, 0, 40);
+        auto t = Matrix4::translation_matrix(0, 0, 10);
         auto mv = t * r * s;
-        //Util::transform(castle, mv, p, renderfaces);
+        Util::transform(castle, cam * mv, p, renderfaces);
         }
         
         // Update and render entities
