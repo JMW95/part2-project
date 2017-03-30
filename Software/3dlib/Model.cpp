@@ -12,10 +12,12 @@ static Vector3 face_normal_from_vertices(Vector4 &a, Vector4 &b, Vector4 &c){
     return Vector3(v1).cross(Vector3(v2));
 }
 
-Face::Face(Vector4 a, Vector4 b, Vector4 c){
+Face::Face(Vector4 a, Vector4 b, Vector4 c, unsigned char cid){
     vertices[0] = a;
     vertices[1] = b;
     vertices[2] = c;
+    
+    color_index = cid;
     
     normal = face_normal_from_vertices(a, b, c);
 }
@@ -23,7 +25,10 @@ Face::Face(Vector4 a, Vector4 b, Vector4 c){
 Model::Model(){
 }
 
-Model::Model(std::string filename, char color){
+Model::Model(std::string filename, const std::map<std::string, unsigned char> texturemap){
+    
+    colormap = std::vector<char>(256);
+    int colour_idx = 0;
     
     std::cout << "Loading model from " << filename << std::endl;
     
@@ -52,10 +57,17 @@ Model::Model(std::string filename, char color){
                     face.push_back(vertices[idx - 1]);
                 }
                 for(unsigned int i=0; i<face.size()-2; i++){
-                    faces.push_back(Face(face[0], face[i+1], face[i+2]));
+                    faces.push_back(Face(face[0], face[i+1], face[i+2], colour_idx));
                 }
             }else if(item.compare("vn") == 0){
                 // TODO read vertex normals?
+            }else if(item.compare("usemtl") == 0){
+                std::string mtlname;
+                iss >> mtlname;
+                if(texturemap.count(mtlname) > 0){
+                    colour_idx = texturemap.at(mtlname);
+                    std::cout << "switching to " << mtlname << " as " << colour_idx << std::endl;
+                }
             }
         }
     }
@@ -63,11 +75,9 @@ Model::Model(std::string filename, char color){
     file.close();
     
     std::cout << vertices.size() << " vertices, " << faces.size() << " faces" << std::endl;
-    
-    this->color = color;
 }
 
 // Counter-clockwise vertex ordering
-void Model::_face(int a, int b, int c){
-    faces.push_back(Face(vertices[a], vertices[b], vertices[c]));
+void Model::_face(int a, int b, int c, unsigned char cid){
+    faces.push_back(Face(vertices[a], vertices[b], vertices[c], cid));
 }

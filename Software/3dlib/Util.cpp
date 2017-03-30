@@ -242,7 +242,7 @@ void Util::transform(const Model &m, const Matrix4 &modelView, const Matrix4& pr
                 tri.points[2].y = 271 * ((v2.vals[1] + 1) / 2);
                 tri.depths[2] = v2.vals[2];
                 
-                tri.color = m.color*32 + col;
+                tri.color = m.colormap[(*it).color_index]*32 + col;
                 
                 float maxdepth = -1e10;
                 if(v0.vals[2] <= v1.vals[2] && v0.vals[2] <= v2.vals[2]){
