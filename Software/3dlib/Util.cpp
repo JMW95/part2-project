@@ -101,10 +101,12 @@ static void clipZ(std::vector<Vector4> &outputList, float zc){
 
 void Util::transform(const Model &m, const Matrix4 &modelView, const Matrix4& proj,
                 std::vector<Triangle2D> &renderfaces){
-    Vector3 lightnormal(-0.7071067811865475,-0.7071067811865475,0);
     Triangle2D tri;
     auto T = proj * modelView;
     auto NMV = modelView.topleft().inverse().transpose();
+    
+    Vector3 lightdir(-0.7071067811865475,-0.7071067811865475,0);
+    auto lightnormal = (NMV * lightdir).normalise();
     
     for(auto it = m.faces.begin(); it < m.faces.end(); ++it){
         std::vector<Vector4> transformed; // Up to 4 vectors, if z-clipped
