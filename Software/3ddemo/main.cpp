@@ -39,8 +39,10 @@ int main(int argc, char *argv[]){
     sigfillset(&sa.sa_mask);
     sigaction(SIGINT,&sa,NULL);
     
-    Model teapot("Teapot.obj", 2);
-    Model basicMan("BasicCriypticman.obj", 3);
+    Model teapot("Teapot.obj");
+    teapot.colormap[0] = 2;
+    Model basicMan("BasicCriypticman.obj");
+    basicMan.colormap[0] = 3;
     
     GPU g;
     Timer calc, draw, frame, sync;
@@ -82,7 +84,7 @@ int main(int argc, char *argv[]){
         
         // Teapot
         {
-        teapot.color = ((i/30)%7)+1;
+        teapot.colormap[0] = ((i/30)%7)+1;
         auto s = Matrix4::scale_matrix(2, 2, 2);
         auto r = Matrix4::rotation_matrix(0, Util::deg2rad(i*3), 0);
         auto t = Matrix4::translation_matrix(-1.5, -1, 30);
@@ -92,7 +94,7 @@ int main(int argc, char *argv[]){
         
         // BasicCriypticman
         {
-        basicMan.color = (((i+75)/30)%7)+1;
+        basicMan.colormap[0] = (((i+75)/30)%7)+1;
         float sc = 0.6 + 0.4*sin(Util::deg2rad(i*2));
         auto s = Matrix4::scale_matrix(sc, sc, sc);
         auto r = Matrix4::rotation_matrix(0, Util::deg2rad(i*-10), 0);
