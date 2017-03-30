@@ -25,14 +25,14 @@ void got_signal(int){
 }
 
 char colourtable[][3] = {
-    {0,0,0},
-    {255,255,255},
-    {255,0,0},
-    {0,255,0},
-    {0,0,255},
-    {0,255,255},
-    {255,0,255},
-    {255,255,0}
+    {0,0,0},        // Black
+    {155,105,210},  // Purple
+    {255,0,0},      // Red
+    {0,255,0},      // Green
+    {190,190,190},  // Light Grey
+    {150,150,150},  // Dark Grey
+    {127,51,0},     // Brown
+    {0,127,14}      // Dark Green
 };
 
 int main(int argc, char *argv[]){
@@ -70,12 +70,13 @@ int main(int argc, char *argv[]){
     World world;
     Camera camera;
     
-    //entities.push_back(new Powerup(-1.5, 2, 30));
-    //entities.push_back(new Teapot(-1.5, -1, 30));
-    
     world.generate(entities);
     
-    Model castle("models/castle.obj", 3);
+    Model castle("models/castle.obj", {{"lambert9SG", 0}, {"lambert10SG", 1}, {"lambert11SG", 2}, {"lambert12SG", 3}});
+    castle.colormap[0] = 5; // Dark grey
+    castle.colormap[1] = 4; // Light grey
+    castle.colormap[2] = 2; // Red
+    castle.colormap[3] = 1; // Purple
     
     int i=0;
     while(!quit.load()){
@@ -119,7 +120,7 @@ int main(int argc, char *argv[]){
         // Castle
         {
         auto s = Matrix4::scale_matrix(.1, .1, .1);
-        auto r = Matrix4::rotation_matrix(0, 0, 0);
+        auto r = Matrix4::rotation_matrix(0, Util::deg2rad(180), 0);
         auto t = Matrix4::translation_matrix(0, 0, 10);
         auto mv = t * r * s;
         Util::transform(castle, cam * mv, p, renderfaces);

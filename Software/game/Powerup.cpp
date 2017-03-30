@@ -10,7 +10,7 @@ Powerup::Powerup(float x, float y, float z) : Entity::Entity(x,y,z,0,0,0,1,1,1){
 }
 
 void Powerup::update(float time){
-    cube.color = (((int)(time+140)/30)%7)+1;
+    cube.colormap[0] = (((int)(time+140)/30)%7)+1;
     rotation.vals[0] = Util::deg2rad(time * 3);
     rotation.vals[1] = Util::deg2rad(time * 5);
     position.vals[1] = 5 * sin(Util::deg2rad(time*3));

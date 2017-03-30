@@ -8,7 +8,7 @@ Teapot::Teapot(float x, float y, float z) : Entity::Entity(x,y,z,0,0,0,0.5,0.5,0
 }
 
 void Teapot::update(float time){
-    teapot.color = ((int)(time/30)%7)+1;
+    teapot.colormap[0] = ((int)(time/30)%7)+1;
     rotation.vals[1] = Util::deg2rad(time * 3);
 }
 
