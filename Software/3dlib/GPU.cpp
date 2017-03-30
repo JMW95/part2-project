@@ -341,3 +341,11 @@ void GPU::set_use_hardware(bool use){
 void GPU::set_save_output(bool save){
     save_output = save;
 }
+
+void GPU::read_buttons(){
+    buttons = ioctl(fileno(_pixf), IOCTL_PIXELSTREAM_READ_BUTTONS, NULL);
+}
+
+bool GPU::is_button_pressed(int button){
+    return (buttons & (1 << button)) != 0;
+}

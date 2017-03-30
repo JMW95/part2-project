@@ -25,6 +25,7 @@
 #define PIXELSTREAM_BASE    0x0
 #define VSYNC_PIO_BASE      0x100
 #define PALETTE_BASE        0x200
+#define BUTTONS_BASE        0x500
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Jamie Wood");
@@ -34,6 +35,7 @@ void *vbase;
 
 volatile int *pio_base;
 volatile int *pixelstream;
+volatile short *buttons;
 volatile short *palette;
 
 bool hasInterruptHappened = false;
@@ -73,6 +75,8 @@ static long ioctl(struct file *file, unsigned int cmd, unsigned long argaddr){
         pixelstream[8] = arg;
     }else if(cmd == IOCTL_PIXELSTREAM_GET_BUFFER){ // get pixelstream buffer addr
         return pixelstream[8];
+    }else if(cmd == IOCTL_PIXELSTREAM_READ_BUTTONS){ // read buttons
+        return buttons[0];
     }
     return 0;
 }
@@ -110,6 +114,7 @@ static int __init init_vsync_handler(void)
     pio_base = vbase + (( unsigned long)(ALT_LWFPGASLVS_OFST + VSYNC_PIO_BASE) & (unsigned long) (LW_REGS_MASK) );
     pixelstream = vbase + (( unsigned long)(ALT_LWFPGASLVS_OFST + PIXELSTREAM_BASE) & (unsigned long) (LW_REGS_MASK) );
     palette = vbase + (( unsigned long)(ALT_LWFPGASLVS_OFST + PALETTE_BASE) & (unsigned long) (LW_REGS_MASK) );
+    buttons = vbase + (( unsigned long)(ALT_LWFPGASLVS_OFST + BUTTONS_BASE) & (unsigned long) (LW_REGS_MASK) );
     
     // Clear the PIO edgecapture register (clear any pending interrupt)
     iowrite32(0x1,pio_base+3);
