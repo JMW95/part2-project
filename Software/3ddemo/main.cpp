@@ -47,7 +47,11 @@ int main(int argc, char *argv[]){
     GPU g;
     Timer calc, draw, frame, sync;
 
+#ifdef HARDWARE_RENDER
     g.set_use_hardware(true);
+#else
+    g.set_use_hardware(false);
+#endif
     
     std::cout << "GPU has " << g.get_num_cores() << " cores." << std::endl;
     
@@ -70,11 +74,6 @@ int main(int argc, char *argv[]){
     int i=0;
     while(!quit.load()){
         
-        if(i%180 == 0){
-            //g.set_use_hardware(i%360 == 0);
-            //std::cout << "using hardware? : " << (i%360 == 0) << std::endl;
-        }
-        
         frame.start();
         calc.start();
         
@@ -82,14 +81,16 @@ int main(int argc, char *argv[]){
         
         auto p = Matrix4::perspective_matrix(90, 16.0/9.0, 0.1, 50);
         
+        auto cam = Matrix4::scale_matrix(1,1,1);
+        
         // Teapot
         {
         teapot.colormap[0] = ((i/30)%7)+1;
-        auto s = Matrix4::scale_matrix(2, 2, 2);
+        auto s = Matrix4::scale_matrix(1, 1, 1);
         auto r = Matrix4::rotation_matrix(0, Util::deg2rad(i*3), 0);
         auto t = Matrix4::translation_matrix(-1.5, -1, 30);
-        auto mv = t * r * s;
-        Util::transform(teapot, mv, p, renderfaces);
+        auto mw = t * r * s;
+        Util::transform(teapot, cam, mw, p, renderfaces);
         }
         
         // BasicCriypticman
@@ -99,8 +100,8 @@ int main(int argc, char *argv[]){
         auto s = Matrix4::scale_matrix(sc, sc, sc);
         auto r = Matrix4::rotation_matrix(0, Util::deg2rad(i*-10), 0);
         auto t = Matrix4::translation_matrix(3, -2.5, 30);
-        auto mv = t * r * s;
-        Util::transform(basicMan, mv, p, renderfaces);
+        auto mw = t * r * s;
+        Util::transform(basicMan, cam, mw, p, renderfaces);
         }
         
         Util::sort_triangles(renderfaces);
