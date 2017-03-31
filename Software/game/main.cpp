@@ -47,7 +47,7 @@ int main(int argc, char *argv[]){
     GPU g;
     Timer calc, draw, frame, sync;
 
-    g.set_use_hardware(false);
+    g.set_use_hardware(true);
     
     std::cout << "GPU has " << g.get_num_cores() << " cores." << std::endl;
     
@@ -89,27 +89,30 @@ int main(int argc, char *argv[]){
         
         g.read_buttons();
         
+        float camera_speed = 0.05;
+        float camera_rot_speed = 2;
+        
         // Update camera position
         if(g.is_button_pressed(GPU::BUTTON_Y)){
-            camera.move_forward(0.03);
+            camera.move_forward(camera_speed);
         }else if(g.is_button_pressed(GPU::BUTTON_A)){
-            camera.move_forward(-0.03);
+            camera.move_forward(-camera_speed);
         }
         if(g.is_button_pressed(GPU::BUTTON_X)){
-            camera.move_right(-0.03);
+            camera.move_right(-camera_speed);
         }else if(g.is_button_pressed(GPU::BUTTON_B)){
-            camera.move_right(0.03);
+            camera.move_right(camera_speed);
         }
         
         if(g.is_button_pressed(GPU::NAV_U)){
-            camera.pitch(Util::deg2rad(-1));
+            camera.pitch(Util::deg2rad(-camera_rot_speed));
         }else if(g.is_button_pressed(GPU::NAV_D)){
-            camera.pitch(Util::deg2rad(1));
+            camera.pitch(Util::deg2rad(camera_rot_speed));
         }
         if(g.is_button_pressed(GPU::NAV_L)){
-            camera.yaw(Util::deg2rad(1));
+            camera.yaw(Util::deg2rad(camera_rot_speed));
         }else if(g.is_button_pressed(GPU::NAV_R)){
-            camera.yaw(Util::deg2rad(-1));
+            camera.yaw(Util::deg2rad(-camera_rot_speed));
         }
         
         auto cam = camera.get_view_matrix();
@@ -121,7 +124,7 @@ int main(int argc, char *argv[]){
         {
         auto s = Matrix4::scale_matrix(.1, .1, .1);
         auto r = Matrix4::rotation_matrix(0, Util::deg2rad(180), 0);
-        auto t = Matrix4::translation_matrix(0, 0, 10);
+        auto t = Matrix4::translation_matrix(0, 0, 5);
         auto mv = t * r * s;
         Util::transform(castle, cam * mv, p, renderfaces);
         }

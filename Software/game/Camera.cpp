@@ -5,7 +5,7 @@
 #include <math.h>
 
 Camera::Camera(){
-    position = Vector3(0,0.1,0);
+    position = Vector3(0,1,0);
     rotation = Vector3(0,0,0); // pitch, yaw, roll
 }
 
