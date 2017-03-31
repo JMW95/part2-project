@@ -224,9 +224,9 @@ void show(){
         int i = wq * nbytes; // starting points
         workqueue_copy_start(wq);
         while(nbytes > 0){
-            workqueue_copy(wq, ftmp+i, nbytes < 8 ? nbytes : 8);
-            nbytes -= 8;
-            i += 8;
+            workqueue_copy(wq, ftmp+i, nbytes < 16 ? nbytes : 16);
+            nbytes -= 16;
+            i += 16;
         }
     }
 }
