@@ -179,9 +179,8 @@ void drawFlatTopTriangle(struct point *p1, struct point *p2, struct point *p3, i
 
 void draw(struct triangle *tri, int col){
     struct triangle tmp = sort(tri);
-    int i;
-    //for(i=0; i<3; i++) printf("point%d: (%d, %d)\n", i, tmp.points[i].x, tmp.points[i].y);
 #ifdef HARDWARE_RENDER
+    int i;
     short offset = DISPLAY_HEIGHT / num_cores;
     unsigned int start = tmp.points[0].y / offset; // Which is the first core which touches this triangle
     unsigned int end = tmp.points[2].y / offset; // Which is the last core which touches this triangle
