@@ -29,10 +29,8 @@
 
 
 volatile short *fbuff;
-volatile int *pixelstream;
-volatile short *palette;
 
-char ftmp[DISPLAY_WIDTH * DISPLAY_HEIGHT / 2];
+short ftmp[DISPLAY_WIDTH * DISPLAY_HEIGHT];
 
 void plot(int x, int y, int col);
 
