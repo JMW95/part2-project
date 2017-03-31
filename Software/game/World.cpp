@@ -16,8 +16,7 @@ World::World(){
 }
 
 void World::render(const Matrix4 &worldView, const Matrix4 &perspective, std::vector<Triangle2D> &renderfaces){
-    auto mv = worldView * plane_transform;
-    Util::transform(model, mv, perspective, renderfaces);
+    Util::transform(model, worldView, plane_transform, perspective, renderfaces);
 }
 
 void World::generate(std::vector<Entity*> &entities){

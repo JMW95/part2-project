@@ -17,6 +17,5 @@ void Powerup::update(float time){
 }
 
 void Powerup::render(const Matrix4 &worldView, const Matrix4 &perspective, std::vector<Triangle2D> &renderfaces){
-    auto mv = worldView * getModelWorldMatrix();
-    Util::transform(cube, mv, perspective, renderfaces);
+    Util::transform(cube, worldView, getModelWorldMatrix(), perspective, renderfaces);
 }

@@ -13,6 +13,5 @@ void Tree::update(float time){
 }
 
 void Tree::render(const Matrix4 &worldView, const Matrix4 &perspective, std::vector<Triangle2D> &renderfaces){
-    auto mv = worldView * getModelWorldMatrix();
-    Util::transform(tree, mv, perspective, renderfaces);
+    Util::transform(tree, worldView, getModelWorldMatrix(), perspective, renderfaces);
 }

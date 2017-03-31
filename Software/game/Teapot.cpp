@@ -13,6 +13,5 @@ void Teapot::update(float time){
 }
 
 void Teapot::render(const Matrix4 &worldView, const Matrix4 &perspective, std::vector<Triangle2D> &renderfaces){
-    auto mv = worldView * getModelWorldMatrix();
-    Util::transform(teapot, mv, perspective, renderfaces);
+    Util::transform(teapot, worldView, getModelWorldMatrix(), perspective, renderfaces);
 }

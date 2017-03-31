@@ -126,7 +126,7 @@ int main(int argc, char *argv[]){
         auto r = Matrix4::rotation_matrix(0, Util::deg2rad(180), 0);
         auto t = Matrix4::translation_matrix(0, 0, 5);
         auto mv = t * r * s;
-        Util::transform(castle, cam * mv, p, renderfaces);
+        Util::transform(castle, cam, mv, p, renderfaces);
         }
         
         // Update and render entities
