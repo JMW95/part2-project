@@ -1,0 +1,11 @@
+.qsys_edit
+db
+incremental_db
+gp_socfpga_system
+render_core
+
+output_files/*
+!output_files/gp_socfpga.sof
+
+*.qws
+**/*.bak
