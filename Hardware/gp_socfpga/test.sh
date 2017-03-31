@@ -25,7 +25,7 @@ function dotest(){
 	fi
 
 	# SSH into the ARM and run the test
-	ssh jamie@192.168.0.16 -t 'cd /home/jamie/part2-project/Software && sudo ./run_test.sh'
+	ssh jamie@192.168.0.8 -t 'cd /home/jamie/part2-project/Software && sudo ./run_test.sh'
 }
 
 dotest "BYTE_FILL"
