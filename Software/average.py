@@ -1,38 +1,40 @@
+import os
 import sys
 import subprocess
 import math
 
 NUMREADINGS = 5
 
-if len(sys.argv) != 2:
-	print "Usage: %s <software/hardware>" % (sys.argv[0],)
-	sys.exit(1)
+if len(sys.argv) != 2 or sys.argv[1] not in ["hardware", "software"]:
+    print "Usage: %s <software/hardware>" % (sys.argv[0],)
+    sys.exit(1)
 
-if sys.argv[1] == "hardware":
-	exename = "./triangles/hardware"
-else:
-	exename = "./triangles/software"
+dirs = ["./triangles/", "./3ddemo/"]
 
-def getreading():
-	p = subprocess.Popen([exename, "quiet"], stdout=subprocess.PIPE)
-	(sout, serr) = p.communicate()
-	return int(sout[sout.find(":")+2 : sout.find("/")])
+def getreading(dir, exename):
+    realdir = os.path.realpath(dir)
+    p = subprocess.Popen(["./" + exename, "quiet"], cwd=realdir, stdout=subprocess.PIPE)
+    (sout, serr) = p.communicate()
+    start = sout.find("time:")+6
+    return int(sout[start : sout.find("ms", start)])
 
-vals = []
-for i in range(NUMREADINGS):
-	vals.append(getreading())
+def get_mean(vals):
+    return float(sum(vals)) / len(vals)
 
-# Mean
-total = 0.0
-for i in vals:
-	total += i
-mean = float(total) / len(vals)
-print "Mean: %.2f" % mean
+def get_stddev(vals, mean):
+    var = sum(map(lambda v: (float(v) - mean)**2, vals)) / len(vals)
+    return math.sqrt(var)
 
-# Std dev
-difftotal = 0.0
-for i in vals:
-	difftotal += (i - mean)**2
-var = difftotal / len(vals)
-stddev = math.sqrt(var)
-print "Std dev: %.2f" % stddev
+for dir in dirs:
+    print "Running " + dir + sys.argv[1]
+    vals = []
+    for i in range(NUMREADINGS):
+        vals.append(getreading(dir, sys.argv[1]))
+
+    # Mean
+    mean = get_mean(vals)
+    print "Mean: %.2f" % mean
+
+    # Std dev
+    stddev = get_stddev(vals, mean)
+    print "Std dev: %.2f" % stddev

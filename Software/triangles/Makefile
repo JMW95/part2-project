@@ -1,8 +1,12 @@
-hardware:
-	gcc triangles.c draw.c workqueue.c pixelstream_palette.c -lrt -O3 -Wall -DHARDWARE_RENDER
+SOURCES = triangles.c draw.c workqueue.c pixelstream_palette.c
 
-software:
-	gcc triangles.c draw.c workqueue.c pixelstream_palette.c  -lrt -O3
+all: hardware software
+
+hardware: $(SOURCES)
+	gcc -o $@ $^ -lrt -O3 -Wall -DHARDWARE_RENDER
+
+software: $(SOURCES)
+	gcc -o $@ $^ -lrt -O3 -Wall
 
 clean:
-	rm a.out
+	rm hardware software

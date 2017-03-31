@@ -139,8 +139,9 @@ if (argc == 1){
     if (argc == 1){
         printf("--------------------\n");
         printf("TIMES:\nMin: %d\nMax: %d\nAvg: %.4f\n", mintime, maxtime, ((float)sum/(float)(NUMREPS)));
+        printf("RATE: %lu/s\n", (1000*NUMTRIANGLES*NUMREPS) / sum);
     }
-    printf("RATE: %lu/s\n", (1000*NUMTRIANGLES*NUMREPS) / sum);
+    printf("Total time: %lu ms", sum);
 
     pixelstream_palette_deinit();
     

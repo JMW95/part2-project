@@ -13,7 +13,7 @@
 #define PIXEL16(r,g,b) (((r & 0x1F)<<11) | ((g & 0x3F)<<5) | ((b & 0x1F)<<0))
 #define PIXEL24(r,g,b) PIXEL16((r>>3), (g>>2), (b>>3))
 
-#define NUMREPS 60
+#define NUMREPS 120
 
 std::atomic<bool> quit(false);
 
