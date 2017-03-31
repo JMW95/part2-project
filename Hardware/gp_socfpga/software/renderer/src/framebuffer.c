@@ -292,8 +292,48 @@ void vid_fill_triangle(int x1, int y1, int x2, int y2, int x3, int y3, int colou
 // Copy some pixel data to the screen
 void vid_copy(unsigned int offset, char src[], char count){
     volatile char *framebuffer = (volatile char *) (bufferaddr) + (1 << 18);
-    int i=0;
-    for(i=0; i<count; i++){
-        framebuffer[offset + i] = src[i];
+    framebuffer += offset;
+    if ((count & 3) == 0){
+        volatile int *f32 = (volatile int *)framebuffer;
+        int *s32 = (int *)src;
+        if(count <= 16){
+            switch(count/4){
+                case 4: f32[3] = s32[3];
+                case 3: f32[2] = s32[2];
+                case 2: f32[1] = s32[1];
+                case 1: f32[0] = s32[0];
+            }
+        }else{
+            int i=0;
+            for(i=0; i<count/4; i++){
+                f32[i] = s32[i];
+            }
+        }
+    }else{
+        if(count <= 16){
+            switch(count){
+                case 16: framebuffer[15] = src[15];
+                case 15: framebuffer[14] = src[14];
+                case 14: framebuffer[13] = src[13];
+                case 13: framebuffer[12] = src[12];
+                case 12: framebuffer[11] = src[11];
+                case 11: framebuffer[10] = src[10];
+                case 10: framebuffer[9] = src[9];
+                case 9: framebuffer[8] = src[8];
+                case 8: framebuffer[7] = src[7];
+                case 7: framebuffer[6] = src[6];
+                case 6: framebuffer[5] = src[5];
+                case 5: framebuffer[4] = src[4];
+                case 4: framebuffer[3] = src[3];
+                case 3: framebuffer[2] = src[2];
+                case 2: framebuffer[1] = src[1];
+                case 1: framebuffer[0] = src[0];
+            }
+        }else{
+            int i=0;
+            for(i=0; i<count; i++){
+                framebuffer[i] = src[i];
+            }
+        }
     }
 }
