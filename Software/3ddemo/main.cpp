@@ -109,12 +109,14 @@ int main(int argc, char *argv[]){
         
         Util::sort_triangles(renderfaces);
         
-        calc.stop();
-        
-        sync.start();
         g.wait_done();
+        
+        calc.stop();
+        sync.start();
+        
         g.flip();
         g.vsync();
+        
         sync.stop();
         
         draw.start();
