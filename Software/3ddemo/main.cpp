@@ -13,6 +13,8 @@
 #define PIXEL16(r,g,b) (((r & 0x1F)<<11) | ((g & 0x3F)<<5) | ((b & 0x1F)<<0))
 #define PIXEL24(r,g,b) PIXEL16((r>>3), (g>>2), (b>>3))
 
+#define NUMREPS 60
+
 std::atomic<bool> quit(false);
 
 void got_signal(int){
@@ -71,9 +73,10 @@ int main(int argc, char *argv[]){
     
     std::vector<Triangle2D> renderfaces;
     
+    long totaltime = 0;
+    
     int i=0;
-    while(!quit.load()){
-        
+    while(i < NUMREPS && !quit.load()){
         frame.start();
         calc.start();
         
@@ -127,17 +130,26 @@ int main(int argc, char *argv[]){
         
         frame.stop();
         
-        std::cout << "Drew " << renderfaces.size() << " tris\t" << \
-            "Calc: " << calc.get_milliseconds() << \
-            "ms\tDraw: " << draw.get_milliseconds() << "ms\tTotal: " << \
-            (calc.get_milliseconds() + draw.get_milliseconds()) << \
-            "ms\tFrame: " << frame.get_milliseconds() << "ms\tFPS: " << \
-            floor(1/frame.get_seconds()) << "\tSync: " << \
-            sync.get_milliseconds() << "ms" << std::endl;
+        long totalelapsed = calc.get_milliseconds() + draw.get_milliseconds();
+        totaltime += totalelapsed;
+        
+        if (argc == 1){
+            std::cout << "Drew " << renderfaces.size() << " tris\t" << \
+                "Calc: " << calc.get_milliseconds() << \
+                "ms\tDraw: " << draw.get_milliseconds() << \
+                "ms\tTotal: " << totalelapsed << \
+                "ms\tFrame: " << frame.get_milliseconds() << \
+                "ms\tFPS: " << floor(1/frame.get_seconds()) << \
+                "\tSync: " << sync.get_milliseconds() << \
+                "ms" << std::endl;
+        }
         
         i++;
     }
     
-    std::cout << "Quitting!" << std::endl;
+    if (argc==1){
+        std::cout << "Quitting!" << std::endl;
+    }
+    std::cout << "Total time: " << totaltime << " ms" << std::endl;
     
 }
