@@ -1,12 +1,14 @@
 #!/bin/bash
 
+LOG=./test_log_`date +%s`.txt
+
 function trydownload(){
 	make -C software/renderer download
 }
 
 function dotest(){
 	algorithm=$1
-	echo $algorithm
+	echo $algorithm | tee -a $LOG
 	make -C software/renderer ALGORITHM=ALGORITHM_$algorithm clean all update-mem
 
 	# Try to download a few times in case the JTAG connection is initializing the first time
@@ -25,7 +27,7 @@ function dotest(){
 	fi
 
 	# SSH into the ARM and run the test
-	ssh jamie@192.168.0.8 -t 'cd /home/jamie/part2-project/Software && sudo ./run_test.sh'
+	ssh jamie@192.168.0.8 -t 'cd /home/jamie/part2-project/Software && sudo ./run_test.sh' | tee -a $LOG
 }
 
 dotest "BYTE_FILL"
