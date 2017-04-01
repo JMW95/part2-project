@@ -16,6 +16,11 @@
          value = "6";
          type = "int";
       }
+      datum sopceditor_expanded
+      {
+         value = "0";
+         type = "boolean";
+      }
    }
    element PixelStream_0
    {
@@ -538,6 +543,11 @@
          value = "5";
          type = "int";
       }
+      datum sopceditor_expanded
+      {
+         value = "0";
+         type = "boolean";
+      }
    }
    element pio_buttons.s1
    {
@@ -574,6 +584,11 @@
       {
          value = "1";
          type = "int";
+      }
+      datum sopceditor_expanded
+      {
+         value = "1";
+         type = "boolean";
       }
    }
 }
@@ -619,17 +634,9 @@
    type="conduit"
    dir="end" />
  <interface name="reset" internal="clk_0.clk_in_reset" type="reset" dir="end" />
- <interface
-   name="shiftreg_in"
-   internal="ButtonsCtrl_0.shiftreg_in"
-   type="conduit"
-   dir="end" />
- <interface
-   name="shiftreg_out"
-   internal="ButtonsCtrl_0.shiftreg_out"
-   type="conduit"
-   dir="end" />
- <module name="ButtonsCtrl_0" kind="ButtonsCtrl" version="1.0" enabled="1" />
+ <interface name="shiftreg_in" internal="ButtonsCtrl_0.shiftreg_in" />
+ <interface name="shiftreg_out" internal="ButtonsCtrl_0.shiftreg_out" />
+ <module name="ButtonsCtrl_0" kind="ButtonsCtrl" version="1.0" enabled="0" />
  <module name="PixelStream_0" kind="PixelStream" version="1.0" enabled="1" />
  <module name="clk_0" kind="clock_source" version="16.0" enabled="1">
   <parameter name="clockFrequency" value="50000000" />
@@ -639,7 +646,7 @@
  </module>
  <module name="core_0" kind="render_core" version="1.0" enabled="1">
   <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="3" />
-  <parameter name="AUTO_CLK_CLOCK_RATE" value="75000000" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="96000000" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="3" />
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
@@ -885,10 +892,10 @@
   <parameter name="FPGA_PERIPHERAL_OUTPUT_CLOCK_FREQ_SPIM1_SCLK_OUT" value="100" />
   <parameter name="GPIO_Enable">No,No,No,No,No,No,No,No,No,Yes,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,Yes,No,No,No,No,Yes,No,No,No,No,No,No,No,Yes,No,No,No,No,Yes,Yes,No,No,No,No,No,No,Yes,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No</parameter>
   <parameter name="GP_Enable" value="false" />
-  <parameter name="H2F_AXI_CLOCK_FREQ" value="75000000" />
+  <parameter name="H2F_AXI_CLOCK_FREQ" value="96000000" />
   <parameter name="H2F_CTI_CLOCK_FREQ" value="100" />
   <parameter name="H2F_DEBUG_APB_CLOCK_FREQ" value="100" />
-  <parameter name="H2F_LW_AXI_CLOCK_FREQ" value="75000000" />
+  <parameter name="H2F_LW_AXI_CLOCK_FREQ" value="96000000" />
   <parameter name="H2F_TPIU_CLOCK_IN_FREQ" value="100" />
   <parameter name="HARD_EMIF" value="true" />
   <parameter name="HCX_COMPAT_MODE" value="false" />
@@ -1278,11 +1285,11 @@
    name="pio_buttons"
    kind="altera_avalon_pio"
    version="16.0"
-   enabled="1">
+   enabled="0">
   <parameter name="bitClearingEdgeCapReg" value="false" />
   <parameter name="bitModifyingOutReg" value="false" />
   <parameter name="captureEdge" value="false" />
-  <parameter name="clockRate" value="75000000" />
+  <parameter name="clockRate" value="96000000" />
   <parameter name="direction" value="Input" />
   <parameter name="edgeType" value="RISING" />
   <parameter name="generateIRQ" value="false" />
@@ -1296,7 +1303,7 @@
   <parameter name="bitClearingEdgeCapReg" value="false" />
   <parameter name="bitModifyingOutReg" value="false" />
   <parameter name="captureEdge" value="true" />
-  <parameter name="clockRate" value="75000000" />
+  <parameter name="clockRate" value="96000000" />
   <parameter name="direction" value="Input" />
   <parameter name="edgeType" value="FALLING" />
   <parameter name="generateIRQ" value="true" />
@@ -1312,7 +1319,7 @@
   <parameter name="device" value="5CSEMA5F31C6" />
   <parameter name="device_family" value="Cyclone V" />
   <parameter name="gui_active_clk" value="false" />
-  <parameter name="gui_actual_output_clock_frequency0" value="95.000000 MHz" />
+  <parameter name="gui_actual_output_clock_frequency0" value="96.000000 MHz" />
   <parameter name="gui_actual_output_clock_frequency1" value="0 MHz" />
   <parameter name="gui_actual_output_clock_frequency10" value="0 MHz" />
   <parameter name="gui_actual_output_clock_frequency11" value="0 MHz" />
@@ -1425,7 +1432,7 @@
   <parameter name="gui_multiply_factor" value="1" />
   <parameter name="gui_number_of_clocks" value="2" />
   <parameter name="gui_operation_mode" value="direct" />
-  <parameter name="gui_output_clock_frequency0" value="75.0" />
+  <parameter name="gui_output_clock_frequency0" value="96.0" />
   <parameter name="gui_output_clock_frequency1" value="9.0" />
   <parameter name="gui_output_clock_frequency10" value="100.0" />
   <parameter name="gui_output_clock_frequency11" value="100.0" />
