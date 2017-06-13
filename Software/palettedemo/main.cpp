@@ -35,6 +35,10 @@ int main(int argc, char *argv[]){
     #ifdef HARDWARE_RENDER
     g.set_use_hardware(true);
     g.set_save_output(false);
+    // Clear screen
+    g.sof();
+    g.eof();
+    g.flip();
     #else
     g.set_use_hardware(false);
     g.set_save_output(true);
@@ -97,5 +101,7 @@ int main(int argc, char *argv[]){
     }
 
     g.eof();
+    g.vsync();
+    g.flip();
 
 }
