@@ -6,6 +6,7 @@ render_core
 
 output_files/*
 !output_files/gp_socfpga.sof
+!output_files/gp_socfpga.rbf
 
 *.qws
 **/*.bak
