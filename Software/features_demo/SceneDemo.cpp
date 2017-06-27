@@ -16,7 +16,7 @@ struct TreePos {
 } y;
 
 static std::default_random_engine engine(0);
-float rand_float(float a, float b){
+static float rand_float(float a, float b){
     std::uniform_real_distribution<float> rand(a, b);
     return rand(engine);
 }

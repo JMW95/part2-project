@@ -39,3 +39,13 @@ public:
     void update(GPU &g, int step);
     void render(GPU &g, int step);
 };
+
+class TrianglesDemo : public Demo {
+private:
+    std::vector<Triangle2D> triangles;
+public:
+    TrianglesDemo();
+    void switch_to(GPU &g);
+    void update(GPU &g, int step);
+    void render(GPU &g, int step);
+};

@@ -21,7 +21,7 @@ std::atomic<bool> quit(false);
 unsigned int selected;
 
 std::vector<Demo*> demos;
-bool menu_shown = true;
+bool menu_shown = false;
 
 TTF_Font* font;
 SDL_Color textFG = {255, 255, 255};
@@ -117,6 +117,7 @@ int main(int argc, char *argv[]){
     
     demos.push_back(new ShapesDemo());
     demos.push_back(new SceneDemo());
+    demos.push_back(new TrianglesDemo());
 
     g.set_use_hardware(true);
     
