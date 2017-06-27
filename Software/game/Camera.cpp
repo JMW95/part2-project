@@ -5,8 +5,10 @@
 #include <math.h>
 
 Camera::Camera(){
-    position = Vector3(0,1,0);
-    rotation = Vector3(0,0,0); // pitch, yaw, roll
+    // This gives a nice view of the scene for screenshots
+    // pos: [-4.28303, 3.08295, -10.3503], rot: [0.174533, 0.383972, 0]
+    position = Vector3(-4.28303, 3.08295, -10.3503);
+    rotation = Vector3(0.174533, 0.383972, 0);
 }
 
 Matrix4 Camera::get_view_matrix(){
