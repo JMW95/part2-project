@@ -250,7 +250,7 @@ static int __init init_workqueue(void){
     numcores_base = lwbase + (( unsigned long)(ALT_LWFPGASLVS_OFST + NUM_CORES_BASE) & (unsigned long) (LW_REGS_MASK) );
     num_cores = *numcores_base;
     
-    printk(KERN_ALERT "lw: %p, hw: %p, nc: %d\n", lwbase, hwbase, num_cores);
+    //printk(KERN_ALERT "lw: %p, hw: %p, nc: %d\n", lwbase, hwbase, num_cores);
     
     for(i=0;i<num_cores;i++){
         
