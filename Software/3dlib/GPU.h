@@ -20,6 +20,7 @@ private:
     bool save_output;
     char ftmp[DISPLAY_WIDTH * DISPLAY_HEIGHT];
     short buttons;
+    short last_buttons;
     
     void set_buffer(unsigned int addr);
     Triangle2D trisort(const Triangle2D& tri);
@@ -51,6 +52,7 @@ public:
     void set_palette_color(int entrynum, int color);
     void read_buttons();
     bool is_button_pressed(int button);
+    bool was_button_just_pressed(int button);
     unsigned int get_buffer();
     unsigned int get_num_cores();
     void set_use_hardware(bool use);
@@ -58,5 +60,6 @@ public:
     
     void sof();
     void triangle(const Triangle2D& tri);
+    void copy(const char *src, int height);
     void eof();
 };

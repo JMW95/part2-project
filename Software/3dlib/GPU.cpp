@@ -144,6 +144,9 @@ GPU::GPU(){
     use_hardware = false;
     save_output = false;
     
+    buttons = 0;
+    last_buttons = 0;
+    
     buf = 1;
     set_buffer(0);
 }
@@ -317,20 +320,34 @@ void GPU::eof(){
             nframes ++;
         }
         
-        unsigned int wq = 0;
-        for(wq = 0; wq < num_cores; wq++){
-            int nbytes = (DISPLAY_WIDTH*DISPLAY_HEIGHT) / num_cores;
-            int i = wq * nbytes; // starting points
-            write_workpacket(wq, TYPE_COPY_START, NULL, 0);
-            while(nbytes > 0){
-                write_workpacket(wq, TYPE_COPY, ftmp+i, nbytes < 16 ? nbytes : 16);
-                nbytes -= 16;
-                i += 16;
-            }
-        }
+        copy(ftmp, DISPLAY_HEIGHT);
     }
     for(unsigned int i=0; i<num_cores; i++){
         write_workpacket(i, TYPE_EOF, NULL, 0);
+    }
+}
+
+void GPU::copy(const char *src, int height){
+    unsigned int wq = 0;
+    
+    unsigned int last_wq = (height * num_cores) / DISPLAY_HEIGHT;
+    if(last_wq >= num_cores){
+        last_wq = num_cores - 1;
+    }
+    
+    unsigned int totalbytes = height * DISPLAY_WIDTH;
+    unsigned int currbyte = 0;
+    
+    for(wq = 0; wq <= last_wq; wq++){
+        unsigned int lastbyte = totalbytes;
+        if (lastbyte > ((wq+1) * DISPLAY_WIDTH * DISPLAY_HEIGHT / num_cores)){
+            lastbyte = ((wq+1) * DISPLAY_WIDTH * DISPLAY_HEIGHT / num_cores);
+        }
+        write_workpacket(wq, TYPE_COPY_START, NULL, 0);
+        while(currbyte < lastbyte){
+            write_workpacket(wq, TYPE_COPY, (char *)src+currbyte, (lastbyte - currbyte) < 16 ? lastbyte - currbyte : 16);
+            currbyte += 16;
+        }
     }
 }
 
@@ -343,9 +360,17 @@ void GPU::set_save_output(bool save){
 }
 
 void GPU::read_buttons(){
+    last_buttons = buttons;
     buttons = ioctl(fileno(_pixf), IOCTL_PIXELSTREAM_READ_BUTTONS, NULL);
 }
 
 bool GPU::is_button_pressed(int button){
     return (buttons & (1 << button)) != 0;
+}
+
+bool GPU::was_button_just_pressed(int button){
+    if ((last_buttons & (1 << button)) == 0){
+        return (buttons & (1 << button)) != 0;
+    }
+    return false;
 }
