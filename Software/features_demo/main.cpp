@@ -21,11 +21,13 @@ std::atomic<bool> quit(false);
 unsigned int selected;
 
 std::vector<Demo*> demos;
+bool menu_shown = true;
 
 TTF_Font* font;
 SDL_Color textFG = {255, 255, 255};
 
-char *menu_text_bg;
+char *menu_shown_bg;
+char *menu_hidden_bg;
 
 void got_signal(int){
     quit.store(true);
@@ -59,7 +61,7 @@ void _place_text(char *fbuff, const char* txt, int tx, int ty, int fcol, int bco
     SDL_FreeSurface(textSurface);
 }
 
-char *create_menu(){
+char *create_shown_menu(){
     int frontcol = 255;
     int backcol = 1;
     
@@ -69,11 +71,31 @@ char *create_menu(){
     int ty = 5;
     int tx = 25;
     
+    _place_text(tmp, "Use joystick to choose a demo:", tx, ty, frontcol, backcol);
+    ty += 25;
+    
     for(unsigned int i=0; i<demos.size(); i++){
         _place_text(tmp, demos[i]->name.c_str(), tx, ty, frontcol, backcol);
         
         ty += 20;
     }
+    
+    _place_text(tmp, "Press Y to hide menu", tx, ty+5, frontcol, backcol);
+    
+    return tmp;
+}
+
+char *create_hidden_menu(){
+    int frontcol = 255;
+    int backcol = 1;
+    
+    char *tmp = new char[480 * 272];
+    memset(tmp, backcol, 480*272);
+    
+    int ty = 5;
+    int tx = 25;
+    
+    _place_text(tmp, "GPU for CPU + FPGA Demo            Press Y to show menu", tx, ty, frontcol, backcol);
     
     return tmp;
 }
@@ -114,7 +136,8 @@ int main(int argc, char *argv[]){
     demos[selected]->switch_to(g);
     
     // Create the main menu
-    menu_text_bg = create_menu();
+    menu_shown_bg = create_shown_menu();
+    menu_hidden_bg = create_hidden_menu();
 
     int i=0;
     while(!quit.load()){
@@ -123,13 +146,19 @@ int main(int argc, char *argv[]){
         
         g.read_buttons();
         
-        // Update menu
-        if(g.was_button_just_pressed(GPU::NAV_U)){
-            selected = selected > 0 ? selected - 1 : selected;
-            demos[selected]->switch_to(g);
-        }else if(g.was_button_just_pressed(GPU::NAV_D)){
-            selected = selected < demos.size()-1 ? selected + 1 : selected;
-            demos[selected]->switch_to(g);
+        if(g.was_button_just_pressed(GPU::BUTTON_Y)){
+            menu_shown = !menu_shown;
+        }
+        
+        if(menu_shown){
+            // Update menu
+            if(g.was_button_just_pressed(GPU::NAV_U)){
+                selected = selected > 0 ? selected - 1 : selected;
+                demos[selected]->switch_to(g);
+            }else if(g.was_button_just_pressed(GPU::NAV_D)){
+                selected = selected < demos.size()-1 ? selected + 1 : selected;
+                demos[selected]->switch_to(g);
+            }
         }
         
         // Update the current demo
@@ -151,10 +180,14 @@ int main(int argc, char *argv[]){
         demos[selected]->render(g, i);
         
         // Render the text menu
-        g.copy(menu_text_bg, 5 + (demos.size() * 20));
-        
-        int tcol = 1;
-        draw_arrow(g, 5, 10 + (selected * 20), 10, 10, (tcol * 32) + 31);
+        if(menu_shown){
+            g.copy(menu_shown_bg, 55 + (demos.size() * 20));
+            
+            int tcol = 1;
+            draw_arrow(g, 5, 33 + (selected * 20), 10, 10, (tcol * 32) + 31);
+        }else{
+            g.copy(menu_hidden_bg, 25);
+        }
         
         g.eof();
         
